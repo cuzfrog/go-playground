@@ -9,6 +9,4 @@ type unions interface {
 	connected(a, b int) bool
 	//count returns the number of components
 	count() int
-
-	reset()
 }

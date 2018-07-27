@@ -27,32 +27,36 @@ func TestUnions(t *testing.T) {
 }
 
 func benchmark(uCtor func(int) unions, cap int, b *testing.B) {
-	u := uCtor(cap)
+	var u unions
 	pairs := genPairs(cap)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
 		pIdx := i % cap
 		if pIdx == 0 {
-			u.reset()
+			u = uCtor(cap)
 		}
+		pair := pairs[pIdx]
 		b.StartTimer()
-		u.union(pIdx, pairs[pIdx])
-		u.connected(pIdx, pairs[pIdx])
+
+		u.union(pair.p, pair.q)
 		u.count()
 	}
 }
 
-func genPairs(n int) []int {
-	pairs := make([]int, n)
+type pair struct {
+	p int
+	q int
+}
+func genPairs(n int) []pair {
+	pairs := make([]pair, n)
 	for i := 0; i < n; i ++ {
-		pairs[i] = rand.Intn(n)
+		pairs[i] = pair{rand.Intn(n), rand.Intn(n)}
 	}
 	return pairs
 }
 
 func BenchmarkQf(b *testing.B) {
-	b.Run("100", func(b *testing.B) {benchmark(newQfUnions, 100, b)})
 	b.Run("1000", func(b *testing.B) {benchmark(newQfUnions, 1000, b)})
 	b.Run("10000", func(b *testing.B) {benchmark(newQfUnions, 10000, b)})
 	b.Run("100000", func(b *testing.B) {benchmark(newQfUnions, 100000, b)})
