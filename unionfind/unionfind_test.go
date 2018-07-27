@@ -6,9 +6,10 @@ import (
 	"testing"
 )
 
-func createInstances(capacity int) []unions {
+func createInstances(n int) []unions {
 	return []unions{
-		newQfUnions(capacity),
+		newQfUnions(n),
+		newQfUnions(n),
 	}
 }
 
@@ -20,7 +21,7 @@ func TestUnions(t *testing.T) {
 		u.union(3, 9)
 		u.union(67, 9)
 		u.union(6, 9)
-		Assert.Equal(96, u.count(), "Component num is wrong")
+		Assert.Equal(96, u.count())
 		Assert.True(u.connected(67, 6))
 		Assert.False(u.connected(8, 9))
 	}
@@ -58,7 +59,15 @@ func genPairs(n int) []pair {
 }
 
 func BenchmarkQf(b *testing.B) {
-	b.Run("1000", func(b *testing.B) { benchmark(newQfUnions, 1000, b) })
-	b.Run("10000", func(b *testing.B) { benchmark(newQfUnions, 10000, b) })
-	b.Run("100000", func(b *testing.B) { benchmark(newQfUnions, 100000, b) })
+	f := newQfUnions
+	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })
+	b.Run("10000", func(b *testing.B) { benchmark(f, 10000, b) })
+	b.Run("100000", func(b *testing.B) { benchmark(f, 100000, b) })
+}
+
+func BenchmarkQu(b *testing.B) {
+	f := newQuUnions
+	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })
+	b.Run("10000", func(b *testing.B) { benchmark(f, 10000, b) })
+	b.Run("100000", func(b *testing.B) { benchmark(f, 100000, b) })
 }
