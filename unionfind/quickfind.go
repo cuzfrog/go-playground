@@ -1,6 +1,6 @@
 package unionfind
 
-//unions with quick find implementation
+// unions with quick find implementation
 type qfUnions struct {
 	comCnt int
 	sites  []int
@@ -8,12 +8,7 @@ type qfUnions struct {
 
 //new creates a new qfUnions with given 'n' site capacity
 func newQfUnions(n int) unions {
-	sites := make([]int, n, n)
-	for i := range sites {
-		sites[i] = i
-	}
-	u := qfUnions{n, sites}
-	return &u
+	return &qfUnions{n, genSites(n)}
 }
 
 func (u *qfUnions) reset() {

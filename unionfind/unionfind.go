@@ -10,3 +10,11 @@ type unions interface {
 	//count returns the number of components
 	count() int
 }
+
+func genSites(n int) []int {
+	sites := make([]int, n, n)
+	for i := range sites {
+		sites[i] = i
+	}
+	return sites
+}

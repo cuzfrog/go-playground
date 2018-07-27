@@ -1,9 +1,9 @@
 package unionfind
 
 import (
-	"testing"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
+	"testing"
 )
 
 func createInstances(capacity int) []unions {
@@ -48,16 +48,17 @@ type pair struct {
 	p int
 	q int
 }
+
 func genPairs(n int) []pair {
 	pairs := make([]pair, n)
-	for i := 0; i < n; i ++ {
+	for i := 0; i < n; i++ {
 		pairs[i] = pair{rand.Intn(n), rand.Intn(n)}
 	}
 	return pairs
 }
 
 func BenchmarkQf(b *testing.B) {
-	b.Run("1000", func(b *testing.B) {benchmark(newQfUnions, 1000, b)})
-	b.Run("10000", func(b *testing.B) {benchmark(newQfUnions, 10000, b)})
-	b.Run("100000", func(b *testing.B) {benchmark(newQfUnions, 100000, b)})
+	b.Run("1000", func(b *testing.B) { benchmark(newQfUnions, 1000, b) })
+	b.Run("10000", func(b *testing.B) { benchmark(newQfUnions, 10000, b) })
+	b.Run("100000", func(b *testing.B) { benchmark(newQfUnions, 100000, b) })
 }
