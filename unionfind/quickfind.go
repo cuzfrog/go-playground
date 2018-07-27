@@ -16,6 +16,12 @@ func newQfUnions(n int) unions {
 	return &u
 }
 
+func (u *qfUnions) reset() {
+	for i := range u.sites {
+		u.sites[i] = i
+	}
+}
+
 func (u *qfUnions) union(a, b int) {
 	ida := u.find(a)
 	idb := u.find(b)
