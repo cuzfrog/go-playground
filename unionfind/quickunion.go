@@ -13,12 +13,10 @@ func newQuUnions(n int) unions{
 	u.unionImpl = func(a int, b int) {
 		roota := u.find(a)
 		rootb := u.find(b)
-		if roota == rootb {
-			return
+		if roota != rootb {
+			u.sites[roota] = rootb
+			u.comCnt--
 		}
-
-		u.sites[roota] = rootb
-		u.comCnt--
 	}
 	return &quUnions{u}
 }

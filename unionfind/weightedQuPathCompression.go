@@ -13,15 +13,14 @@ func newWqupcUnions(n int) unions {
 	u.unionImpl = func(a int, b int) {
 		rootA, dpthA := u.findDepthPathCompression(a)
 		rootB, dpthB := u.findDepthPathCompression(b)
-		if rootA == rootB {
-			return
+		if rootA != rootB {
+			if dpthA <= dpthB {
+				u.sites[rootA] = rootB
+			} else {
+				u.sites[rootB] = rootA
+			}
+			u.comCnt--
 		}
-		if dpthA <= dpthB {
-			u.sites[rootA] = rootB
-		} else {
-			u.sites[rootB] = rootA
-		}
-		u.comCnt--
 	}
 
 	return &wqupcUnions{u}

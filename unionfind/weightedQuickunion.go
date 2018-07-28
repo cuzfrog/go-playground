@@ -12,15 +12,14 @@ func newWquUnions(n int) unions {
 	u.unionImpl = func(a int, b int) {
 		rootA, dpthA := u.findDepth(a)
 		rootB, dpthB := u.findDepth(b)
-		if rootA == rootB {
-			return
+		if rootA != rootB {
+			if dpthA <= dpthB {
+				u.sites[rootA] = rootB
+			} else {
+				u.sites[rootB] = rootA
+			}
+			u.comCnt--
 		}
-		if dpthA <= dpthB {
-			u.sites[rootA] = rootB
-		} else {
-			u.sites[rootB] = rootA
-		}
-		u.comCnt--
 	}
 
 	return &wquUnions{u}
