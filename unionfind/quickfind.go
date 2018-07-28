@@ -2,11 +2,11 @@ package unionfind
 
 // unions with quick find implementation
 type qfUnions struct {
-	*abstractUnions
+	*delegateUnions
 }
 
 func newQfUnions(n int) unions {
-	u := &abstractUnions{n, genSites(n), nil, nil}
+	u := &delegateUnions{n, genSites(n), nil, nil}
 
 	u.findImpl = func(a int) int {
 		return u.sites[a]
