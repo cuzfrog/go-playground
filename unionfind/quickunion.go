@@ -6,7 +6,7 @@ type quUnions struct {
 }
 
 func newQuUnions(n int) unions{
-	return &qfUnions{n, genSites(n)}
+	return &quUnions{n, genSites(n)}
 }
 
 func (u *quUnions) union(a, b int) {
