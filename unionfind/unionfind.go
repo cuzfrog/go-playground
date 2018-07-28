@@ -11,26 +11,26 @@ type unions interface {
 	find(a int) int
 }
 
-type baseUnions struct {
+type abstractUnions struct {
 	comCnt    int
 	sites     []int
 	findImpl  func(int) int
 	unionImpl func(int, int)
 }
 
-func (u *baseUnions) union(a, b int) {
+func (u *abstractUnions) union(a, b int) {
 	u.unionImpl(a, b)
 }
 
-func (u *baseUnions) find(a int) int {
+func (u *abstractUnions) find(a int) int {
 	return u.findImpl(a)
 }
 
-func (u *baseUnions) connected(a, b int) bool {
+func (u *abstractUnions) connected(a, b int) bool {
 	return u.findImpl(a) == u.findImpl(b)
 }
 
-func (u *baseUnions) count() int {
+func (u *abstractUnions) count() int {
 	return u.comCnt
 }
 

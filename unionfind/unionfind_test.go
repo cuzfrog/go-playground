@@ -10,7 +10,7 @@ import (
 func createInstances(n int) []unions {
 	return []unions{
 		newQfUnions(n),
-		newQfUnions(n),
+		newQuUnions(n),
 		newWquUnions(n),
 		newWqupcUnions(n),
 	}

@@ -1,11 +1,11 @@
 package unionfind
 
 type quUnions struct {
-	baseUnions
+	*abstractUnions
 }
 
 func newQuUnions(n int) unions{
-	u := baseUnions{n, genSites(n), nil, nil}
+	u := &abstractUnions{n, genSites(n), nil, nil}
 
 	u.findImpl = func(a int) int {
 		for u.sites[a] != a {
