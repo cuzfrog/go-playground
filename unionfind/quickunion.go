@@ -4,7 +4,7 @@ type quUnions struct {
 	*abstractUnions
 }
 
-func newQuUnions(n int) unions{
+func newQuUnions(n int) unions {
 	u := &abstractUnions{n, genSites(n), nil, nil}
 
 	u.findImpl = u.findLink

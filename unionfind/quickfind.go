@@ -5,7 +5,6 @@ type qfUnions struct {
 	*abstractUnions
 }
 
-//new creates a new qfUnions with given 'n' site capacity
 func newQfUnions(n int) unions {
 	u := &abstractUnions{n, genSites(n), nil, nil}
 

@@ -1,10 +1,10 @@
 package unionfind
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"testing"
-	"fmt"
 )
 
 func createInstances(n int) []unions {

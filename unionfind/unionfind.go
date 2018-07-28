@@ -1,13 +1,13 @@
 package unionfind
 
 type unions interface {
-	//union connects two sites
+	// union connects two sites
 	union(a, b int)
-	//connected checks if two sites are in the same union
+	// connected checks if two sites are in the same union
 	connected(a, b int) bool
-	//count returns the number of components
+	// count returns the number of components
 	count() int
-
+	// find returns component id
 	find(a int) int
 }
 
@@ -34,7 +34,7 @@ func (u *abstractUnions) count() int {
 	return u.comCnt
 }
 
-func(u *abstractUnions) findLink(a int) int {
+func (u *abstractUnions) findLink(a int) int {
 	for u.sites[a] != a {
 		a = u.sites[a]
 	}
