@@ -7,10 +7,7 @@ type wquUnions struct {
 func newWquUnions(n int) unions {
 	u := &abstractUnions{n, genSites(n), nil, nil}
 
-	u.findImpl = func(a int) int {
-		comNum, _ := u.findDepth(a)
-		return comNum
-	}
+	u.findImpl = u.findLink
 
 	u.unionImpl = func(a int, b int) {
 		rootA, dpthA := u.findDepth(a)

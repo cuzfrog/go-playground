@@ -34,6 +34,13 @@ func (u *abstractUnions) count() int {
 	return u.comCnt
 }
 
+func(u *abstractUnions) findLink(a int) int {
+	for u.sites[a] != a {
+		a = u.sites[a]
+	}
+	return a
+}
+
 /* --- Utility functions --- */
 
 func genSites(n int) []int {
