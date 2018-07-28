@@ -12,6 +12,7 @@ func createInstances(n int) []unions {
 		newQfUnions(n),
 		newQfUnions(n),
 		newWquUnions(n),
+		newWqupcUnions(n),
 	}
 }
 
@@ -54,8 +55,7 @@ func benchmark(uCtor func(int) unions, cap int, b *testing.B) {
 }
 
 type pair struct {
-	p int
-	q int
+	p, q int
 }
 
 func genPairs(n int) []pair {
@@ -84,6 +84,14 @@ func BenchmarkQu(b *testing.B) {
 
 func BenchmarkWQu(b *testing.B) {
 	f := newWquUnions
+	b.Run("100", func(b *testing.B) { benchmark(f, 100, b) })
+	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })
+	b.Run("10000", func(b *testing.B) { benchmark(f, 10000, b) })
+	b.Run("100000", func(b *testing.B) { benchmark(f, 100000, b) })
+}
+
+func BenchmarkWQupc(b *testing.B) {
+	f := newWqupcUnions
 	b.Run("100", func(b *testing.B) { benchmark(f, 100, b) })
 	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })
 	b.Run("10000", func(b *testing.B) { benchmark(f, 10000, b) })
