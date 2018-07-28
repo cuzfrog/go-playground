@@ -11,6 +11,7 @@ func createInstances(n int) []unions {
 	return []unions{
 		newQfUnions(n),
 		newQfUnions(n),
+		newWquUnions(n),
 	}
 }
 
@@ -75,6 +76,14 @@ func BenchmarkQf(b *testing.B) {
 
 func BenchmarkQu(b *testing.B) {
 	f := newQuUnions
+	b.Run("100", func(b *testing.B) { benchmark(f, 100, b) })
+	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })
+	b.Run("10000", func(b *testing.B) { benchmark(f, 10000, b) })
+	b.Run("100000", func(b *testing.B) { benchmark(f, 100000, b) })
+}
+
+func BenchmarkWQu(b *testing.B) {
+	f := newWquUnions
 	b.Run("100", func(b *testing.B) { benchmark(f, 100, b) })
 	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })
 	b.Run("10000", func(b *testing.B) { benchmark(f, 10000, b) })
