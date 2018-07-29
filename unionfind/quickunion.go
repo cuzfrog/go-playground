@@ -1,10 +1,8 @@
 package unionfind
 
-type quUnions struct {
-	*delegateUnions
-}
+type quUnions *delegateUnions
 
-func newQuUnions(n int) unions {
+func newQuUnions(n int) quUnions {
 	u := &delegateUnions{n, genSites(n), nil, nil}
 
 	u.findImpl = u.findLink
@@ -18,7 +16,7 @@ func newQuUnions(n int) unions {
 			u.comCnt--
 		}
 	}
-	return &quUnions{u}
+	return u
 }
 
 func (u *delegateUnions) findLink(a int) int {

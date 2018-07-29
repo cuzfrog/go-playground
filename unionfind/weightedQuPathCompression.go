@@ -1,11 +1,9 @@
 package unionfind
 
 // weighted quick union with path compression
-type wqupcUnions struct {
-	*delegateUnions
-}
+type wqupcUnions *delegateUnions
 
-func newWqupcUnions(n int) unions {
+func newWqupcUnions(n int) wqupcUnions {
 	u := &delegateUnions{n, genSites(n), nil, nil}
 
 	u.findImpl = u.findLink
@@ -23,7 +21,7 @@ func newWqupcUnions(n int) unions {
 		}
 	}
 
-	return &wqupcUnions{u}
+	return u
 }
 
 // find searches through links and returns the component root number and tree depth
