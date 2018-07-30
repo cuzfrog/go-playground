@@ -1,8 +1,10 @@
 package unionfind
 
-type wquUnions *delegateUnions
+type wquUnions struct {
+	*delegateUnions
+}
 
-func newWquUnions(n int) wquUnions {
+func newWquUnions(n int) unions {
 	u := &delegateUnions{n, genSites(n), nil, nil}
 
 	u.findImpl = u.findLink
@@ -20,7 +22,7 @@ func newWquUnions(n int) wquUnions {
 		}
 	}
 
-	return u
+	return &wquUnions{u}
 }
 
 // find searches through links and returns the component root number and tree depth
