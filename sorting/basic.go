@@ -23,3 +23,20 @@ func insertionSort(a []int) []int {
 	}
 	return a
 }
+
+func shellSort(a []int) []int {
+	n := len(a)
+	h := 1
+	for h < n/3 {
+		h = h*3 + 1
+	}
+	for h >= 1 {
+		for i := h; i < n; i++ {
+			for j := i; j >= h && a[j] < a[j-h]; j-=h {
+				exchange(a, j, j-h)
+			}
+		}
+		h = h / 3
+	}
+	return a
+}
