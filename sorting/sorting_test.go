@@ -19,6 +19,7 @@ func TestSorting(t *testing.T) {
 	t.Run("insertion sort", func(t *testing.T) { test(insertionSort, t) })
 	t.Run("shell sort", func(t *testing.T) { test(shellSort, t) })
 	t.Run("shell sort 2", func(t *testing.T) { test(shellSort2, t) })
+	t.Run("merge sort", func(t *testing.T) { test(mergesort, t) })
 }
 
 func checkSorted(a []int, t *testing.T) {
@@ -34,6 +35,7 @@ func checkSorted(a []int, t *testing.T) {
 	}
 }
 
+// genElems generates a new slice with n elements
 func genElems(n int) []int {
 	a := make([]int, n, n)
 	max := n * 4
@@ -56,15 +58,15 @@ func benchmark(f func([]int) []int, n int, b *testing.B) {
 	}
 }
 
-func Benchmark_InsertionSort(b *testing.B) {
-	f := insertionSort
+func Benchmark_SelectionSort(b *testing.B) {
+	f := selectionSort
 	b.Run("100", func(b *testing.B) { benchmark(f, 100, b) })
 	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })
 	b.Run("10000", func(b *testing.B) { benchmark(f, 10000, b) })
 }
 
-func Benchmark_SelectionSort(b *testing.B) {
-	f := selectionSort
+func Benchmark_InsertionSort(b *testing.B) {
+	f := insertionSort
 	b.Run("100", func(b *testing.B) { benchmark(f, 100, b) })
 	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })
 	b.Run("10000", func(b *testing.B) { benchmark(f, 10000, b) })
@@ -77,8 +79,8 @@ func Benchmark_ShellSort(b *testing.B) {
 	b.Run("10000", func(b *testing.B) { benchmark(f, 10000, b) })
 }
 
-func Benchmark_ShellSort2(b *testing.B) {
-	f := shellSort2
+func Benchmark_MergeSort(b *testing.B) {
+	f := mergesort
 	b.Run("100", func(b *testing.B) { benchmark(f, 100, b) })
 	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })
 	b.Run("10000", func(b *testing.B) { benchmark(f, 10000, b) })
