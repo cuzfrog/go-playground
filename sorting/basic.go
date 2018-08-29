@@ -2,7 +2,7 @@ package sorting
 
 import "math"
 
-func selectionSort(a []int) []int {
+func selectionSort(a []int) {
 	n := len(a)
 	minIdx := 0
 	for i := range a {
@@ -13,20 +13,18 @@ func selectionSort(a []int) []int {
 		}
 		exchange(a, i, minIdx)
 	}
-	return a
 }
 
-func insertionSort(a []int) []int {
+func insertionSort(a []int) {
 	n := len(a)
 	for i := 1; i < n; i++ {
 		for j := i; j > 0 && a[j] < a[j-1]; j-- {
 			exchange(a, j, j-1)
 		}
 	}
-	return a
 }
 
-func shellSort(a []int) []int {
+func shellSort(a []int) {
 	n := len(a)
 	h := 1
 	for h < n/3 {
@@ -40,10 +38,9 @@ func shellSort(a []int) []int {
 		}
 		h = h / 3
 	}
-	return a
 }
 
-func shellSort2(a []int) []int {
+func shellSort2(a []int) {
 	n := len(a)
 	l := int(math.Log(float64(n))/math.Log(3) + 1)
 	hs := make([]int, l)
@@ -58,5 +55,4 @@ func shellSort2(a []int) []int {
 			}
 		}
 	}
-	return a
 }
