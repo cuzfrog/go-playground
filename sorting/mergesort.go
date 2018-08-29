@@ -16,8 +16,6 @@ func merge(a1, a2 []int) []int {
 	l1 := len(a1)
 	l2 := len(a2)
 	aux := make([]int, l1+l2)
-	a := append(a1, a2...)
-	copy(aux, a)
 
 	i1 := 0
 	i2 := 0
@@ -38,4 +36,19 @@ func merge(a1, a2 []int) []int {
 		}
 	}
 	return aux
+}
+
+func mergesortFromBottom(a []int) []int {
+	n := len(a)
+	for sz := 1; sz < n; sz *= 2 {
+		for i := 0; i < n-sz; i += sz * 2 {
+			mid := i + sz
+			end := min(i+sz*2, n)
+			a1 := a[i:mid]
+			a2 := a[mid:end]
+			m := merge(a1, a2)
+			copy(a[i:end], m)
+		}
+	}
+	return a
 }

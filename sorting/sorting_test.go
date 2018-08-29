@@ -20,6 +20,7 @@ func TestSorting(t *testing.T) {
 	t.Run("shell sort", func(t *testing.T) { test(shellSort, t) })
 	t.Run("shell sort 2", func(t *testing.T) { test(shellSort2, t) })
 	t.Run("merge sort", func(t *testing.T) { test(mergesort, t) })
+	t.Run("merge sort from bottom", func(t *testing.T) { test(mergesortFromBottom, t) })
 }
 
 func checkSorted(a []int, t *testing.T) {
@@ -81,6 +82,13 @@ func Benchmark_ShellSort(b *testing.B) {
 
 func Benchmark_MergeSort(b *testing.B) {
 	f := mergesort
+	b.Run("100", func(b *testing.B) { benchmark(f, 100, b) })
+	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })
+	b.Run("10000", func(b *testing.B) { benchmark(f, 10000, b) })
+}
+
+func Benchmark_MergeSortFromBottom(b *testing.B) {
+	f := mergesortFromBottom
 	b.Run("100", func(b *testing.B) { benchmark(f, 100, b) })
 	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })
 	b.Run("10000", func(b *testing.B) { benchmark(f, 10000, b) })
