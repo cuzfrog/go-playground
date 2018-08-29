@@ -7,11 +7,13 @@ import (
 )
 
 func test(f func([]int), t *testing.T) {
-	a := genElems(32)
-	t.Log("Before:", a)
-	f(a)
-	t.Log("Sorted:", a)
-	checkSorted(a, t)
+	for n := 0; n < 100; n++ {
+		a := genElems(32)
+		t.Log("Before:", a)
+		f(a)
+		t.Log("Sorted:", a)
+		checkSorted(a, t)
+	}
 }
 
 func TestSorting(t *testing.T) {

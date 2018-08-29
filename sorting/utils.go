@@ -4,10 +4,11 @@ func exchange(a []int, i, j int) {
 	a[i], a[j] = a[j], a[i]
 }
 
-func min(l, r int) int {
+func min(l, r int) (m int) {
 	if l < r {
-		return l
+		m = l
 	} else {
-		return r
+		m = r
 	}
+	return
 }
