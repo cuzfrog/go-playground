@@ -4,8 +4,8 @@ import "math"
 
 func selectionSort(a []int) {
 	n := len(a)
-	minIdx := 0
 	for i := range a {
+		minIdx := i
 		for j := i + 1; j < n; j++ {
 			if a[j] < a[minIdx] {
 				minIdx = j
