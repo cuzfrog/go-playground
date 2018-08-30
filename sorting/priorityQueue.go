@@ -44,6 +44,8 @@ func (pq *heapPriorityQueue) popMax() (max int) {
 	return
 }
 
+// reheapifyLast heapifies a heap with a newly added elem.
+// Contract: Without the elem, the heap's property holds.
 func reheapifyLast(h []int) {
 	i := len(h) - 1
 	for p := i / 2; p > 0 && h[p] < h[i]; i = p {
