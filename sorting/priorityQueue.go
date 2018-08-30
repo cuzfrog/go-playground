@@ -48,7 +48,10 @@ func (pq *heapPriorityQueue) popMax() (max int) {
 // Contract: Without the elem, the heap's property holds.
 func reheapifyLast(h []int) {
 	i := len(h) - 1
-	for p := i / 2; p > 0 && h[p] < h[i]; i = p {
+	p := i / 2
+	for p > 0 && h[p] < h[i] {
 		exchange(h, p, i)
+		i = p
+		p = i / 2
 	}
 }
