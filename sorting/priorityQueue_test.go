@@ -4,6 +4,7 @@ import (
 	"testing"
 	"github.com/stretchr/testify/assert"
 	"fmt"
+	"math/rand"
 )
 
 func Test_swimLast(t *testing.T) {
@@ -50,10 +51,16 @@ func Test_priorityQueue(t *testing.T) {
 	for n := 0; n < 100; n++ {
 		t.Run(fmt.Sprint(n), func(t *testing.T) {
 			t.Parallel()
-			a := GenElems(16)
+			a := GenElems(rand.Intn(32))
+			n := len(a)
 			pq := New(a)
-			assert.Equal(t, len(a), pq.size())
+			assert.Equal(t, n, pq.size())
 			assertHeapProperty(pq.heap, t)
+
+			quicksort(a)
+			max := a[n-1]
+			assert.Equal(t, max, pq.popMax())
+			assert.Equal(t, n-1, pq.size())
 		})
 	}
 }
