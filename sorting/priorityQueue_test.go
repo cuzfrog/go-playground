@@ -1,8 +1,9 @@
-package priorityQueue
+package sorting
 
 import (
 	"testing"
 	"github.com/stretchr/testify/assert"
+	"fmt"
 )
 
 func Test_swimLast(t *testing.T) {
@@ -45,6 +46,27 @@ func Test_sink(t *testing.T) {
 	assert.Equal(t, []int{0, 10, 5, 2, 3}, h)
 }
 
-func Test_priorityQueue(t *testing.T){
+func Test_priorityQueue(t *testing.T) {
+	for n := 0; n < 100; n++ {
+		t.Run(fmt.Sprint(n), func(t *testing.T) {
+			t.Parallel()
+			a := GenElems(16)
+			pq := New(a)
+			assert.Equal(t, len(a), pq.size())
+			assertHeapProperty(pq.heap, t)
+		})
+	}
+}
 
+func assertHeapProperty(h []int, t *testing.T) {
+	n := len(h)
+	for i := 1; i <= n/2; i++ {
+		msg := "Elem %v(%v) is less than elem %v(%v) in heap %v"
+		if i*2 < n {
+			assert.Truef(t, h[i] >= h[i*2], msg, i, h[i], i*2, h[i*2], h)
+		}
+		if i*2+1 < n {
+			assert.Truef(t, h[i] >= h[i*2+1], msg, i, h[i], i*2+1, h[i*2+1], h)
+		}
+	}
 }

@@ -2,13 +2,12 @@ package sorting
 
 import (
 	"testing"
-	"math/rand"
 	"github.com/stretchr/testify/assert"
 )
 
 func test(f func([]int), t *testing.T) {
 	for n := 0; n < 100; n++ {
-		a := genElems(32)
+		a := GenElems(32)
 		t.Log("Before:", a)
 		f(a)
 		t.Log("Sorted:", a)
@@ -41,18 +40,8 @@ func checkSorted(a []int, t *testing.T) {
 	}
 }
 
-// genElems generates a new slice with n elements
-func genElems(n int) []int {
-	a := make([]int, n, n)
-	max := n * 4
-	for i := range a {
-		a[i] = rand.Intn(max)
-	}
-	return a
-}
-
 func benchmark(f func([]int), n int, b *testing.B) {
-	a := genElems(n)
+	a := GenElems(n)
 	as := make([][]int, b.N, b.N)
 	for i := range as {
 		as[i] = make([]int, n, n)

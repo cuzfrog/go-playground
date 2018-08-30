@@ -4,7 +4,7 @@ import "testing"
 
 func TestPartition(t *testing.T) {
 	for n := 0; n < 100; n++ {
-		a := genElems(16)
+		a := GenElems(16)
 		t.Log("Original:", a)
 		j := partition(a)
 		l := a[:j]
