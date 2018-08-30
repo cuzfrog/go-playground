@@ -33,7 +33,7 @@ func (pq *heapPriorityQueue) isEmpty() bool {
 
 func (pq *heapPriorityQueue) insert(elem int) {
 	pq.heap = append(pq.heap, elem)
-	reheapifyLast(pq.heap)
+	swimLast(pq.heap)
 }
 
 func (pq *heapPriorityQueue) popMax() (max int) {
@@ -44,14 +44,33 @@ func (pq *heapPriorityQueue) popMax() (max int) {
 	return
 }
 
-// reheapifyLast heapifies a heap with a newly added elem.
+// swimLast heapifies a heap with a newly added elem.
 // Contract: Without the elem, the heap's property holds.
-func reheapifyLast(h []int) {
+func swimLast(h []int) {
 	i := len(h) - 1
 	p := i / 2
-	for p > 0 && h[p] < h[i] {
+	for i > 1 && h[p] < h[i] {
 		exchange(h, p, i)
 		i = p
 		p = i / 2
+	}
+}
+
+func sink(h []int, k int) {
+	n := len(h)
+	if k >= n {
+		panic("out of index")
+	}
+	for k*2 < n { //if one of the children exists
+		s := k*2 + 1
+		if s >= n || h[s] < h[s-1] {
+			s--
+		}
+		if h[s] > h[k] {
+			exchange(h, s, k)
+			k = s
+		} else {
+			break
+		}
 	}
 }

@@ -12,3 +12,12 @@ func min(l, r int) (m int) {
 	}
 	return
 }
+
+func max(l, r int) (m int) {
+	if l > r {
+		m = l
+	} else {
+		m = r
+	}
+	return
+}
