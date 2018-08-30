@@ -1,4 +1,4 @@
-package sorting
+package priorityQueue
 
 import (
 	"testing"
@@ -43,4 +43,8 @@ func Test_sink(t *testing.T) {
 
 	sink(h, 2)
 	assert.Equal(t, []int{0, 10, 5, 2, 3}, h)
+}
+
+func Test_priorityQueue(t *testing.T){
+
 }

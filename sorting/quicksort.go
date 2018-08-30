@@ -28,9 +28,9 @@ func partition(a []int) int {
 		if l >= r {
 			break
 		}
-		exchange(a, l, r)
+		Exch(a, l, r)
 	}
-	exchange(a, 0, r)
+	Exch(a, 0, r)
 	return r
 }
 
@@ -45,10 +45,10 @@ func quicksort3way(a []int) {
 	for i <= gt {
 		elm := a[i]
 		if elm > v {
-			exchange(a, i, gt)
+			Exch(a, i, gt)
 			gt--
 		} else if elm < v {
-			exchange(a, lt, i)
+			Exch(a, lt, i)
 			lt++
 			i++
 		} else {

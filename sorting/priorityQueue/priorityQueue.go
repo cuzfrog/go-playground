@@ -1,4 +1,6 @@
-package sorting
+package priorityQueue
+
+import "playground/sorting"
 
 // PriorityQueue a basic implementation
 type PriorityQueue interface {
@@ -39,8 +41,10 @@ func (pq *heapPriorityQueue) insert(elem int) {
 func (pq *heapPriorityQueue) popMax() (max int) {
 	h := pq.heap
 	max = h[1]
-
-	//todo
+	k := len(h) - 1
+	h[1] = h[k]
+	sink(h, 1)
+	pq.heap = h[:k]
 	return
 }
 
@@ -50,27 +54,31 @@ func swimLast(h []int) {
 	i := len(h) - 1
 	p := i / 2
 	for i > 1 && h[p] < h[i] {
-		exchange(h, p, i)
+		sorting.Exch(h, p, i)
 		i = p
 		p = i / 2
 	}
 }
 
-func sink(h []int, k int) {
+// sink heapifies a heap by moving a node down to proper its proper place
+// return the node value
+func sink(h []int, k int) (v int) {
 	n := len(h)
 	if k >= n {
 		panic("out of index")
 	}
+	v = h[k]
 	for k*2 < n { //if one of the children exists
 		s := k*2 + 1
 		if s >= n || h[s] < h[s-1] {
 			s--
 		}
 		if h[s] > h[k] {
-			exchange(h, s, k)
+			sorting.Exch(h, s, k)
 			k = s
 		} else {
 			break
 		}
 	}
+	return
 }
