@@ -33,3 +33,29 @@ func partition(a []int) int {
 	exchange(a, 0, r)
 	return r
 }
+
+func quicksort3way(a []int) {
+	n := len(a)
+	if n <= 1 {
+		return
+	}
+
+	v := a[0]
+	lt, i, gt := 0, 1, n-1
+	for i <= gt {
+		elm := a[i]
+		if elm > v {
+			exchange(a, i, gt)
+			gt--
+		} else if elm < v {
+			exchange(a, lt, i)
+			lt++
+			i++
+		} else {
+			i++
+		}
+	}
+	//fmt.Printf("Result lt=%v, gt=%v, a:%v\n", lt, gt, a)
+	quicksort3way(a[:lt])
+	quicksort3way(a[gt+1:])
+}

@@ -25,6 +25,7 @@ func TestSorting(t *testing.T) {
 	t.Run("merge sort with buffer", func(t *testing.T) { test(mergesortBuf, t) })
 	t.Run("merge sort with buffer from bottom", func(t *testing.T) { test(mergesortFromBottom, t) })
 	t.Run("quick sort", func(t *testing.T) { test(quicksort, t) })
+	t.Run("quick sort 3 way", func(t *testing.T) { test(quicksort3way, t) })
 }
 
 func checkSorted(a []int, t *testing.T) {
@@ -107,6 +108,13 @@ func Benchmark_MergeSortFromBottom(b *testing.B) {
 
 func Benchmark_QuickSort(b *testing.B) {
 	f := quicksort
+	b.Run("100", func(b *testing.B) { benchmark(f, 100, b) })
+	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })
+	b.Run("10000", func(b *testing.B) { benchmark(f, 10000, b) })
+}
+
+func Benchmark_QuickSort3way(b *testing.B) {
+	f := quicksort3way
 	b.Run("100", func(b *testing.B) { benchmark(f, 100, b) })
 	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })
 	b.Run("10000", func(b *testing.B) { benchmark(f, 10000, b) })
