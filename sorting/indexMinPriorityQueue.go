@@ -73,7 +73,7 @@ func (pq *indexMinPriorityQueue) size() int {
 }
 
 func (pq *indexMinPriorityQueue) min() interface{} {
-	panic("implement me")
+	return pq.items[pq.minIndex()]
 }
 
 func (pq *indexMinPriorityQueue) delete(k int) {
@@ -81,9 +81,18 @@ func (pq *indexMinPriorityQueue) delete(k int) {
 }
 
 func (pq *indexMinPriorityQueue) minIndex() int {
-	panic("implement me")
+	return pq.heap[1]
 }
 
 func (pq *indexMinPriorityQueue) removeMin() interface{} {
-	panic("implement me")
+	minIdx := pq.minIndex()
+	minItem := pq.items[minIdx]
+	pq.items[minIdx] = nil
+
+	h := pq.heap
+	t := len(h) - 1
+	h[1] = h[t]
+	sinkMinFirst(h)
+	pq.heap = h[:t]
+	return minItem
 }
