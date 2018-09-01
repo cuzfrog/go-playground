@@ -9,9 +9,9 @@ func heapSort(a []int) {
 	for k := n / 2; k >= 1; k-- {
 		sink(a, k)
 	}
-	for i := n - 1; i >= 0; i++ {
+	for i := n - 1; i > 0; i-- {
 		Exch(a, 0, i)
-
+		sink(a[:i], 1)
 	}
 }
 
