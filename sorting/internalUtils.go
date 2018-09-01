@@ -7,11 +7,6 @@ func Exch(a []int, i, j int) {
 	a[i], a[j] = a[j], a[i]
 }
 
-// Exchu swaps two elements of slice 'a' at indices 'i' and 'j'
-func Exchu(a []int, i, j uint) {
-	a[i], a[j] = a[j], a[i]
-}
-
 func min(l, r int) (m int) {
 	if l < r {
 		m = l
@@ -43,28 +38,28 @@ func GenElems(n int) []int {
 // swim heapifies a heap with a newly added elem.
 // return final index
 // Contract: Without the elem, the heap's property holds.
-func swim(h []int, i uint) uint {
-	n := uint(len(h))
+func swim(h []int, i int) int {
+	n := len(h)
 	if i >= n {
 		panic("out of index")
 	}
 	p := i / 2
 	for i > 1 && h[p] < h[i] {
-		Exchu(h, p, i)
+		Exch(h, p, i)
 		i = p
 		p = i / 2
 	}
 	return i
 }
 
-func swimLast(h []int) uint {
-	return swim(h, uint(len(h)-1))
+func swimLast(h []int) int {
+	return swim(h, len(h)-1)
 }
 
 // sink heapifies a heap by moving a node down to proper its proper place
 // return the node value and index on the heap
-func sink(h []int, i uint) (int, uint) {
-	n := uint(len(h))
+func sink(h []int, i int) (int, int) {
+	n := len(h)
 	if i >= n {
 		panic("out of index")
 	}
@@ -75,7 +70,7 @@ func sink(h []int, i uint) (int, uint) {
 			s--
 		}
 		if h[s] > h[i] {
-			Exchu(h, s, i)
+			Exch(h, s, i)
 			i = s
 		} else {
 			break
@@ -84,6 +79,6 @@ func sink(h []int, i uint) (int, uint) {
 	return v, i
 }
 
-func sinkFirst(h []int) (int, uint) {
+func sinkFirst(h []int) (int, int) {
 	return sink(h, 1)
 }
