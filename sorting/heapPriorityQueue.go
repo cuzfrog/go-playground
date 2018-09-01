@@ -41,7 +41,7 @@ func (pq *heapPriorityQueue) isEmpty() bool {
 
 func (pq *heapPriorityQueue) insert(elem int) {
 	pq.heap = append(pq.heap, elem)
-	swim(pq.heap, uint(len(pq.heap)-1))
+	swimMaxLast(pq.heap)
 }
 
 func (pq *heapPriorityQueue) popMax() (max int) {
@@ -49,7 +49,7 @@ func (pq *heapPriorityQueue) popMax() (max int) {
 	max = h[1]
 	k := len(h) - 1
 	h[1] = h[k]
-	sinkFirst(h)
+	sinkMaxFirst(h)
 	pq.heap = h[:k]
 	return
 }

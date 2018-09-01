@@ -35,16 +35,18 @@ func GenElems(n int) []int {
 	return a
 }
 
-// swim heapifies a heap with a newly added elem.
+type compare func(int, int) bool
+
+// swimf heapifies a heap with a newly added elem.
 // return final index
 // Contract: Without the elem, the heap's property holds.
-func swim(h []int, i int) int {
+func swimf(h []int, i int, f compare) int {
 	n := len(h)
 	if i >= n {
 		panic("out of index")
 	}
 	p := i / 2
-	for i > 1 && h[p] < h[i] {
+	for i > 1 && f(h[p], h[i]) {
 		Exch(h, p, i)
 		i = p
 		p = i / 2
@@ -52,13 +54,25 @@ func swim(h []int, i int) int {
 	return i
 }
 
-func swimLast(h []int) int {
-	return swim(h, len(h)-1)
+func swimMax(h []int, i int) int {
+	return swimf(h, i, func(a, b int) bool { return a < b })
 }
 
-// sink heapifies a heap by moving a node down to proper its proper place
+func swimMin(h []int, i int) int {
+	return swimf(h, i, func(a, b int) bool { return a > b })
+}
+
+func swimMaxLast(h []int) int {
+	return swimMax(h, len(h)-1)
+}
+
+func swimMinLast(h []int) int {
+	return swimMin(h, len(h)-1)
+}
+
+// sinkf heapifies a heap by moving a node down to proper its proper place
 // return the node value and index on the heap
-func sink(h []int, i int) (int, int) {
+func sinkf(h []int, i int, f compare) (int, int) {
 	n := len(h)
 	if i >= n {
 		panic("out of index")
@@ -66,10 +80,10 @@ func sink(h []int, i int) (int, int) {
 	v := h[i]
 	for i*2 < n { //if one of the children exists
 		s := i*2 + 1
-		if s >= n || h[s] < h[s-1] {
+		if s >= n || f(h[s-1], h[s]) {
 			s--
 		}
-		if h[s] > h[i] {
+		if f(h[s], h[i]) {
 			Exch(h, s, i)
 			i = s
 		} else {
@@ -79,6 +93,18 @@ func sink(h []int, i int) (int, int) {
 	return v, i
 }
 
-func sinkFirst(h []int) (int, int) {
-	return sink(h, 1)
+func sinkMax(h []int, i int) (int, int) {
+	return sinkf(h, i, func(a, b int) bool { return a > b })
+}
+
+func sinkMin(h []int, i int) (int, int) {
+	return sinkf(h, i, func(a, b int) bool { return a < b })
+}
+
+func sinkMaxFirst(h []int) (int, int) {
+	return sinkMax(h, 1)
+}
+
+func sinkMinFirst(h []int) (int, int) {
+	return sinkMin(h, 1)
 }

@@ -17,10 +17,10 @@ type IndexMinPriorityQueue interface {
 /* ----- definition ------*/
 
 type indexMinPriorityQueue struct {
-	cap   int
-	heap  []int
-	items []interface{}
-	//rndices []uint
+	cap     int
+	heap    []int
+	items   []interface{}
+	indices []int
 }
 
 /* ----- constructor ------*/
@@ -29,10 +29,16 @@ func newIndexMinPriorityQueue(cap int) (*indexMinPriorityQueue, error) {
 	if cap <= 0 {
 		return nil, fmt.Errorf("cap must be greater than 0")
 	}
+	indices := make([]int, cap)
+	for i := range indices {
+		indices[i] = -1
+	}
+
 	return &indexMinPriorityQueue{
 		cap,
 		make([]int, 1, cap),
 		make([]interface{}, cap),
+		indices,
 	}, nil
 }
 
@@ -48,7 +54,7 @@ func (pq *indexMinPriorityQueue) put(k int, v interface{}) error {
 	}
 	if pq.items[k] == nil { //insert
 		pq.heap = append(pq.heap, k)
-		swimLast(pq.heap)
+		swimMinLast(pq.heap)
 	}
 	pq.items[k] = v
 	return nil
