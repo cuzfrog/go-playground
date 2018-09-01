@@ -32,6 +32,9 @@ func Test_indexMinPQ(t *testing.T) {
 	assert.Equal(t, 5, pq.removeMin())
 	assert.Equal(t, nil, pq.items[2])
 	assert.Equal(t, []int{0, 3, 5}, pq.heap)
+	assert.Equal(t, -1, pq.indices[2])
+	assert.Equal(t, 1, pq.indices[3])
+	assert.Equal(t, 2, pq.indices[5])
 
 	assert.False(t, pq.isEmpty())
 	assert.Equal(t, 2, pq.size())

@@ -93,8 +93,15 @@ func (pq *indexMinPriorityQueue) removeMin() interface{} {
 
 	h := pq.heap
 	t := len(h) - 1
+	k1, kt := h[1], h[t]
 	h[1] = h[t]
-	sinkMinFirst(h)
-	pq.heap = h[:t]
+
+	hi := pq.indices
+	hi[k1], hi[kt] = -1, 1 //remove index of minKey, change kt's index to 1
+	h = h[:t]
+	sinkMin(h, 1, hi)
+
+	pq.heap = h
+	pq.indices = hi
 	return minItem
 }
