@@ -54,7 +54,9 @@ func (pq *indexMinPriorityQueue) put(k int, v interface{}) error {
 	}
 	if pq.items[k] == nil { //insert
 		pq.heap = append(pq.heap, k)
-		swimMinLast(pq.heap)
+		t := len(pq.heap) - 1
+		pq.indices[k] = t
+		swimMin(pq.heap, t, pq.indices)
 	}
 	pq.items[k] = v
 	return nil

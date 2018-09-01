@@ -34,16 +34,16 @@ func Test_swim(t *testing.T) {
 	h = append(h, 15)
 	i := swimMaxLast(h)
 	assert.Equal(t, []int{0, 15, 5, 10, 3, 2, 7, 8}, h)
-	assert.Equal(t, uint(1), i)
+	assert.Equal(t, 1, i)
 }
 
 func Test_sink(t *testing.T) {
 	h := []int{0, 2, 5, 10, 3}
-	v, i := sinkMax(h, 1)
+	v, i := sinkMax(h, 1, nil)
 	assert.Equal(t, []int{0, 10, 5, 2, 3}, h)
 	assert.Equal(t, 2, v)
-	assert.Equal(t, uint(3), i)
+	assert.Equal(t, 3, i)
 
-	sinkMax(h, 2)
+	sinkMax(h, 2, nil)
 	assert.Equal(t, []int{0, 10, 5, 2, 3}, h)
 }
