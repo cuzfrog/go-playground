@@ -38,4 +38,20 @@ func Test_indexMinPQ(t *testing.T) {
 
 	assert.False(t, pq.isEmpty())
 	assert.Equal(t, 2, pq.size())
+
+	v, _ := pq.delete(3)
+	assert.Equal(t, "5", v)
+	assert.Equal(t, []int{0, 5}, pq.heap)
+	assert.Equal(t, 1, pq.size())
+	assert.Equal(t, -1, pq.indices[3])
+	assert.Equal(t, 1, pq.indices[5])
+
+	v, _ = pq.delete(5)
+	assert.Equal(t, 13, v)
+	assert.Equal(t, []int{0}, pq.heap)
+	assert.Equal(t, 0, pq.size())
+	for _, i := range pq.indices{
+		assert.Equal(t, -1, i)
+	}
+	assert.True(t, pq.isEmpty())
 }

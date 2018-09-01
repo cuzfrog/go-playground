@@ -1,6 +1,9 @@
 package sorting
 
-import "math/rand"
+import (
+	"math/rand"
+	"fmt"
+)
 
 // Exch swaps two elements of slice 'a' at indices 'i' and 'j'
 func Exch(a []int, i, j int) {
@@ -78,8 +81,8 @@ func swimMinLast(h []int) int {
 // return the node value and index on the heap
 func sinkf(h []int, i int, comp compare, hi []int) (int, int) {
 	n := len(h)
-	if i >= n {
-		panic("out of index")
+	if i < 0 || i >= n {
+		panic(fmt.Sprintf("i:%v is out of bound:[0,%v)", i, n))
 	}
 	v := h[i]
 	for i*2 < n { //if one of the children exists

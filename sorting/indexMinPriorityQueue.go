@@ -9,7 +9,7 @@ type IndexMinPriorityQueue interface {
 	min() interface{}
 	put(k int, v interface{}) error
 	contains(k int) bool
-	delete(k int)
+	delete(k int) interface{}
 	minIndex() int
 	removeMin() interface{}
 }
@@ -78,8 +78,29 @@ func (pq *indexMinPriorityQueue) min() interface{} {
 	return pq.items[pq.minIndex()]
 }
 
-func (pq *indexMinPriorityQueue) delete(k int) {
-	panic("implement me")
+func (pq *indexMinPriorityQueue) delete(k int) (interface{}, error) {
+	if k < 0 || k >= pq.cap {
+		return nil, fmt.Errorf("k:%v is out of bound:[0,%v)", k, pq.cap)
+	}
+	if pq.indices[k] < 0 {
+		return nil, nil
+	}
+
+	i := pq.indices[k]
+	h := pq.heap
+	v := pq.items[k]
+
+	t := len(h) - 1
+	h[i] = h[t]
+	pq.indices[h[t]] = i
+	sinkMin(h, i, pq.indices)
+	h = h[:t]
+
+	pq.items[k] = nil
+	pq.indices[k] = -1
+	pq.heap = h
+
+	return v, nil
 }
 
 func (pq *indexMinPriorityQueue) minIndex() int {
@@ -98,8 +119,8 @@ func (pq *indexMinPriorityQueue) removeMin() interface{} {
 
 	hi := pq.indices
 	hi[k1], hi[kt] = -1, 1 //remove index of minKey, change kt's index to 1
-	h = h[:t]
 	sinkMin(h, 1, hi)
+	h = h[:t]
 
 	pq.heap = h
 	pq.indices = hi
