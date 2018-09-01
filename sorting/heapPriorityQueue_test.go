@@ -18,7 +18,7 @@ func Test_heapPriorityQueue(t *testing.T) {
 			assertHeapProperty(pq.heap, t)
 
 			if n > 0 {
-				quicksort(a)
+				quickSort(a)
 				max := a[n-1]
 				assert.Equal(t, max, pq.popMax())
 				assert.Equal(t, n-1, pq.size())

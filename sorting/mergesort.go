@@ -1,14 +1,14 @@
 package sorting
 
 // allocate aux array on every call
-func mergesort(a []int) {
+func mergeSort(a []int) {
 	n := len(a)
 	if n > 1 {
 		mid := n / 2
 		a1 := a[:mid]
 		a2 := a[mid:]
-		mergesort(a1)
-		mergesort(a2)
+		mergeSort(a1)
+		mergeSort(a2)
 		merge(a1, a2)
 	}
 }
@@ -16,17 +16,17 @@ func mergesort(a []int) {
 // use a buf to avoid make new arr
 func mergesortBuf(a []int) {
 	buf := make([]int, len(a))
-	mergesortWithBuffer(a, buf)
+	mergeSortWithBuffer(a, buf)
 }
 
-func mergesortWithBuffer(a []int, buf []int) {
+func mergeSortWithBuffer(a []int, buf []int) {
 	n := len(a)
 	if n > 1 {
 		mid := n / 2
 		a1 := a[:mid]
 		a2 := a[mid:]
-		mergesortWithBuffer(a1, buf)
-		mergesortWithBuffer(a2, buf)
+		mergeSortWithBuffer(a1, buf)
+		mergeSortWithBuffer(a2, buf)
 		mergeWithBuffer(a1, a2, buf)
 	}
 }
@@ -66,7 +66,7 @@ func mergeWithBuffer(a1, a2 []int, buf []int) {
 	copy(a, aux)
 }
 
-func mergesortFromBottom(a []int) {
+func mergeSortFromBottom(a []int) {
 	n := len(a)
 	b := make([]int, n)
 	copy(b, a)

@@ -1,14 +1,14 @@
 package sorting
 
-func quicksort(a []int) {
+func quickSort(a []int) {
 	if len(a) <= 1 {
 		return
 	}
 	j := partition(a)
 	l := a[:j]
 	r := a[j+1:]
-	quicksort(l)
-	quicksort(r)
+	quickSort(l)
+	quickSort(r)
 }
 
 func partition(a []int) int {

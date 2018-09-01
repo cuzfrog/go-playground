@@ -20,10 +20,10 @@ func TestSorting(t *testing.T) {
 	t.Run("insertion sort", func(t *testing.T) { test(insertionSort, t) })
 	t.Run("shell sort", func(t *testing.T) { test(shellSort, t) })
 	t.Run("shell sort 2", func(t *testing.T) { test(shellSort2, t) })
-	t.Run("merge sort", func(t *testing.T) { test(mergesort, t) })
+	t.Run("merge sort", func(t *testing.T) { test(mergeSort, t) })
 	t.Run("merge sort with buffer", func(t *testing.T) { test(mergesortBuf, t) })
-	t.Run("merge sort with buffer from bottom", func(t *testing.T) { test(mergesortFromBottom, t) })
-	t.Run("quick sort", func(t *testing.T) { test(quicksort, t) })
+	t.Run("merge sort with buffer from bottom", func(t *testing.T) { test(mergeSortFromBottom, t) })
+	t.Run("quick sort", func(t *testing.T) { test(quickSort, t) })
 	t.Run("quick sort 3 way", func(t *testing.T) { test(quicksort3way, t) })
 }
 
@@ -75,7 +75,7 @@ func Benchmark_ShellSort(b *testing.B) {
 }
 
 func Benchmark_MergeSort(b *testing.B) {
-	f := mergesort
+	f := mergeSort
 	b.Run("100", func(b *testing.B) { benchmark(f, 100, b) })
 	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })
 	b.Run("10000", func(b *testing.B) { benchmark(f, 10000, b) })
@@ -89,14 +89,14 @@ func Benchmark_MergeSortWithBuffer(b *testing.B) {
 }
 
 func Benchmark_MergeSortFromBottom(b *testing.B) {
-	f := mergesortFromBottom
+	f := mergeSortFromBottom
 	b.Run("100", func(b *testing.B) { benchmark(f, 100, b) })
 	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })
 	b.Run("10000", func(b *testing.B) { benchmark(f, 10000, b) })
 }
 
 func Benchmark_QuickSort(b *testing.B) {
-	f := quicksort
+	f := quickSort
 	b.Run("100", func(b *testing.B) { benchmark(f, 100, b) })
 	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })
 	b.Run("10000", func(b *testing.B) { benchmark(f, 10000, b) })
