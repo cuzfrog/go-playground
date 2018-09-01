@@ -7,7 +7,7 @@ import (
 	"math/rand"
 )
 
-func Test_swimLast(t *testing.T) {
+func Test_swim(t *testing.T) {
 	h := []int{0}
 	h = append(h, 5)
 	swimLast(h)
@@ -47,20 +47,22 @@ func Test_sink(t *testing.T) {
 	assert.Equal(t, []int{0, 10, 5, 2, 3}, h)
 }
 
-func Test_priorityQueue(t *testing.T) {
-	for n := 0; n < 100; n++ {
-		t.Run(fmt.Sprint(n), func(t *testing.T) {
+func Test_heapPriorityQueue(t *testing.T) {
+	for m := 0; m < 100; m++ {
+		t.Run(fmt.Sprint(m), func(t *testing.T) {
 			t.Parallel()
 			a := GenElems(rand.Intn(32))
 			n := len(a)
-			pq := New(a)
+			pq := NewHeapPriorityQueue(a)
 			assert.Equal(t, n, pq.size())
 			assertHeapProperty(pq.heap, t)
 
-			quicksort(a)
-			max := a[n-1]
-			assert.Equal(t, max, pq.popMax())
-			assert.Equal(t, n-1, pq.size())
+			if n > 0 {
+				quicksort(a)
+				max := a[n-1]
+				assert.Equal(t, max, pq.popMax())
+				assert.Equal(t, n-1, pq.size())
+			}
 		})
 	}
 }
