@@ -7,7 +7,7 @@ type IndexMinPriorityQueue interface {
 	size() int
 	isEmpty() bool
 	min() interface{}
-	put(k int, v interface{}) error
+	put(k int, v interface{}) (interface{}, error)
 	contains(k int) bool
 	delete(k int) interface{}
 	minIndex() int
@@ -48,9 +48,11 @@ func (pq *indexMinPriorityQueue) isEmpty() bool {
 	return pq.size() == 0
 }
 
-func (pq *indexMinPriorityQueue) put(k int, v interface{}) error {
-	if k >= pq.cap {
-		return fmt.Errorf("k:%v is out of index bound of cap:%v", k, pq.cap)
+// put inserts or updates an item with associated key 'k'.
+//  return: (previous value, error)
+func (pq *indexMinPriorityQueue) put(k int, v interface{}) (interface{}, error) {
+	if k <= 0 || k >= pq.cap {
+		return nil, fmt.Errorf("k:%v is out of index bound:[0,%v)", k, pq.cap)
 	}
 	if pq.items[k] == nil { //insert
 		pq.heap = append(pq.heap, k)
@@ -58,8 +60,9 @@ func (pq *indexMinPriorityQueue) put(k int, v interface{}) error {
 		pq.indices[k] = t
 		swimMin(pq.heap, t, pq.indices)
 	}
+	prev := pq.items[k]
 	pq.items[k] = v
-	return nil
+	return prev, nil
 }
 
 func (pq *indexMinPriorityQueue) contains(k int) bool {
