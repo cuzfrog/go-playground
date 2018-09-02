@@ -2,6 +2,7 @@ package kendallTau
 
 import (
 	"sort"
+	"fmt"
 )
 
 /* Input Contract:
@@ -25,9 +26,11 @@ func kendallTauDistance1(a, b []int) int {
 
 	dis := 0
 	for i := 0; i < n; i++ {
-		if pa[i].p == pb[i].q {
-			dis++
+		d := pa[i].distance(&pb[i])
+		if d<0{
+			panic(fmt.Sprintf("Two pairs are irrelevant: %v, %v", pa[i], pb[i]))
 		}
+		dis = dis + d
 	}
 	return dis
 }

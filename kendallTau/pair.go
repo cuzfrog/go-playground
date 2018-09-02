@@ -23,7 +23,7 @@ func (p1 *pair) compare(p2 *pair) int8 {
 	}
 }
 
-func (p1 *pair) distance(p2 *pair) int8 {
+func (p1 *pair) distance(p2 *pair) int {
 	if p1.p == p2.p && p1.q == p2.q {
 		return 0 //equal
 	} else if p1.p == p2.q && p1.q == p2.p {
