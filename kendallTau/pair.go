@@ -35,6 +35,10 @@ func (p1 *pair) distance(p2 *pair) int {
 	}
 }
 
+func (p pair) String() string {
+	return fmt.Sprintf("{%v, %v}", p.p, p.q)
+}
+
 func getParis(a []int) []pair {
 	n := len(a)
 	pa := make([]pair, countPair(n))

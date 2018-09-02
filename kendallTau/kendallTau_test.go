@@ -5,7 +5,28 @@ import (
 	"testing"
 	"github.com/stretchr/testify/assert"
 	"go-playground/sorting"
+	"sort"
 )
+
+func Test_kendallTauDistance(t *testing.T) {
+	t.Run("impl1(quadratic)", func(t *testing.T) { test(kendallTauDistance1, t) })
+}
+
+func test(f func([]int, []int) int, t *testing.T) {
+	a := []int{0, 3, 1, 6, 2, 5, 4}
+	b := []int{1, 0, 3, 6, 4, 2, 5}
+	d := f(a, b)
+	assert.Equal(t, 4, d)
+
+	a = []int{1, 2, 3, 4, 5}
+	b = []int{3, 4, 1, 5, 2}
+	d = f(a, b)
+	assert.Equal(t, 5, d)
+
+	sort.Ints(b)
+	d = f(a, b)
+	assert.Equal(t, 0, d)
+}
 
 func contractGuard(a, b []int) error {
 	n := len(a)
@@ -47,3 +68,6 @@ func Test_getParis(t *testing.T) {
 	assert.Equal(t, pair{3, 4, 3, 4}, p[1])
 	assert.Equal(t, pair{6, 4, 4, 6}, p[2])
 }
+
+/* --------- benchmark --------- */
+

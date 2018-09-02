@@ -12,9 +12,11 @@ import (
 
 // quadratic complexity
 func kendallTauDistance1(a, b []int) int {
-	n := len(a)
 	pa := getParis(a)
 	pb := getParis(b)
+	if len(pa) != len(pb){
+		panic("lengths of pairs are different")
+	}
 
 	sort.Slice(pa, func(i, j int) bool {
 		return pa[i].compare(&pa[j]) < 0
@@ -23,8 +25,11 @@ func kendallTauDistance1(a, b []int) int {
 		return pb[i].compare(&pb[j]) < 0
 	})
 
+	//fmt.Println("Pairs1:", pa)
+	//fmt.Println("Pairs2:", pb)
+
 	dis := 0
-	for i := 0; i < n; i++ {
+	for i := 0; i < len(pa); i++ {
 		d := pa[i].distance(&pb[i])
 		dis = dis + d
 	}
