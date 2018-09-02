@@ -1,5 +1,7 @@
 package kendallTau
 
+import "fmt"
+
 type pair struct {
 	p  int
 	q  int
@@ -29,6 +31,34 @@ func (p1 *pair) distance(p2 *pair) int {
 	} else if p1.p == p2.q && p1.q == p2.p {
 		return 1 //dis
 	} else {
-		return -1 //irrelevant
+		panic(fmt.Sprintf("Two pairs are irrelevant: %v, %v", *p1, *p2))
 	}
+}
+
+func getParis(a []int) []pair {
+	n := len(a)
+	pa := make([]pair, countPair(n))
+	for i, j, k := 0, 1, 0; i < n-1; {
+		vi := a[i]
+		vj := a[j]
+		var p pair
+		if vi > vj {
+			p = pair{vi, vj, vj, vi}
+		} else {
+			p = pair{vi, vj, vi, vj}
+		}
+
+		pa[k] = p
+		k++
+		j++
+		if j == n {
+			i++
+			j = i + 1
+		}
+	}
+	return pa
+}
+
+func countPair(n int) int {
+	return (n*n - n) / 2
 }
