@@ -12,6 +12,7 @@ import (
 func Test_kendallTauDistance(t *testing.T) {
 	t.Run("impl1(quadratic)", func(t *testing.T) { test(kendallTauDistance1, t) })
 	t.Run("impl2(quadratic)", func(t *testing.T) { test(kendallTauDistance2, t) })
+	t.Run("impl3(linearithmic)", func(t *testing.T) { test(kendallTauDistance3, t) })
 }
 
 func test(f func([]int, []int) int, t *testing.T) {
@@ -106,6 +107,13 @@ func Benchmark_kendallTau1(b *testing.B) {
 
 func Benchmark_kendallTau2(b *testing.B) {
 	f := kendallTauDistance2
+	b.Run("10", func(b *testing.B) { benchmark(f, 10, b) })
+	b.Run("100", func(b *testing.B) { benchmark(f, 100, b) })
+	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })
+}
+
+func Benchmark_kendallTau3(b *testing.B) {
+	f := kendallTauDistance3
 	b.Run("10", func(b *testing.B) { benchmark(f, 10, b) })
 	b.Run("100", func(b *testing.B) { benchmark(f, 100, b) })
 	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })
