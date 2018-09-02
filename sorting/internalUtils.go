@@ -5,8 +5,7 @@ import (
 	"fmt"
 )
 
-// Exch swaps two elements of slice 'a' at indices 'i' and 'j'
-func Exch(a []int, i, j int) {
+func exch(a []int, i, j int) {
 	a[i], a[j] = a[j], a[i]
 }
 
@@ -50,10 +49,10 @@ func swimf(h []int, i int, comp compare, hi []int) int {
 	}
 	p := i / 2
 	for i > 1 && comp(h[p], h[i]) {
-		Exch(h, p, i)
+		exch(h, p, i)
 		if hi != nil {
 			kp, ki := h[p], h[i]
-			Exch(hi, kp, ki)
+			exch(hi, kp, ki)
 		}
 		i = p
 		p = i / 2
@@ -91,10 +90,10 @@ func sinkf(h []int, i int, comp compare, hi []int) (int, int) {
 			s--
 		}
 		if comp(h[s], h[i]) {
-			Exch(h, s, i)
+			exch(h, s, i)
 			if hi != nil {
 				ks, ki := h[s], h[i]
-				Exch(hi, ks, ki)
+				exch(hi, ks, ki)
 			}
 			i = s
 		} else {

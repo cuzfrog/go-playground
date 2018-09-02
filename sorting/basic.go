@@ -11,7 +11,7 @@ func selectionSort(a []int) {
 				minIdx = j
 			}
 		}
-		Exch(a, i, minIdx)
+		exch(a, i, minIdx)
 	}
 }
 
@@ -19,7 +19,7 @@ func insertionSort(a []int) {
 	n := len(a)
 	for i := 1; i < n; i++ {
 		for j := i; j > 0 && a[j] < a[j-1]; j-- {
-			Exch(a, j, j-1)
+			exch(a, j, j-1)
 		}
 	}
 }
@@ -33,7 +33,7 @@ func shellSort(a []int) {
 	for h >= 1 {
 		for i := h; i < n; i++ {
 			for j := i; j >= h && a[j] < a[j-h]; j -= h {
-				Exch(a, j, j-h)
+				exch(a, j, j-h)
 			}
 		}
 		h = h / 3
@@ -51,7 +51,7 @@ func shellSort2(a []int) {
 	for _, h := range hs {
 		for i := h; i < n; i++ {
 			for j := i; j >= h && a[j] < a[j-h]; j -= h {
-				Exch(a, j, j-h)
+				exch(a, j, j-h)
 			}
 		}
 	}

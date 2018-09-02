@@ -28,9 +28,9 @@ func partition(a []int) int {
 		if l >= r {
 			break
 		}
-		Exch(a, l, r)
+		exch(a, l, r)
 	}
-	Exch(a, 0, r)
+	exch(a, 0, r)
 	return r
 }
 
@@ -45,10 +45,10 @@ func quicksort3way(a []int) {
 	for i <= gt {
 		elm := a[i]
 		if elm > v {
-			Exch(a, i, gt)
+			exch(a, i, gt)
 			gt--
 		} else if elm < v {
-			Exch(a, lt, i)
+			exch(a, lt, i)
 			lt++
 			i++
 		} else {
@@ -58,4 +58,41 @@ func quicksort3way(a []int) {
 	//fmt.Printf("Result lt=%v, gt=%v, a:%v\n", lt, gt, a)
 	quicksort3way(a[:lt])
 	quicksort3way(a[gt+1:])
+}
+
+/* ----------- exported ----------- */
+
+// QuickSort generic implementation
+func QuickSort(a []Comparable) {
+	if len(a) <= 1 {
+		return
+	}
+	j := partitionGeneric(a)
+	l := a[:j]
+	r := a[j+1:]
+	QuickSort(l)
+	QuickSort(r)
+}
+
+func partitionGeneric(a Comparables) int {
+	n := len(a)
+	if n <= 1 {
+		return 0
+	}
+	e := a[0]
+	l, r := 1, n-1
+	for ; ; l, r = l+1, r-1 {
+		for l < n && a[l].compare(&e) < 0 {
+			l++
+		}
+		for a[r].compare(&e) > 0 {
+			r--
+		}
+		if l >= r {
+			break
+		}
+		a.Exch(l, r)
+	}
+	a.Exch(0, r)
+	return r
 }

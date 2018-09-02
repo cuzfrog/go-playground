@@ -10,7 +10,7 @@ func heapSort(a []int) {
 		sink(a, k)
 	}
 	for i := n - 1; i > 0; i-- {
-		Exch(a, 0, i)
+		exch(a, 0, i)
 		sink(a[:i], 1)
 	}
 }
@@ -25,7 +25,7 @@ func sink(a []int, k int) {
 			s--
 		}
 		if a[s-1] > a[k-1] {
-			Exch(a, k-1, s-1)
+			exch(a, k-1, s-1)
 			k = s
 			s = k*2 + 1
 		} else {
