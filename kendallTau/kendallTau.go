@@ -67,9 +67,14 @@ func kendallTauDistance3(a, b []int) int {
 	}
 
 	biToAi := make([]int, n) //b's index to a'index
-	for i := 0; i < n; i++ {
+	for i := range biToAi {
 		biToAi[i] = ai[b[i]]
 	}
+
+	//aiToBi := make([]int, n)
+	//for i := range aiToBi{
+	//	aiToBi[biToAi[i]] = i
+	//}
 	return countInversion(biToAi, make([]int, n))
 }
 
