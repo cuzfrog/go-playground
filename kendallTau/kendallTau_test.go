@@ -11,6 +11,7 @@ import (
 
 func Test_kendallTauDistance(t *testing.T) {
 	t.Run("impl1(quadratic)", func(t *testing.T) { test(kendallTauDistance1, t) })
+	t.Run("impl2(quadratic)", func(t *testing.T) { test(kendallTauDistance2, t) })
 }
 
 func test(f func([]int, []int) int, t *testing.T) {
@@ -20,8 +21,8 @@ func test(f func([]int, []int) int, t *testing.T) {
 	d := f(a, b)
 	assert.Equal(t, 4, d)
 
-	a = []int{1, 2, 3, 4, 5}
-	b = []int{3, 4, 1, 5, 2}
+	a = []int{0, 1, 2, 3, 4, 5}
+	b = []int{0, 3, 4, 1, 5, 2}
 	contractGuard(a, b)
 	d = f(a, b)
 	assert.Equal(t, 5, d)
@@ -98,6 +99,13 @@ func genPermutations(n int) ([]int, []int) {
 
 func Benchmark_kendallTau1(b *testing.B) {
 	f := kendallTauDistance1
+	b.Run("10", func(b *testing.B) { benchmark(f, 10, b) })
+	b.Run("100", func(b *testing.B) { benchmark(f, 100, b) })
+	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })
+}
+
+func Benchmark_kendallTau2(b *testing.B) {
+	f := kendallTauDistance2
 	b.Run("10", func(b *testing.B) { benchmark(f, 10, b) })
 	b.Run("100", func(b *testing.B) { benchmark(f, 100, b) })
 	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })

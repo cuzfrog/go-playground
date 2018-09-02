@@ -14,7 +14,7 @@ import (
 func kendallTauDistance1(a, b []int) int {
 	pa := getParis(a)
 	pb := getParis(b)
-	if len(pa) != len(pb){
+	if len(pa) != len(pb) {
 		panic("lengths of pairs are different")
 	}
 
@@ -35,3 +35,28 @@ func kendallTauDistance1(a, b []int) int {
 	}
 	return dis
 }
+
+// quadratic complexity
+func kendallTauDistance2(a, b []int) int {
+	n := len(a)
+	ai, bi := make([]int, n), make([]int, n)
+	for i := 0; i < n; i++ {
+		ai[a[i]], bi[b[i]] = i, i
+	}
+
+	dis := 0
+	for i, j := 0, 1; i < n; {
+		ao, bo := ai[i] > ai[j], bi[i] > bi[j]
+		if ao != bo { //order different
+			dis++
+		}
+		j++
+		if j == n {
+			i++
+			j = i
+		}
+	}
+	return dis
+}
+
+
