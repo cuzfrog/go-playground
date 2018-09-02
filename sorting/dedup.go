@@ -1,6 +1,7 @@
 package sorting
 
-func dedup(a []int) []int {
+// Dedup sort slice 'a' in ascending order with duplicates removed
+func Dedup(a []int) []int {
 	quickSort(a)
 	n := len(a)
 	d := make([]int, n, n)
