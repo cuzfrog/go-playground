@@ -1,5 +1,7 @@
 package sorting
 
+import "go-playground/utils"
+
 // allocate aux array on every call
 func mergeSort(a []int) {
 	n := len(a)
@@ -74,7 +76,7 @@ func mergeSortFromBottom(a []int) {
 	for sz := 1; sz < n; sz *= 2 {
 		for i := 0; i < n-sz; i += sz * 2 {
 			mid := i + sz
-			end := min(i+sz*2, n)
+			end := utils.IntMin(i+sz*2, n)
 			a1 := a[i:mid]
 			a2 := a[mid:end]
 			mergeWithBuffer(a1, a2, b)
