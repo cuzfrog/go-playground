@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"go-playground/sorting"
 	"sort"
+	"go-playground/utils"
 )
 
 func Test_kendallTauDistance(t *testing.T) {
@@ -15,15 +16,18 @@ func Test_kendallTauDistance(t *testing.T) {
 func test(f func([]int, []int) int, t *testing.T) {
 	a := []int{0, 3, 1, 6, 2, 5, 4}
 	b := []int{1, 0, 3, 6, 4, 2, 5}
+	contractGuard(a, b)
 	d := f(a, b)
 	assert.Equal(t, 4, d)
 
 	a = []int{1, 2, 3, 4, 5}
 	b = []int{3, 4, 1, 5, 2}
+	contractGuard(a, b)
 	d = f(a, b)
 	assert.Equal(t, 5, d)
 
 	sort.Ints(b)
+	contractGuard(a, b)
 	d = f(a, b)
 	assert.Equal(t, 0, d)
 }
@@ -71,3 +75,30 @@ func Test_getParis(t *testing.T) {
 
 /* --------- benchmark --------- */
 
+func benchmark(f func([]int, []int) int, n int, b *testing.B) {
+	a1, a2 := genPermutations(n)
+	contractGuard(a1, a2)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		f(a1, a2)
+	}
+}
+
+func genPermutations(n int) ([]int, []int) {
+	a := make([]int, n)
+	for i := range a {
+		a[i] = i
+	}
+	b := make([]int, n)
+	copy(b, a)
+	utils.Suffle(a)
+	utils.Suffle(b)
+	return a, b
+}
+
+func Benchmark_kendallTau1(b *testing.B) {
+	f := kendallTauDistance1
+	b.Run("10", func(b *testing.B) { benchmark(f, 10, b) })
+	b.Run("100", func(b *testing.B) { benchmark(f, 100, b) })
+	b.Run("1000", func(b *testing.B) { benchmark(f, 1000, b) })
+}
