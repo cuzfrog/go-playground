@@ -37,8 +37,7 @@ func (n *node2) putVal(k int, v interface{}) (old interface{}, err error) {
 	if k < n.e.k {
 		old, err = n.left.putVal(k, v)
 	} else if k == n.e.k {
-		old = n.e.v
-		n.e.v = v
+		old, n.e.v = n.e.v, v
 	} else {
 		old, err = n.right.putVal(k, v)
 	}
@@ -68,6 +67,24 @@ func (n *node3) getVal(k int) (v interface{}) {
 		v = n.er.v
 	} else {
 		v = n.right.getVal(k)
+	}
+	return
+}
+
+func (n *node3) putVal(k int, v interface{}) (old interface{}, err error) {
+	if n == nil {
+		panic("putVal is called on nil node")
+	}
+	if k < n.el.k {
+		old, err = n.left.putVal(k, v)
+	} else if k == n.el.k {
+		old, n.el.v = n.el.v, v
+	} else if k > n.el.k && k < n.er.k {
+		old, err = n.mid.putVal(k, v)
+	} else if k == n.er.k {
+		old, n.er.v = n.er.v, v
+	} else {
+		old, err = n.right.putVal(k, v)
 	}
 	return
 }
