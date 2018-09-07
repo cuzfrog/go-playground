@@ -19,6 +19,10 @@ func (t *twoThreeTree) put(k int, v interface{}) (interface{}, error) {
 		t.root = &node2{e: entry{k, v}}
 	}
 	t.count++
+
+	switch r := t.root.(type) {
+	
+	}
 	return t.root.putVal(k, v)
 }
 
@@ -36,4 +40,14 @@ func (t *twoThreeTree) size() int {
 
 func (*twoThreeTree) iterator() chan entry {
 	panic("implement me")
+}
+
+/* -------------- 23tree transformation implementation -------------- */
+
+func upgradeNode2(n *node2, e *entry) *node3 {
+	if e.k < n.e.k {
+		return &node3{el: *e, er: n.e}
+	} else {
+		return &node3{el: n.e, er: *e}
+	}
 }

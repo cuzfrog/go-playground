@@ -1,16 +1,19 @@
 package searching
 
-import "fmt"
-
 type nodeP interface {
 	getVal(k int) interface{}
-	putVal(k int, v interface{}) (interface{}, error)
+	putVal(k int, v interface{}) (interface{}, nodeP)
+	isLeaf() bool
 }
 
 type node2 struct {
 	e     entry
 	left  nodeP
 	right nodeP
+}
+
+func (n *node2) isLeaf() bool{
+	return n.left == nil
 }
 
 func (n *node2) getVal(k int) (v interface{}) {
@@ -27,19 +30,18 @@ func (n *node2) getVal(k int) (v interface{}) {
 	return
 }
 
-func (n *node2) putVal(k int, v interface{}) (old interface{}, err error) {
-	if n == nil {
-		panic("putVal is called on nil node")
-	}
-	if v == nil {
-		return nil, fmt.Errorf("v cannot be nil")
-	}
-	if k < n.e.k {
-		old, err = n.left.putVal(k, v)
-	} else if k == n.e.k {
+func (n *node2) putVal(k int, v interface{}) (old interface{}, u nodeP) {
+	u = n
+	if k == n.e.k {
 		old, n.e.v = n.e.v, v
-	} else {
-		old, err = n.right.putVal(k, v)
+	} else if n.left != nil { //if has children. contract: left right must be nil at the same time
+		if k < n.e.k {
+			old, n.left = n.left.putVal(k, v)
+		} else {
+			old, n.right = n.right.putVal(k, v)
+		}
+	} else { //if no child
+		u = upgradeNode2(n, &entry{k, v})
 	}
 	return
 }
@@ -51,6 +53,14 @@ type node3 struct {
 	left  nodeP
 	mid   nodeP
 	right nodeP
+}
+
+func newNode3() {
+
+}
+
+func (n *node3) isLeaf() bool{
+	return n.left == nil
 }
 
 func (n *node3) getVal(k int) (v interface{}) {
@@ -71,10 +81,7 @@ func (n *node3) getVal(k int) (v interface{}) {
 	return
 }
 
-func (n *node3) putVal(k int, v interface{}) (old interface{}, err error) {
-	if n == nil {
-		panic("putVal is called on nil node")
-	}
+func (n *node3) putVal(k int, v interface{}) (old interface{}, u nodeP) {
 	if k < n.el.k {
 		old, err = n.left.putVal(k, v)
 	} else if k == n.el.k {
