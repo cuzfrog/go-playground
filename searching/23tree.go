@@ -45,8 +45,10 @@ func (*twoThreeTree) iterator() chan entry {
 func upgradeNode2(n *node2, e *entry) *node3 {
 	if e.k < n.e.k {
 		return &node3{el: *e, er: n.e, parent: n.parent}
-	} else {
+	} else if e.k > n.e.k{
 		return &node3{el: n.e, er: *e, parent: n.parent}
+	} else {
+		panic("duplicate key when upgrading node2")
 	}
 }
 
