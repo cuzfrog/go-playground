@@ -48,11 +48,12 @@ func (n *node2) putVal(k int, v interface{}) (old interface{}, u nodeP) {
 
 // contract: el's key < er's key
 type node3 struct {
-	el    entry
-	er    entry
-	left  nodeP
-	mid   nodeP
-	right nodeP
+	el     entry
+	er     entry
+	left   nodeP
+	mid    nodeP
+	right  nodeP
+	parent nodeP
 }
 
 func newNode3() {
@@ -82,16 +83,24 @@ func (n *node3) getVal(k int) (v interface{}) {
 }
 
 func (n *node3) putVal(k int, v interface{}) (old interface{}, u nodeP) {
-	if k < n.el.k {
-		old, err = n.left.putVal(k, v)
-	} else if k == n.el.k {
+	if k == n.el.k {
 		old, n.el.v = n.el.v, v
-	} else if k > n.el.k && k < n.er.k {
-		old, err = n.mid.putVal(k, v)
 	} else if k == n.er.k {
 		old, n.er.v = n.er.v, v
+	} else if n.isLeaf() {
+		if n.parent == nil { //is root
+
+		} else {
+
+		}
 	} else {
-		old, err = n.right.putVal(k, v)
+		if k < n.el.k {
+			old, n.left = n.left.putVal(k, v)
+		} else if k > n.el.k && k < n.er.k {
+			old, n.mid = n.mid.putVal(k, v)
+		} else {
+			old, n.right = n.right.putVal(k, v)
+		}
 	}
 	return
 }

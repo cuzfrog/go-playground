@@ -49,3 +49,7 @@ func upgradeNode2(n *node2, e *entry) *node3 {
 		return &node3{el: n.e, er: *e}
 	}
 }
+
+func splitRootNode3(n *node3, e *entry) *node2  {
+	
+}
