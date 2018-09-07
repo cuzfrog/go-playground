@@ -7,9 +7,10 @@ type nodeP interface {
 }
 
 type node2 struct {
-	e     entry
-	left  nodeP
-	right nodeP
+	e      entry
+	left   nodeP
+	right  nodeP
+	parent nodeP
 }
 
 func (n *node2) isLeaf() bool {

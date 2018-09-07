@@ -18,8 +18,12 @@ func Test_splitRootNode3(t *testing.T) {
 	assert.True(t, true, ok)
 	assert.Equal(t, 1, lltree.e.k)
 
-	lrtree, _ := ltree.right.(*node2)
+	lrtree := ltree.right.(*node2)
 	assert.Equal(t, 5, lrtree.e.k)
 
 	mtree := splitRootNode3(n, m)
+	assert.Equal(t, 3, mtree.e.k)
+
+	rtree := splitRootNode3(n, r)
+	assert.Equal(t, 5, rtree.e.k)
 }

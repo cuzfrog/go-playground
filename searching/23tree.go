@@ -44,12 +44,30 @@ func (*twoThreeTree) iterator() chan entry {
 
 func upgradeNode2(n *node2, e *entry) *node3 {
 	if e.k < n.e.k {
-		return &node3{el: *e, er: n.e}
+		return &node3{el: *e, er: n.e, parent: n.parent}
 	} else {
-		return &node3{el: n.e, er: *e}
+		return &node3{el: n.e, er: *e, parent: n.parent}
 	}
 }
 
-func splitRootNode3(n *node3, e *entry) *node2  {
-	
+func splitRootNode3(n *node3, e *entry) (mid *node2) {
+	var left, right *node2
+	if e.k < n.el.k {
+		left = &node2{e: *e}
+		right = &node2{e: n.er}
+		mid = &node2{e: n.el}
+	} else if e.k > n.el.k && e.k < n.er.k {
+		left = &node2{e: n.el}
+		right = &node2{e: n.er}
+		mid = &node2{e: *e}
+	} else if e.k > n.el.k {
+		left = &node2{e: n.el}
+		right = &node2{e: *e}
+		mid = &node2{e: n.er}
+	} else {
+		panic("duplicate key when splitting root node3")
+	}
+	left.parent, right.parent = mid, mid
+	mid.left, mid.right = left, right
+	return
 }
