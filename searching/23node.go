@@ -12,7 +12,7 @@ type node2 struct {
 	right nodeP
 }
 
-func (n *node2) isLeaf() bool{
+func (n *node2) isLeaf() bool {
 	return n.left == nil
 }
 
@@ -34,14 +34,14 @@ func (n *node2) putVal(k int, v interface{}) (old interface{}, u nodeP) {
 	u = n
 	if k == n.e.k {
 		old, n.e.v = n.e.v, v
-	} else if n.left != nil { //if has children. contract: left right must be nil at the same time
+	} else if n.isLeaf() { //contract: left right must be nil at the same time
+		u = upgradeNode2(n, &entry{k, v})
+	} else {
 		if k < n.e.k {
 			old, n.left = n.left.putVal(k, v)
 		} else {
 			old, n.right = n.right.putVal(k, v)
 		}
-	} else { //if no child
-		u = upgradeNode2(n, &entry{k, v})
 	}
 	return
 }
@@ -59,7 +59,7 @@ func newNode3() {
 
 }
 
-func (n *node3) isLeaf() bool{
+func (n *node3) isLeaf() bool {
 	return n.left == nil
 }
 

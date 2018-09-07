@@ -11,19 +11,17 @@ func (t *twoThreeTree) get(k int) interface{} {
 	return t.root.getVal(k)
 }
 
-func (t *twoThreeTree) put(k int, v interface{}) (interface{}, error) {
+func (t *twoThreeTree) put(k int, v interface{}) (old interface{}, err error) {
 	if v == nil {
 		return nil, fmt.Errorf("v cannot be nil")
 	}
 	if t.root == nil {
 		t.root = &node2{e: entry{k, v}}
+	} else {
+		old, t.root = t.root.putVal(k, v)
 	}
 	t.count++
-
-	switch r := t.root.(type) {
-	
-	}
-	return t.root.putVal(k, v)
+	return
 }
 
 func (*twoThreeTree) remove(k int) interface{} {
