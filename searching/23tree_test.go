@@ -3,6 +3,7 @@ package searching
 import (
 	"testing"
 	"github.com/stretchr/testify/assert"
+	"go-playground/utils"
 )
 
 func Test_upgradeLeafNode2(t *testing.T) {
@@ -20,32 +21,73 @@ func Test_upgradeLeafNode2(t *testing.T) {
 }
 
 func Test_splitNode3(t *testing.T) {
-	n1 := newNode3(2, "s", 5, "gg", nil)
-	l := &entry{1, "left entry"}
-	nr1, eu1 := splitNode3(n1, nil, l)
-	assert.Equal(t, 1, n1.e.k)
-	assert.False(t, n1.is3)
-	assert.Nil(t, n1.mid)
-	assert.Nil(t, n1.er)
-	assert.Equal(t, 2, eu1.k)
-	assert.Equal(t, 5, nr1.e.k)
+	t.Run("left entry", func(t *testing.T) {
+		n1 := aTestNode3()
+		l := &entry{1, "left entry"}
+		nr1, eu1 := splitNode3(n1, nil, l)
+		assert.Equal(t, 1, n1.e.k)
+		assert.False(t, n1.is3)
+		assert.Nil(t, n1.mid)
+		assert.Nil(t, n1.er)
+		assert.Equal(t, 2, eu1.k)
+		assert.Equal(t, 5, nr1.e.k)
+	})
 
 	left, mid, right, cr := &node23{}, &node23{}, &node23{}, &node23{}
 
-	n2 := newNode3(2, "s2", 5, "gg3", nil)
-	n2.left, n2.mid, n2.right = left, mid, right
-	m := &entry{3, "mid entry"}
-	nr2, _ := splitNode3(n2, cr, m)
-	assert.Equal(t, 2, n2.e.k)
-	assert.Equal(t, left, n2.left)
-	assert.Equal(t, mid, n2.right)
-	assert.Equal(t, cr, nr2.left)
-	assert.Equal(t, right, nr2.right)
+	t.Run("mid entry", func(t *testing.T) {
+		n2 := aTestNode3()
+		n2.left, n2.mid, n2.right = left, mid, right
+		m := &entry{3, "mid entry"}
+		nr2, _ := splitNode3(n2, cr, m)
+		assert.Equal(t, 2, n2.e.k)
+		assert.Equal(t, left, n2.left)
+		assert.Equal(t, mid, n2.right)
+		assert.Equal(t, cr, nr2.left)
+		assert.Equal(t, right, nr2.right)
+	})
 
-	n3 := newNode3(2, "s3", 5, "gg3g", nil)
-	r := &entry{8, "right entry"}
-	splitNode3(n3, nil, r)
-	assert.Equal(t, 2, n3.e.k)
+	t.Run("right entry", func(t *testing.T) {
+		n3 := aTestNode3()
+		r := &entry{8, "right entry"}
+		splitNode3(n3, nil, r)
+		assert.Equal(t, 2, n3.e.k)
+	})
+}
+
+func Test_insertMidFromChildToNode2(t *testing.T) {
+	n := aTestNode2()
+	cr := &node23{}
+	eu := &entry{4, "mid"}
+	t.Run("left branch", func(t *testing.T) {
+		p1 := newNode2(7, "pp", nil)
+		n.parent, p1.left = p1, n
+		insertMidFromChildToNode2(n, cr, eu)
+		assert.True(t, p1.is3)
+		assert.Equal(t, 4, p1.e.k)
+		assert.Equal(t, 7, p1.er.k)
+		assert.Equal(t, n, p1.left)
+		assert.Equal(t, cr, p1.mid)
+	})
+
+	t.Run("right branch", func(t *testing.T) {
+		p2 := newNode2(-1, "pp", nil)
+		n.parent, p2.right = p2, n
+		insertMidFromChildToNode2(n, cr, eu)
+		assert.True(t, p2.is3)
+		assert.Equal(t, -1, p2.e.k)
+		assert.Equal(t, 4, p2.er.k)
+		assert.Equal(t, n, p2.mid)
+		assert.Equal(t, cr, p2.right)
+	})
+}
+
+func aTestNode3() *node23 {
+	return newNode3(2, utils.RandAlphabet(2), 5, utils.RandAlphabet(3), nil)
+}
+
+func aTestNode2() *node23 {
+	return newNode2(2, utils.RandAlphabet(2), nil)
 }
 
 func newNode2(k int, v interface{}, p *node23) *node23 {
