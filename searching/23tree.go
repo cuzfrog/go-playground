@@ -138,9 +138,13 @@ func ascendMidToParentFromNode3(n, cr *node23, e *entry) {
 func insertMidFromChildToNode2(n, cr *node23, eu *entry) {
 	nl, p := n, n.parent
 	if p.left == n {
-		p.e, p.er, p.left, p.mid = eu, p.e, nl, cr
+		p.e, p.er = eu, p.e
+		connect(p, nl, LEFT)
+		connect(p, cr, MID)
 	} else if p.right == n {
-		p.er, p.mid, p.right = eu, nl, cr
+		p.er = eu
+		connect(p, nl, MID)
+		connect(p, cr, RIGHT)
 	} else {
 		panic(fmt.Sprintf("node[%v] is not a child of its parent node[%v]", *n, *p))
 	}
