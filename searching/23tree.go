@@ -42,6 +42,28 @@ func (*twoThreeTree) iterator() chan entry {
 
 /* -------------- 23tree transformation implementation -------------- */
 
+type position byte
+
+const (
+	LEFT  position = iota
+	MID
+	RIGHT
+)
+
+// connect establishes parent and child relationship
+func connect(p, c *node23, pos position) {
+	if pos == LEFT {
+		p.left = c
+	} else if pos == MID {
+		p.mid = c
+	} else {
+		p.right = c
+	}
+	if c != nil {
+		c.parent = p
+	}
+}
+
 // upgradeLeafNode2 inserts a new entry 'e' into node2 'n' and turns it into a node3
 func upgradeLeafNode2(n *node23, e *entry) {
 	if e.k < n.e.k {
@@ -67,16 +89,21 @@ func splitNode3(n, cr *node23, e *entry) (nr *node23, eu *entry) {
 	if e.k < n.e.k {
 		nr.e = n.er
 		eu, n.e = n.e, e
-		nr.left, nr.right = n.mid, n.right
-		n.right = cr
+		connect(nr, n.mid, LEFT)
+		connect(nr, n.right, RIGHT)
+		connect(n, cr, RIGHT)
 	} else if e.k > n.e.k && e.k < n.er.k {
+		nr.e = n.er
 		eu = e
-		nr.left, nr.right = cr, n.right
-		n.right = n.mid
+		connect(nr, cr, LEFT)
+		connect(nr, n.right, RIGHT)
+		connect(n, n.mid, RIGHT)
 	} else if e.k > n.e.k {
+		nr.e = e
 		eu, n.er = n.er, e
-		nr.left, nr.right = n.right, cr
-		n.right = n.mid
+		connect(nr, n.right, LEFT)
+		connect(nr, cr, RIGHT)
+		connect(n, n.mid, RIGHT)
 	} else {
 		panic("duplicate key when splitting node3")
 	}

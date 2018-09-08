@@ -21,6 +21,8 @@ func Test_upgradeLeafNode2(t *testing.T) {
 }
 
 func Test_splitNode3(t *testing.T) {
+	left, mid, right, cr := &node23{}, &node23{}, &node23{}, &node23{}
+
 	t.Run("left entry", func(t *testing.T) {
 		n1 := aTestNode3()
 		l := &entry{1, "left entry"}
@@ -33,8 +35,6 @@ func Test_splitNode3(t *testing.T) {
 		assert.Equal(t, 5, nr1.e.k)
 	})
 
-	left, mid, right, cr := &node23{}, &node23{}, &node23{}, &node23{}
-
 	t.Run("mid entry", func(t *testing.T) {
 		n2 := aTestNode3()
 		n2.left, n2.mid, n2.right = left, mid, right
@@ -45,13 +45,17 @@ func Test_splitNode3(t *testing.T) {
 		assert.Equal(t, mid, n2.right)
 		assert.Equal(t, cr, nr2.left)
 		assert.Equal(t, right, nr2.right)
+		assert.Equal(t, 5, nr2.e.k)
 	})
 
 	t.Run("right entry", func(t *testing.T) {
 		n3 := aTestNode3()
 		r := &entry{8, "right entry"}
-		splitNode3(n3, nil, r)
+		nr3, eu3 := splitNode3(n3, cr, r)
 		assert.Equal(t, 2, n3.e.k)
+		assert.Equal(t, 8, nr3.e.k)
+		assert.Equal(t, 5, eu3.k)
+		assert.Equal(t, cr, nr3.right)
 	})
 }
 
@@ -84,6 +88,9 @@ func Test_insertMidFromChildToNode2(t *testing.T) {
 
 func Test_liftNode2ToRoot(t *testing.T) {
 	n := aTestNode2()
+	cl, cr := &node23{}, &node23{}
+	n.left, n.right = cl, cr
+	cl.parent, cr.parent = n, n
 	nr := &node23{}
 	eu := &entry{3, "as"}
 	liftNode2ToRoot(n, nr, eu)
@@ -92,12 +99,71 @@ func Test_liftNode2ToRoot(t *testing.T) {
 	assert.Equal(t, n, n.left.parent)
 	assert.Equal(t, 3, n.e.k)
 	assert.Equal(t, 2, n.left.e.k)
+	assert.Equal(t, cl, n.left.left)
+	assert.Equal(t, cr, n.left.right)
+	assert.Equal(t, n.left, cl.parent)
+	assert.Equal(t, n.left, cr.parent)
 }
 
+func Test_ascendMidToParentFromNode3(t *testing.T) {
+	t.Run("single root node3", func(t *testing.T) {
+		n := aTestNode3()
+		ascendMidToParentFromNode3(n, nil, &entry{8, "hes"})
+		assert.False(t, n.is3)
+		assert.Equal(t, 5, n.e.k)
+		assert.Equal(t, 2, n.left.e.k)
+		assert.Equal(t, 8, n.right.e.k)
+		assert.Equal(t, n, n.right.parent)
+	})
+
+	left, mid, right, cr := &node23{}, &node23{}, &node23{}, &node23{}
+
+	t.Run("node2 as parent", func(t *testing.T) {
+		p := newNode2(8, "asgf", nil)
+		n := aTestNode3()
+		n.parent, p.left = p, n
+		n.left, n.mid, n.right = left, mid, right
+		ascendMidToParentFromNode3(n, cr, &entry{4, "gh"})
+		assert.True(t, p.is3)
+		assert.Equal(t, 4, p.e.k)
+		assert.Equal(t, 8, p.er.k)
+		assert.Equal(t, n, p.left)
+		assert.False(t, n.is3)
+		assert.Equal(t, 2, p.left.e.k)
+		assert.Equal(t, 5, p.mid.e.k)
+		assert.Equal(t, p, n.parent)
+		assert.Equal(t, p, p.mid.parent)
+		assert.Equal(t, left, p.left.left)
+		assert.Equal(t, mid, p.left.right)
+		assert.Equal(t, cr, p.mid.left)
+		assert.Equal(t, right, p.mid.right)
+	})
+
+	t.Run("node3 as parent and root", func(t *testing.T) {
+		p := newNode3(-3, "asgf", 1, "yd", nil)
+		p.left, p.mid = &node23{parent: p}, &node23{parent: p}
+		n := aTestNode3()
+		n.parent, p.right = p, n
+		n.left, n.mid, n.right = left, mid, right
+		ascendMidToParentFromNode3(n, cr, &entry{4, "ghii"})
+		assert.False(t, p.is3)
+		assert.False(t, n.is3)
+		assert.Equal(t, n, p.right.left)
+		assert.Equal(t, 1, p.e.k)
+		assert.Equal(t, -3, p.left.e.k)
+		assert.Equal(t, 4, p.right.e.k)
+		assert.Equal(t, 2, n.e.k)
+		assert.Equal(t, 5, p.right.right.e.k)
+		assert.Equal(t, p.right, n.parent)
+	})
+}
+
+// {2,5}
 func aTestNode3() *node23 {
 	return newNode3(2, utils.RandAlphabet(2), 5, utils.RandAlphabet(3), nil)
 }
 
+// {2}
 func aTestNode2() *node23 {
 	return newNode2(2, utils.RandAlphabet(2), nil)
 }
@@ -107,5 +173,5 @@ func newNode2(k int, v interface{}, p *node23) *node23 {
 }
 
 func newNode3(k1 int, v1 interface{}, k2 int, v2 interface{}, p *node23) *node23 {
-	return &node23{e: &entry{k1, v1}, er: &entry{k2, v2}, parent: p}
+	return &node23{is3: true, e: &entry{k1, v1}, er: &entry{k2, v2}, parent: p}
 }
