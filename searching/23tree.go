@@ -74,8 +74,8 @@ func splitRootLeafNode3(n *node23, e *entry) {
 	n.is3, n.er = false, nil
 }
 
-func ascendMidToParentFromNode3(n *node23, e *entry) {
-	var eu *entry
+func ascendMidToParentFromNode3(n, cr *node23, e *entry) {
+	var eu *entry //mid entry
 	if e.k < n.e.k {
 		eu, n.e = n.e, e
 	} else if e.k > n.e.k && e.k < n.er.k {
@@ -85,25 +85,31 @@ func ascendMidToParentFromNode3(n *node23, e *entry) {
 	} else {
 		panic("duplicate key when ascending mid to parent node from leaf node23")
 	}
-	nl, nr := n, &node23{e: n.er}
-	n.is3 = false
+	nl, nr := n, &node23{e: n.er} //split
+	nr.parent, nr.left, nr.right = n.parent, n.mid, n.right
+	nl.right = cr
+	n.is3, n.er, n.mid = false, nil, nil
 
 	p := n.parent
 	if p != nil {
 		if p.is3 {
-			ascendMidToParentFromNode3(p, eu)
+			ascendMidToParentFromNode3(p, nr, eu)
 		} else {
-			if p.left == n {
-				p.e, p.er, p.left, p.mid = eu, p.e, nl, nr
-			} else if p.right == n {
-				p.er, p.mid, p.right = eu, nl, nr
-			} else {
-				panic(fmt.Sprintf("node[%v] is not a child of its parent node[%v]", *n, *p))
-			}
-			nl.parent, nr.parent = p, p
-			p.is3 = true
+			insertMidFromChildToNode2(n, nr, eu)
 		}
 	} else { //root
 
 	}
+}
+
+func insertMidFromChildToNode2(c, nr *node23, eu *entry) {
+	nl, p := c, c.parent
+	if p.left == c {
+		p.e, p.er, p.left, p.mid = eu, p.e, nl, nr
+	} else if p.right == c {
+		p.er, p.mid, p.right = eu, nl, nr
+	} else {
+		panic(fmt.Sprintf("node[%v] is not a child of its parent node[%v]", *n, *p))
+	}
+	p.is3 = true
 }
