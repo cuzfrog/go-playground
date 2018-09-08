@@ -22,7 +22,7 @@ func Test_upgradeLeafNode2(t *testing.T) {
 func Test_splitRootNode3(t *testing.T) {
 	n1 := newNode3(2, "s", 5, "gg", nil)
 	l := &entry{1, "left entry"}
-	splitRootNode3(n1, nil, l)
+	splitNode3(n1, nil, l)
 	assert.Equal(t, 2, n1.e.k)
 	assert.False(t, n1.is3)
 	assert.Equal(t, 1, n1.left.e.k)
@@ -30,12 +30,12 @@ func Test_splitRootNode3(t *testing.T) {
 
 	n2 := newNode3(2, "s2", 5, "gg3", nil)
 	m := &entry{3, "mid entry"}
-	splitRootNode3(n2, nil, m)
+	splitNode3(n2, nil, m)
 	assert.Equal(t, 3, n2.e.k)
 
 	n3 := newNode3(2, "s3", 5, "gg3g", nil)
 	r := &entry{8, "right entry"}
-	splitRootNode3(n3, nil, r)
+	splitNode3(n3, nil, r)
 	assert.Equal(t, 5, n3.e.k)
 }
 

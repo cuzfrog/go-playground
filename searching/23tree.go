@@ -54,36 +54,34 @@ func upgradeLeafNode2(n *node23, e *entry) {
 	n.is3 = true
 }
 
-// splitRootNode3 split a node3 at root
+// splitNode3 split a node3 to two node2s, the left of which is the original node
 //	parameters:
-//	 n - the root node3
+//	 n - the current node3
 //	 cr - the newly split right sibling of one child, nil if n is leaf
 //   e - mid entry sent by one of the children node3s or new entry inserted by client
-func splitRootNode3(n, cr *node23, e *entry) {
-	var left, right *node23
+//  return:
+//	 nr - newly created right sibling node2 of n
+//   eu - calculated mid entry
+func splitNode3(n, cr *node23, e *entry) (nr *node23, eu *entry) {
+	nr = &node23{parent: n.parent}
 	if e.k < n.e.k {
-		left = &node23{e: e}
-		right = &node23{e: n.er}
-		left.left, left.right = n.left, cr
-		right.left, right.right = n.mid, n.right
+		nr.e = n.er
+		eu, n.e = n.e, e
+		nr.left, nr.right = n.mid, n.right
+		n.right = cr
 	} else if e.k > n.e.k && e.k < n.er.k {
-		left = &node23{e: n.e}
-		right = &node23{e: n.er}
-		n.e = e
-		left.left, left.right = n.left, n.mid
-		right.left, right.right = cr, n.right
+		eu = e
+		nr.left, nr.right = cr, n.right
+		n.right = n.mid
 	} else if e.k > n.e.k {
-		left = &node23{e: n.e}
-		right = &node23{e: e}
-		n.e = n.er
-		left.left, left.right = n.left, n.mid
-		right.left, right.right = n.right, cr
+		eu, n.er = n.er, e
+		nr.left, nr.right = n.right, cr
+		n.right = n.mid
 	} else {
-		panic("duplicate key when splitting root node23")
+		panic("duplicate key when splitting node3")
 	}
-	left.parent, right.parent = n, n
-	n.left, n.right = left, right
 	downTo2(n)
+	return
 }
 
 // ascendMidToParentFromNode3 inserts mid entry into parent node from a node3
@@ -92,20 +90,7 @@ func splitRootNode3(n, cr *node23, e *entry) {
 //   cr - the newly split right sibling of one child, nil if n is leaf
 //   e - mid entry sent by one of the children node3s or new entry inserted by client
 func ascendMidToParentFromNode3(n, cr *node23, e *entry) {
-	var eu *entry //mid entry
-	if e.k < n.e.k {
-		eu, n.e = n.e, e
-	} else if e.k > n.e.k && e.k < n.er.k {
-		eu = e
-	} else if e.k > n.e.k {
-		eu, n.er = n.er, e
-	} else {
-		panic("duplicate key when ascending mid to parent node from leaf node23")
-	}
-	nl, nr := n, &node23{e: n.er} //split right sibling
-	nr.parent, nr.left, nr.right = n.parent, n.mid, n.right
-	nl.right = cr
-	downTo2(n)
+	nr, eu := splitNode3(n, cr, e)
 
 	p := n.parent
 	if p != nil {
@@ -115,7 +100,7 @@ func ascendMidToParentFromNode3(n, cr *node23, e *entry) {
 			insertMidFromChildToNode2(n, nr, eu)
 		}
 	} else { //n is root node3
-		splitRootNode3(n, nr, eu)
+
 	}
 }
 
