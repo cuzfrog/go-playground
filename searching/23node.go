@@ -16,6 +16,10 @@ func (n *node23) isLeaf() bool {
 	return n.left == nil
 }
 
+func downTo2(n *node23) {
+	n.is3, n.er, n.mid = false, nil, nil
+}
+
 func (n *node23) getVal(k int) (v interface{}) {
 	if n == nil {
 		return nil
@@ -52,11 +56,7 @@ func (n *node23) putVal(k int, v interface{}) (old interface{}) {
 			old, n.er.v = n.er.v, v
 		} else if n.isLeaf() {
 			e := &entry{k, v}
-			if n.parent == nil { //is root
-				splitRootLeafNode3(n, e)
-			} else {
-
-			}
+			ascendMidToParentFromNode3(n, nil, e)
 		} else {
 			if k < n.e.k {
 				old = n.left.putVal(k, v)
