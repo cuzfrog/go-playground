@@ -13,7 +13,7 @@ type node23 struct {
 }
 
 func (n *node23) isLeaf() bool {
-	return n.left == nil
+	return n.left == nil //contract: left right must be nil at the same time
 }
 
 func downTo2(n *node23) {
@@ -69,7 +69,7 @@ func (n *node23) putVal(k int, v interface{}) (old interface{}) {
 	} else {
 		if k == n.e.k {
 			old, n.e.v = n.e.v, v
-		} else if n.isLeaf() { //contract: left right must be nil at the same time
+		} else if n.isLeaf() {
 			upgradeLeafNode2(n, &entry{k, v})
 		} else {
 			if k < n.e.k {

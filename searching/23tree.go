@@ -91,7 +91,6 @@ func splitNode3(n, cr *node23, e *entry) (nr *node23, eu *entry) {
 //   e - mid entry sent by one of the children node3s or new entry inserted by client
 func ascendMidToParentFromNode3(n, cr *node23, e *entry) {
 	nr, eu := splitNode3(n, cr, e)
-
 	p := n.parent
 	if p != nil {
 		if p.is3 {
@@ -100,7 +99,7 @@ func ascendMidToParentFromNode3(n, cr *node23, e *entry) {
 			insertMidFromChildToNode2(n, nr, eu)
 		}
 	} else { //n is root node3
-
+		liftNode2ToRoot(n, nr, eu)
 	}
 }
 
@@ -119,4 +118,11 @@ func insertMidFromChildToNode2(n, cr *node23, eu *entry) {
 		panic(fmt.Sprintf("node[%v] is not a child of its parent node[%v]", *n, *p))
 	}
 	p.is3 = true
+}
+
+// liftNode2ToRoot lifts previous root to new root with mid entry
+func liftNode2ToRoot(n, nr *node23, eu *entry) {
+	nl := &node23{e: n.e, left: n.left, right: n.right, parent: n.parent}
+	n.left.parent, n.right.parent = nl, nl
+	n.left, n.right, n.e = nl, nr, eu
 }
