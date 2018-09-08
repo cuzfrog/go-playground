@@ -122,7 +122,10 @@ func insertMidFromChildToNode2(n, cr *node23, eu *entry) {
 
 // liftNode2ToRoot lifts previous root to new root with mid entry
 func liftNode2ToRoot(n, nr *node23, eu *entry) {
-	nl := &node23{e: n.e, left: n.left, right: n.right, parent: n.parent}
-	n.left.parent, n.right.parent = nl, nl
+	nl := &node23{e: n.e, left: n.left, right: n.right, parent: n}
+	if !n.isLeaf() {
+		n.left.parent, n.right.parent = nl, nl
+	}
 	n.left, n.right, n.e = nl, nr, eu
+	nr.parent = n
 }

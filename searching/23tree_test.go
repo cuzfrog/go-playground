@@ -82,6 +82,18 @@ func Test_insertMidFromChildToNode2(t *testing.T) {
 	})
 }
 
+func Test_liftNode2ToRoot(t *testing.T) {
+	n := aTestNode2()
+	nr := &node23{}
+	eu := &entry{3, "as"}
+	liftNode2ToRoot(n, nr, eu)
+	assert.Equal(t, n, nr.parent)
+	assert.Equal(t, nr, n.right)
+	assert.Equal(t, n, n.left.parent)
+	assert.Equal(t, 3, n.e.k)
+	assert.Equal(t, 2, n.left.e.k)
+}
+
 func aTestNode3() *node23 {
 	return newNode3(2, utils.RandAlphabet(2), 5, utils.RandAlphabet(3), nil)
 }
