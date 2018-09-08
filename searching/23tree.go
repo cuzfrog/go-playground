@@ -42,6 +42,7 @@ func (*twoThreeTree) iterator() chan entry {
 
 /* -------------- 23tree transformation implementation -------------- */
 
+// upgradeLeafNode2 inserts a new entry 'e' into node2 'n' and turns it into a node3
 func upgradeLeafNode2(n *node23, e *entry) {
 	if e.k < n.e.k {
 		n.er, n.e = n.e, e
@@ -85,6 +86,11 @@ func splitRootNode3(n, cr *node23, e *entry) {
 	downTo2(n)
 }
 
+// ascendMidToParentFromNode3 inserts mid entry into parent node from a node3
+//  parameters:
+//   n - current node3 from which a mid entry is calculated by its existing entries and a given entry 'e'
+//   cr - the newly split right sibling of one child, nil if n is leaf
+//   e - mid entry sent by one of the children node3s or new entry inserted by client
 func ascendMidToParentFromNode3(n, cr *node23, e *entry) {
 	var eu *entry //mid entry
 	if e.k < n.e.k {
@@ -113,12 +119,17 @@ func ascendMidToParentFromNode3(n, cr *node23, e *entry) {
 	}
 }
 
-func insertMidFromChildToNode2(c, nr *node23, eu *entry) {
-	nl, p := c, c.parent
-	if p.left == c {
-		p.e, p.er, p.left, p.mid = eu, p.e, nl, nr
-	} else if p.right == c {
-		p.er, p.mid, p.right = eu, nl, nr
+// insertMidFromChildToNode2 inserts calculated mid entry to parent node2
+//  parameters:
+//   n - current child node3 which has already been downgraded to node2
+//   cr - n's right sibling node2
+//   eu - calculated mid entry to insert into parent node2
+func insertMidFromChildToNode2(n, cr *node23, eu *entry) {
+	nl, p := n, n.parent
+	if p.left == n {
+		p.e, p.er, p.left, p.mid = eu, p.e, nl, cr
+	} else if p.right == n {
+		p.er, p.mid, p.right = eu, nl, cr
 	} else {
 		panic(fmt.Sprintf("node[%v] is not a child of its parent node[%v]", *n, *p))
 	}
