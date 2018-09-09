@@ -25,6 +25,14 @@ func (t *twoThreeTree) put(k int, v interface{}) (old interface{}, err error) {
 }
 
 func (t *twoThreeTree) remove(k int) interface{} {
+	if t.root == nil {
+		return nil
+	}
+	if !t.root.is3 && t.root.e.k == k {
+		oldV := t.root.e.v
+		t.root = nil
+		return oldV
+	}
 	return t.root.removeVal(k)
 }
 
@@ -50,7 +58,7 @@ const (
 	RIGHT
 )
 
-// connect establishes parent and child relationship
+// connect establishes parent-child relationship
 func connect(p, c *node23, pos position) {
 	if pos == LEFT {
 		p.left = c
@@ -61,6 +69,20 @@ func connect(p, c *node23, pos position) {
 	}
 	if c != nil {
 		c.parent = p
+	}
+}
+
+// disconnect removes parent-child relationship
+func disconnect(p, c *node23, pos position)  {
+	if pos == LEFT {
+		p.left = nil
+	} else if pos == MID {
+		p.mid = nil
+	} else {
+		p.right = nil
+	}
+	if c != nil {
+		c.parent = nil
 	}
 }
 
@@ -169,6 +191,20 @@ func downgradeLeafNode3ByKey(n *node23, k int) (oldV interface{}) {
 	} else if k == n.er.k {
 		oldV = n.er.v
 		downTo2(n)
+	}
+	return
+}
+
+func removeLeafNode2(n *node23, k int) (oldV interface{}) {
+	if n.e.k != k {
+		return
+	}
+
+	p := n.parent
+	if p.is3 {
+		
+	} else {
+
 	}
 	return
 }

@@ -83,9 +83,6 @@ func (n *node23) putVal(k int, v interface{}) (old interface{}) {
 }
 
 func (n *node23) removeVal(k int) (old interface{}) {
-	if n == nil {
-		return nil
-	}
 	if n.isLeaf() {
 		if n.is3 {
 			old = downgradeLeafNode3ByKey(n, k)
