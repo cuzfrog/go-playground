@@ -24,8 +24,8 @@ func (t *twoThreeTree) put(k int, v interface{}) (old interface{}, err error) {
 	return
 }
 
-func (*twoThreeTree) remove(k int) interface{} {
-	panic("implement me")
+func (t *twoThreeTree) remove(k int) interface{} {
+	return t.root.removeVal(k)
 }
 
 func (t *twoThreeTree) contains(k int) bool {
@@ -159,4 +159,16 @@ func liftNode2ToRoot(n, nr *node23, eu *entry) {
 	}
 	n.left, n.right, n.e = nl, nr, eu
 	nr.parent = n
+}
+
+func downgradeLeafNode3ByKey(n *node23, k int) (oldV interface{}) {
+	if k == n.e.k {
+		oldV = n.e.v
+		n.e = n.er
+		downTo2(n)
+	} else if k == n.er.k {
+		oldV = n.er.v
+		downTo2(n)
+	}
+	return
 }
