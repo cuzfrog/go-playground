@@ -28,3 +28,14 @@ func Suffle(a []int) {
 		a[i], a[j] = a[j], a[i]
 	}
 }
+
+const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+const lettersLength = int64(len(letterBytes))
+
+func RandAlphabet(n int) string {
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letterBytes[rand.Int63() % lettersLength]
+	}
+	return string(b)
+}
