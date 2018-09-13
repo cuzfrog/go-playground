@@ -28,7 +28,7 @@ func (t *twoThreeTree) remove(k int) (old interface{}) {
 	if t.root == nil {
 		return nil
 	}
-	if !t.root.is3 && t.root.e.k == k {
+	if t.root.isLeaf() && !t.root.is3 && t.root.e.k == k { //remove single node2
 		old = t.root.e.v
 		t.root = nil
 	} else {
@@ -188,19 +188,6 @@ func liftNode2ToRoot(n, nr *node23, eu *entry) {
 }
 
 //todo: test
-func removeFromLeafNode3(n *node23, k int) (old interface{}) {
-	if k == n.e.k {
-		old = n.e.v
-		n.e = n.er
-		downTo2(n)
-	} else if k == n.er.k {
-		old = n.er.v
-		downTo2(n)
-	}
-	return
-}
-
-//todo: test
 func swapInOrderSuccessor(n *node23, pos position) (s *node23) {
 	if n.isLeaf() {
 		panic("contract violated")
@@ -226,19 +213,36 @@ func removeFromLeaf(n *node23, k int) (old interface{}) {
 	if n.is3 {
 		old = removeFromLeafNode3(n, k)
 	} else {
-
+		old = removeFromLeafNode2(n, k)
 	}
 	return
 }
 
 //todo: test
-func removeLeafNode2(n *node23, k int) (old interface{}) {
+func removeFromLeafNode3(n *node23, k int) (old interface{}) {
+	if k == n.e.k {
+		old = n.e.v
+		n.e = n.er
+		downTo2(n)
+	} else if k == n.er.k {
+		old = n.er.v
+		downTo2(n)
+	}
+	return
+}
+
+//todo: test
+func removeFromLeafNode2(n *node23, k int) (old interface{}) {
 	if n.e.k != k {
 		return
 	}
 	old = n.e.v
 
 	p := n.parent //contract: n has parent p
+	if p.is3 {
 
+	} else {
+
+	}
 	return
 }
