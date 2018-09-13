@@ -24,16 +24,20 @@ func (t *twoThreeTree) put(k int, v interface{}) (old interface{}, err error) {
 	return
 }
 
-func (t *twoThreeTree) remove(k int) interface{} {
+func (t *twoThreeTree) remove(k int) (old interface{}) {
 	if t.root == nil {
 		return nil
 	}
 	if !t.root.is3 && t.root.e.k == k {
-		oldV := t.root.e.v
+		old = t.root.e.v
 		t.root = nil
-		return oldV
+	} else {
+		old = t.root.removeVal(k)
 	}
-	return t.root.removeVal(k)
+	if old != nil {
+		t.count--
+	}
+	return
 }
 
 func (t *twoThreeTree) contains(k int) bool {
@@ -73,7 +77,7 @@ func connect(p, c *node23, pos position) {
 }
 
 // disconnect removes parent-child relationship
-func disconnect(p, c *node23, pos position)  {
+func disconnect(p, c *node23, pos position) {
 	if pos == LEFT {
 		p.left = nil
 	} else if pos == MID {
@@ -202,7 +206,7 @@ func removeLeafNode2(n *node23, k int) (oldV interface{}) {
 
 	p := n.parent
 	if p.is3 {
-		
+
 	} else {
 
 	}
