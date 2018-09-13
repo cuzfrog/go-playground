@@ -158,6 +158,8 @@ func Test_ascendMidToParentFromNode3(t *testing.T) {
 	})
 }
 
+
+
 // {2,5}
 func aTestNode3() *node23 {
 	return newNode3(2, utils.RandAlphabet(2), 5, utils.RandAlphabet(3), nil)

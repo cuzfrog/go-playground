@@ -10,6 +10,9 @@ type node23 struct {
 	mid    *node23
 	right  *node23
 	parent *node23
+
+	l3cnt int
+	r3cnt int
 }
 
 func (n *node23) isLeaf() bool {
@@ -85,12 +88,23 @@ func (n *node23) putVal(k int, v interface{}) (old interface{}) {
 func (n *node23) removeVal(k int) (old interface{}) {
 	if n.isLeaf() {
 		if n.is3 {
-			old = downgradeLeafNode3ByKey(n, k)
+			old = downgradeLeafNode3(n, k)
 		} else {
-
+			old = removeLeafNode2(n, k)
 		}
 	} else {
 
 	}
 	return
+}
+
+/* ----- utils ------ */
+
+// find smallest key entry and its node
+func floor(t *node23) *node23 {
+	if t.isLeaf() {
+		return t
+	} else {
+		return floor(t.left)
+	}
 }

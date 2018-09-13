@@ -187,7 +187,11 @@ func liftNode2ToRoot(n, nr *node23, eu *entry) {
 	nr.parent = n
 }
 
-func downgradeLeafNode3ByKey(n *node23, k int) (oldV interface{}) {
+//todo: test
+func downgradeLeafNode3(n *node23, k int) (oldV interface{}) {
+	if !n.isLeaf(){
+		panic("contract violated")
+	}
 	if k == n.e.k {
 		oldV = n.e.v
 		n.e = n.er
@@ -199,16 +203,36 @@ func downgradeLeafNode3ByKey(n *node23, k int) (oldV interface{}) {
 	return
 }
 
-func removeLeafNode2(n *node23, k int) (oldV interface{}) {
+//todo: test
+func swapInOrderSuccessor(n *node23, pos position) (s *node23) {
+	if n.isLeaf(){
+		panic("contract violated")
+	}
+	if n.is3 {
+		if pos == LEFT {
+			s = floor(n.mid)
+			s.e, n.e = n.e, s.e
+		} else if pos == RIGHT {
+			s = floor(n.right)
+			s.e, n.er = n.er, s.e
+		} else {
+			panic("pos stands for entry position")
+		}
+	} else {
+		s = floor(n.right)
+		s.e, n.e = n.e, s.e
+	}
+	return
+}
+
+//todo: test
+func removeLeafNode2(n *node23, k int) (old interface{}) {
 	if n.e.k != k {
 		return
 	}
+	old = n.e.v
 
-	p := n.parent
-	if p.is3 {
+	p := n.parent //contract: n has parent p
 
-	} else {
-
-	}
 	return
 }
