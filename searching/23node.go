@@ -87,13 +87,32 @@ func (n *node23) putVal(k int, v interface{}) (old interface{}) {
 
 func (n *node23) removeVal(k int) (old interface{}) {
 	if n.isLeaf() {
-		if n.is3 {
-			old = downgradeLeafNode3(n, k)
-		} else {
-			old = removeLeafNode2(n, k)
-		}
+		old = removeFromLeaf(n, k)
 	} else {
-
+		if n.is3 {
+			if n.e.k == k {
+				s := swapInOrderSuccessor(n, LEFT)
+				old = removeFromLeaf(s, k)
+			} else if n.er.k == k {
+				s := swapInOrderSuccessor(n, RIGHT)
+				old = removeFromLeaf(s, k)
+			} else if k < n.e.k {
+				old = n.left.removeVal(k)
+			} else if k > n.er.k {
+				old = n.right.removeVal(k)
+			} else {
+				old = n.mid.removeVal(k)
+			}
+		} else {
+			if n.e.k == k {
+				s := swapInOrderSuccessor(n, 0)
+				old = removeFromLeaf(s, k)
+			} else if k < n.e.k {
+				old = n.left.removeVal(k)
+			} else {
+				old = n.right.removeVal(k)
+			}
+		}
 	}
 	return
 }
