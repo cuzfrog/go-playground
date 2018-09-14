@@ -237,25 +237,48 @@ func removeFromLeafNode2(n *node23, k int) (old interface{}) {
 		return
 	}
 	old = n.e.v
-
-	p := n.parent //contract: n has parent p
-	if p.is3 {
-
-	} else {
-
-	}
+	borrowDownward(n)
 	return
 }
 
-func borrowDownward(h *node23) *node23 {
+//todo: test
+func borrowDownward(h *node23) {
 	p := h.parent
 	if p == nil {
 
-	}
-
-	if p.is3 {
-
-	} else {
+	} else if p.is3 {
+		if p.left == h {
+			sm, sr := p.mid, p.right
+			if !sm.is3 && !sr.is3 {
+				h.e, p.e, sr.er, sr.e = p.e, sm.e, sr.e, p.er
+				connect(h, sm.left, RIGHT)
+				connect(sr, sr.left, MID)
+				connect(sr, sm.right, LEFT)
+				sr.is3 = true
+				downTo2(p)
+			}
+		} else if p.mid == h {
+			sl, sr := p.left, p.right
+			if !sl.is3 && !sr.is3 {
+				sl.er, p.e = p.e, p.er
+				connect(sl, sl.right, MID)
+				connect(sl, h.left, RIGHT)
+				sl.is3 = true
+				downTo2(p)
+			}
+		} else {
+			sl, sm := p.left, p.mid
+			if !sl.is3 && !sm.is3 {
+				sl.er, p.e, h.e = p.e, sm.e, p.er
+				connect(sl, sl.right, MID)
+				connect(sl, sm.left, RIGHT)
+				sl.is3 = true
+				connect(h, h.left, RIGHT)
+				connect(h, sm.right, LEFT)
+				downTo2(p)
+			}
+		}
+	} else { //parent is node2
 		if p.left == h {
 			s := p.right
 			if s.is3 {
@@ -268,6 +291,7 @@ func borrowDownward(h *node23) *node23 {
 				h.er = s.e
 				connect(h, s.left, MID)
 				connect(h, s.right, RIGHT)
+				h.is3 = true
 				disconnect(p, s, RIGHT)
 				borrowDownward(p)
 			}
@@ -281,7 +305,9 @@ func borrowDownward(h *node23) *node23 {
 				downTo2(s)
 			} else {
 				s.er = p.e
+				connect(s, s.right, MID)
 				connect(s, h.left, RIGHT)
+				s.is3 = true
 				disconnect(p, h, RIGHT)
 				borrowDownward(p)
 			}
