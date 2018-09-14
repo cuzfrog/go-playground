@@ -249,26 +249,49 @@ func borrowDownward(h *node23) {
 	} else if p.is3 {
 		if p.left == h {
 			sm, sr := p.mid, p.right
-			if !sm.is3 && !sr.is3 {
+			if !sm.is3 && !sr.is3 { //node2 siblings
 				h.e, p.e, sr.er, sr.e = p.e, sm.e, sr.e, p.er
 				connect(h, sm.left, RIGHT)
 				connect(sr, sr.left, MID)
 				connect(sr, sm.right, LEFT)
 				sr.is3 = true
 				downTo2(p)
+			} else if sm.is3 {
+				h.e, p.e, sm.e = p.e, sm.e, sm.er
+				connect(h, sm.left, RIGHT)
+				connect(sm, sm.mid, LEFT)
+				downTo2(sm)
+			} else { //only sr is node3
+				h.e, p.e, sm.e, p.er, sr.e = p.e, sm.e, p.er, sr.e, sr.er
+				connect(h, sm.left, RIGHT)
+				connect(sm, sm.right, LEFT)
+				connect(sm, sr.left, RIGHT)
+				connect(sr, sr.mid, LEFT)
+				downTo2(sr)
 			}
 		} else if p.mid == h {
 			sl, sr := p.left, p.right
-			if !sl.is3 && !sr.is3 {
+			if !sl.is3 && !sr.is3 { //node2 siblings
 				sl.er, p.e = p.e, p.er
 				connect(sl, sl.right, MID)
 				connect(sl, h.left, RIGHT)
 				sl.is3 = true
 				downTo2(p)
+			} else if sl.is3 {
+				h.e, p.e = p.e, sl.er
+				connect(h, h.left, RIGHT)
+				connect(h, sl.right, LEFT)
+				connect(sl, sl.mid, RIGHT)
+				downTo2(sl)
+			} else { //only sr is node3
+				h.e, p.er, sr.e = p.er, sr.e, sr.er
+				connect(h, sr.left, RIGHT)
+				connect(sr, sr.mid, LEFT)
+				downTo2(sr)
 			}
 		} else {
 			sl, sm := p.left, p.mid
-			if !sl.is3 && !sm.is3 {
+			if !sl.is3 && !sm.is3 { //node2 siblings
 				sl.er, p.e, h.e = p.e, sm.e, p.er
 				connect(sl, sl.right, MID)
 				connect(sl, sm.left, RIGHT)
@@ -276,6 +299,20 @@ func borrowDownward(h *node23) {
 				connect(h, h.left, RIGHT)
 				connect(h, sm.right, LEFT)
 				downTo2(p)
+			} else if sm.is3 {
+				h.e, p.er = p.er, sm.er
+				connect(h, h.left, RIGHT)
+				connect(h, sm.right, LEFT)
+				connect(sm, sm.mid, RIGHT)
+				downTo2(sm)
+			} else { //only sl is node3
+				h.e, p.er, sm.e, p.e = p.er, sm.e, p.e, sl.er
+				connect(h, h.left, RIGHT)
+				connect(h, sm.right, LEFT)
+				connect(sm, sm.left, RIGHT)
+				connect(sm, sl.right, LEFT)
+				connect(sl, sl.mid, RIGHT)
+				downTo2(sl)
 			}
 		}
 	} else { //parent is node2
