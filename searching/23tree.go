@@ -246,3 +246,45 @@ func removeFromLeafNode2(n *node23, k int) (old interface{}) {
 	}
 	return
 }
+
+func borrowDownward(h *node23) *node23 {
+	p := h.parent
+	if p == nil {
+
+	}
+
+	if p.is3 {
+
+	} else {
+		if p.left == h {
+			s := p.right
+			if s.is3 {
+				h.e, p.e, s.e = p.e, s.e, s.er
+				connect(h, s.left, RIGHT)
+				connect(s, s.mid, LEFT)
+				downTo2(s)
+			} else {
+				h.e = p.e
+				h.er = s.e
+				connect(h, s.left, MID)
+				connect(h, s.right, RIGHT)
+				disconnect(p, s, RIGHT)
+				borrowDownward(p)
+			}
+		} else {
+			s := p.left
+			if s.is3 {
+				h.e, p.e = p.e, s.er
+				connect(h, h.left, RIGHT)
+				connect(h, s.right, LEFT)
+				connect(s, s.mid, RIGHT)
+				downTo2(s)
+			} else {
+				s.er = p.e
+				connect(s, h.left, RIGHT)
+				disconnect(p, h, RIGHT)
+				borrowDownward(p)
+			}
+		}
+	}
+}
