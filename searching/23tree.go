@@ -62,6 +62,10 @@ const (
 	RIGHT
 )
 
+/* -------------- */
+/*   insertion    */
+/* -------------- */
+
 // connect establishes parent-child relationship
 func connect(p, c *node23, pos position) {
 	if pos == LEFT {
@@ -187,6 +191,10 @@ func liftNode2ToRoot(n, nr *node23, eu *entry) {
 	nr.parent = n
 }
 
+/* -------------- */
+/*    removal     */
+/* -------------- */
+
 //todo: test
 func swapInOrderSuccessor(n *node23, pos position) (s *node23) {
 	if n.isLeaf() {
@@ -194,16 +202,16 @@ func swapInOrderSuccessor(n *node23, pos position) (s *node23) {
 	}
 	if n.is3 {
 		if pos == LEFT {
-			s = floor(n.mid)
+			s = floorNode23Tree(n.mid)
 			s.e, n.e = n.e, s.e
 		} else if pos == RIGHT {
-			s = floor(n.right)
+			s = floorNode23Tree(n.right)
 			s.e, n.er = n.er, s.e
 		} else {
 			panic("pos stands for entry position")
 		}
 	} else {
-		s = floor(n.right)
+		s = floorNode23Tree(n.right)
 		s.e, n.e = n.e, s.e
 	}
 	return
@@ -211,41 +219,29 @@ func swapInOrderSuccessor(n *node23, pos position) (s *node23) {
 
 func removeFromLeaf(n *node23, k int) (old interface{}) {
 	if n.is3 {
-		old = removeFromLeafNode3(n, k)
+		if k == n.e.k {
+			old = n.e.v
+			n.e = n.er
+			downTo2(n)
+		} else if k == n.er.k {
+			old = n.er.v
+			downTo2(n)
+		}
 	} else {
-		old = removeFromLeafNode2(n, k)
-	}
-	return
-}
-
-//todo: test
-func removeFromLeafNode3(n *node23, k int) (old interface{}) {
-	if k == n.e.k {
+		if n.e.k != k {
+			return
+		}
 		old = n.e.v
-		n.e = n.er
-		downTo2(n)
-	} else if k == n.er.k {
-		old = n.er.v
-		downTo2(n)
+		borrowDownward(n)
 	}
-	return
-}
-
-//todo: test
-func removeFromLeafNode2(n *node23, k int) (old interface{}) {
-	if n.e.k != k {
-		return
-	}
-	old = n.e.v
-	borrowDownward(n)
 	return
 }
 
 //todo: test
 func borrowDownward(h *node23) {
 	p := h.parent
-	if p == nil {
-
+	if p == nil { //now h is previous root
+		replaceNode23(h, h.left)
 	} else if p.is3 {
 		if p.left == h {
 			sm, sr := p.mid, p.right

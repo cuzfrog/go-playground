@@ -120,10 +120,18 @@ func (n *node23) removeVal(k int) (old interface{}) {
 /* ----- utils ------ */
 
 // find smallest key entry and its node
-func floor(t *node23) *node23 {
+func floorNode23Tree(t *node23) *node23 {
 	if t.isLeaf() {
 		return t
 	} else {
-		return floor(t.left)
+		return floorNode23Tree(t.left)
 	}
+}
+
+// put n to a's position, n is empty node
+func replaceNode23(n, a *node23) {
+	n.e, n.er, n.is3 = a.e, a.er, a.is3
+	connect(n, a.left, LEFT)
+	connect(n, a.mid, MID)
+	connect(n, a.right, RIGHT)
 }
