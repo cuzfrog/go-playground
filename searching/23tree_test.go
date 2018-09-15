@@ -391,8 +391,52 @@ func Test_borrowDownward(t *testing.T) {
 		asert.Equal("g", p.right.right.e.v)
 	})
 
-	t.Run("node2 parent / node3 sibling", func(t *testing.T) {
+	/*
+		  2           7
+	   /    \       /   \
+	  x    7|8     2     8
+	 /     /|\    /\    /\
+	a      ghi   a g   h i
+	*/
+	t.Run("node2 parent / node3 sibling L", func(t *testing.T) {
+		p := aTestTree()
+		downTo2(p)
+		downTo2(p.left)
+		borrowDownward(p.left)
 
+		asert.False(p.is3)
+		asert.Equal(7, p.e.k)
+		asert.Equal(2, p.left.e.k)
+		asert.False(p.right.is3)
+		asert.Equal(8, p.right.e.k)
+		asert.Equal("a", p.left.left.e.v)
+		asert.Equal("g", p.left.right.e.v)
+		asert.Equal("h", p.right.left.e.v)
+		asert.Equal("i", p.right.right.e.v)
+	})
+
+	/*
+		  2          1
+	   /    \      /  \
+	 0|1    x     0   2
+	 /|\    /    /\   /\
+	 abc    g   a b  c g
+	*/
+	t.Run("node2 parent / node3 sibling R", func(t *testing.T) {
+		p := aTestTree()
+		downTo2(p)
+		downTo2(p.right)
+		borrowDownward(p.right)
+
+		asert.False(p.is3)
+		asert.Equal(1, p.e.k)
+		asert.False(p.left.is3)
+		asert.Equal(0, p.left.e.k)
+		asert.Equal(2, p.right.e.k)
+		asert.Equal("a", p.left.left.e.v)
+		asert.Equal("b", p.left.right.e.v)
+		asert.Equal("c", p.right.left.e.v)
+		asert.Equal("g", p.right.right.e.v)
 	})
 
 	t.Run("node2 parent / node2 sibling", func(t *testing.T) {
