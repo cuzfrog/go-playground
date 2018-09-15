@@ -8,13 +8,15 @@ import (
 
 func Test_upgradeLeafNode2(t *testing.T) {
 	p := &node23{}
-	n1 := newNode2(1, "v1", p)
+	n1 := newNode2(1, "v1")
+	connect(p, n1, LEFT)
 	upgradeLeafNode2(n1, &entry{2, "right"})
 	assert.Equal(t, "right", n1.er.v)
 	assert.Equal(t, p, n1.parent)
 	assert.True(t, n1.is3)
 
-	n2 := newNode2(1, "v2", p)
+	n2 := newNode2(1, "v2")
+	connect(p, n2, RIGHT)
 	upgradeLeafNode2(n2, &entry{-1, "left"})
 	assert.Equal(t, 1, n2.er.k)
 	assert.Equal(t, -1, n2.e.k)
@@ -64,7 +66,7 @@ func Test_insertMidFromChildToNode2(t *testing.T) {
 	cr := &node23{}
 	eu := &entry{4, "mid"}
 	t.Run("left branch", func(t *testing.T) {
-		p1 := newNode2(7, "pp", nil)
+		p1 := newNode2(7, "pp")
 		n.parent, p1.left = p1, n
 		insertMidFromChildToNode2(n, cr, eu)
 		assert.True(t, p1.is3)
@@ -75,7 +77,7 @@ func Test_insertMidFromChildToNode2(t *testing.T) {
 	})
 
 	t.Run("right branch", func(t *testing.T) {
-		p2 := newNode2(-1, "pp", nil)
+		p2 := newNode2(-1, "pp")
 		n.parent, p2.right = p2, n
 		insertMidFromChildToNode2(n, cr, eu)
 		assert.True(t, p2.is3)
@@ -119,7 +121,7 @@ func Test_ascendMidToParentFromNode3(t *testing.T) {
 	left, mid, right, cr := &node23{}, &node23{}, &node23{}, &node23{}
 
 	t.Run("node2 as parent", func(t *testing.T) {
-		p := newNode2(8, "asgf", nil)
+		p := newNode2(8, "asgf")
 		n := aTestNode3()
 		n.parent, p.left = p, n
 		n.left, n.mid, n.right = left, mid, right
@@ -140,7 +142,7 @@ func Test_ascendMidToParentFromNode3(t *testing.T) {
 	})
 
 	t.Run("node3 as parent and root", func(t *testing.T) {
-		p := newNode3(-3, "asgf", 1, "yd", nil)
+		p := newNode3(-3, "asgf", 1, "yd")
 		p.left, p.mid = &node23{parent: p}, &node23{parent: p}
 		n := aTestNode3()
 		n.parent, p.right = p, n
@@ -484,22 +486,71 @@ func Test_borrowDownward(t *testing.T) {
 	})
 }
 
+func Test_swapInOrderSuccessor(t *testing.T) {
+	asert := assert.New(t)
+	t.Run("node2", func(t *testing.T) {
+		n := aTestNode2()
+		l := newNode2(1, "l")
+		r := newNode2(4, "r")
+		connect(n, l, LEFT)
+		connect(n, r, RIGHT)
+		rl := newNode2(3, "rl")
+		connect(r, rl, LEFT)
+		s := swapInOrderSuccessor(n, 0)
+
+		asert.Equal(3, n.e.k)
+		asert.Equal("rl", n.e.v)
+		asert.Equal(s, rl)
+	})
+
+	node3Tree := func() *node23 {
+		n := aTestNode3()
+		l := newNode2(1, "l")
+		m := newNode2(4, "m")
+		r := newNode3(7, "r1", 8, "r2")
+		connect(n, l, LEFT)
+		connect(n, m, MID)
+		connect(n, r, RIGHT)
+		ml := newNode2(3, "ml")
+		connect(m, ml, LEFT)
+		rl := newNode2(6, "rl")
+		connect(r, rl, LEFT)
+		return n
+	}
+
+	t.Run("node3 L", func(t *testing.T) {
+		n := node3Tree()
+		s := swapInOrderSuccessor(n, LEFT)
+		asert.Equal(3, n.e.k)
+		asert.Equal("ml", n.e.v)
+		asert.Equal(s, n.mid.left)
+	})
+	t.Run("node3 R", func(t *testing.T) {
+		n := node3Tree()
+		s := swapInOrderSuccessor(n, RIGHT)
+		asert.Equal(2, n.e.k)
+		asert.Equal(6, n.er.k)
+		asert.Equal("rl", n.er.v)
+		asert.Equal(s, n.right.left)
+	})
+}
+
 // {2,5}
 func aTestNode3() *node23 {
-	return newNode3(2, utils.RandAlphabet(2), 5, utils.RandAlphabet(3), nil)
+	return newNode3(2, utils.RandAlphabet(2), 5, utils.RandAlphabet(3))
 }
 
 // {2}
 func aTestNode2() *node23 {
-	return newNode2(2, utils.RandAlphabet(2), nil)
+	return newNode2(2, utils.RandAlphabet(2))
 }
 
-func newNode2(k int, v interface{}, p *node23) *node23 {
-	return &node23{e: &entry{k, v}, parent: p}
+func newNode2(k int, v interface{}) *node23 {
+	return &node23{e: &entry{k, v}}
 }
 
-func newNode3(k1 int, v1 interface{}, k2 int, v2 interface{}, p *node23) *node23 {
-	return &node23{is3: true, e: &entry{k1, v1}, er: &entry{k2, v2}, parent: p}
+func newNode3(k1 int, v1 interface{}, k2 int, v2 interface{}) *node23 {
+	return &node23{is3: true, e: &entry{k1, v1}, er: &entry{k2, v2}}
 }
 
 /*
@@ -511,9 +562,9 @@ func newNode3(k1 int, v1 interface{}, k2 int, v2 interface{}, p *node23) *node23
 */
 func aTestTree() *node23 {
 	p := aTestNode3()
-	l := newNode3(0, "l1", 1, "l2", nil)
-	m := newNode3(3, "m1", 4, "m2", nil)
-	r := newNode3(7, "r1", 8, "r2", nil)
+	l := newNode3(0, "l1", 1, "l2")
+	m := newNode3(3, "m1", 4, "m2")
+	r := newNode3(7, "r1", 8, "r2")
 	connect(p, l, LEFT)
 	connect(p, m, MID)
 	connect(p, r, RIGHT)
