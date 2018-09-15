@@ -7,6 +7,10 @@ type twoThreeTree struct {
 	root  *node23
 }
 
+func new23TreeDic() dictionary {
+	return &twoThreeTree{}
+}
+
 func (t *twoThreeTree) get(k int) interface{} {
 	return t.root.getVal(k)
 }
@@ -20,7 +24,9 @@ func (t *twoThreeTree) put(k int, v interface{}) (old interface{}, err error) {
 	} else {
 		old = t.root.putVal(k, v)
 	}
-	t.count++
+	if old == nil {
+		t.count++
+	}
 	return
 }
 
