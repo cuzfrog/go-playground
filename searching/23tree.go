@@ -237,7 +237,7 @@ func removeFromLeaf(n *node23, k int) (old interface{}) {
 	return
 }
 
-//todo: test
+// fill hole h
 func borrowDownward(h *node23) {
 	p := h.parent
 	if p == nil { //now h is previous root
