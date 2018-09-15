@@ -10,17 +10,10 @@ type node23 struct {
 	mid    *node23
 	right  *node23
 	parent *node23
-
-	l3cnt int
-	r3cnt int
 }
 
 func (n *node23) isLeaf() bool {
 	return n.left == nil //contract: left right must be nil at the same time
-}
-
-func downTo2(n *node23) {
-	n.is3, n.er, n.mid = false, nil, nil
 }
 
 func (n *node23) getVal(k int) (v interface{}) {
@@ -118,6 +111,10 @@ func (n *node23) removeVal(k int) (old interface{}) {
 }
 
 /* ----- utils ------ */
+
+func downTo2(n *node23) {
+	n.is3, n.er, n.mid = false, nil, nil
+}
 
 // find smallest key entry and its node
 func floorNode23Tree(t *node23) *node23 {
