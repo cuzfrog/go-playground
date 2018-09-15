@@ -158,7 +158,79 @@ func Test_ascendMidToParentFromNode3(t *testing.T) {
 	})
 }
 
+func Test_borrowDownward(t *testing.T) {
+	asert := assert.New(t)
+	assertConnect := func(p, c *node23, pos position) {
+		if pos == LEFT {
+			asert.Equal(p.left, c)
+			asert.Equal(p, c.parent)
+		} else if pos == MID {
+			asert.Equal(p.mid, c)
+			asert.Equal(p, c.parent)
+		} else {
+			asert.Equal(p.right, c)
+			asert.Equal(p, c.parent)
+		}
+	}
+	/*
+		 2|5            3
+	   /  |  \        /  \
+	  x   3  7       2  5|7
+	 /   /\  /\     /\  /|\
+	a   d f g i    a d f g i
+	*/
+	t.Run("node3 parent / node2 siblings L", func(t *testing.T) {
+		p := aTestTree()
+		downTo2(p.left)
+		downTo2(p.mid)
+		downTo2(p.right)
+		borrowDownward(p.left)
+		asert.False(p.is3)
+		asert.Equal(3, p.e.k)
+		assertConnect(p, p.left, LEFT)
+		asert.Nil(p.mid)
+		assertConnect(p, p.right, RIGHT)
+		asert.Equal(2, p.left.e.k)
+		asert.Equal(5, p.right.e.k)
+		asert.Equal(7, p.right.er.k)
+		asert.Equal("a", p.left.left.e.v)
+		asert.Equal("d", p.left.right.e.v)
+		asert.Equal("f", p.right.left.e.v)
+		asert.Equal("g", p.right.mid.e.v)
+		asert.Equal("i", p.right.right.e.v)
+	})
 
+	/*
+		 2|5
+	   /  |  \
+	  0   3  7
+	 /\  /\  /\
+	a c d f g i
+	*/
+	t.Run("node3 parent / node2 siblings M", func(t *testing.T) {
+		p := aTestTree()
+		downTo2(p.left)
+		downTo2(p.mid)
+		downTo2(p.right)
+		borrowDownward(p.left)
+	})
+
+	t.Run("node3 parent / node3 neighbor sibling", func(t *testing.T) {
+
+	})
+
+	t.Run("node3 parent / node3 remote sibling", func(t *testing.T) {
+
+	})
+
+	t.Run("node2 parent / node3 sibling", func(t *testing.T) {
+
+	})
+
+	t.Run("node2 parent / node2 sibling", func(t *testing.T) {
+
+	})
+}
 
 // {2,5}
 func aTestNode3() *node23 {
@@ -176,4 +248,40 @@ func newNode2(k int, v interface{}, p *node23) *node23 {
 
 func newNode3(k1 int, v1 interface{}, k2 int, v2 interface{}, p *node23) *node23 {
 	return &node23{is3: true, e: &entry{k1, v1}, er: &entry{k2, v2}, parent: p}
+}
+
+/*
+     2|5
+   /  |  \
+ 0|1 3|4 7|8
+ /|\ /|\ /|\
+ abc def ghi
+*/
+func aTestTree() *node23 {
+	p := aTestNode3()
+	l := newNode3(0, "l1", 1, "l2", nil)
+	m := newNode3(3, "m1", 4, "m2", nil)
+	r := newNode3(7, "r1", 8, "r2", nil)
+	connect(p, l, LEFT)
+	connect(p, m, MID)
+	connect(p, r, RIGHT)
+	a := &node23{e: &entry{v: "a"}}
+	b := &node23{e: &entry{v: "b"}}
+	c := &node23{e: &entry{v: "c"}}
+	d := &node23{e: &entry{v: "d"}}
+	e := &node23{e: &entry{v: "e"}}
+	f := &node23{e: &entry{v: "f"}}
+	g := &node23{e: &entry{v: "g"}}
+	h := &node23{e: &entry{v: "h"}}
+	i := &node23{e: &entry{v: "i"}}
+	connect(l, a, LEFT)
+	connect(l, b, MID)
+	connect(l, c, RIGHT)
+	connect(m, d, LEFT)
+	connect(m, e, MID)
+	connect(m, f, RIGHT)
+	connect(r, g, LEFT)
+	connect(r, h, MID)
+	connect(r, i, RIGHT)
+	return p
 }
