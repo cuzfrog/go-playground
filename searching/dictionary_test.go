@@ -7,10 +7,10 @@ import (
 )
 
 func Test_dictionary_implementations(t *testing.T) {
-	t.Run("23tree", func(t *testing.T) { testDictionary(t, new23TreeDic) })
+	t.Run("23tree", func(t *testing.T) { test(t, new23TreeDic) })
 }
 
-func testDictionary(t *testing.T, ctor func() dictionary) {
+func test(t *testing.T, ctor func() dictionary) {
 	asert := assert.New(t)
 	d := ctor()
 	asert.Equal(0, d.size())
@@ -35,8 +35,30 @@ func testDictionary(t *testing.T, ctor func() dictionary) {
 		asert.Equal(vals[i], d.get(keys[i]))
 	}
 
-	for i := range keys{
+	for i := range keys {
 		d.remove(keys[i])
 	}
 	asert.Equal(0, d.size())
+}
+
+func benchmark(b *testing.B, n int, ctor func() dictionary) {
+	d := ctor()
+	keys := sorting.GenNonDupElems(n)
+	for i := range keys {
+		d.put(keys[i], i)
+	}
+	testNums := sorting.GenElems(b.N)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		num := testNums[i]
+		d.put(num, i)
+		d.remove(num)
+	}
+}
+
+func Benchmark_23treeDic(b *testing.B)  {
+	ctor := new23TreeDic
+	b.Run("100", func(b *testing.B) {benchmark(b, 100, ctor)})
+	b.Run("1000", func(b *testing.B) {benchmark(b, 100, ctor)})
+	b.Run("10000", func(b *testing.B) {benchmark(b, 100, ctor)})
 }
