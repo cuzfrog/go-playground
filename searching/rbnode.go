@@ -193,12 +193,23 @@ func borrowDownwardRb(n *rbnode) {
 
 	} else {
 		if n.c == black {
-			if p.c == red {
-				disconnectRb(p, n)
-				rotateLeft(p)
-			} else {
+			if p.c == black {
 				n.k, n.v = p.k, p.v
 				borrowDownwardRb(p)
+			} else {
+				if p.left == n { //black L/ red parent
+					n.k, n.v = p.k, p.v
+					n.c = red
+					r := p.right
+					p.k, p.v = r.k, r.v
+					p.c = black
+					connectRight(n, r.left)
+					connectRight(p, r.right)
+					connectLeft(p, n)
+					r.parent = nil
+				} else { //black R/ red parent
+
+				}
 			}
 		} else {
 

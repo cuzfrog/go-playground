@@ -220,3 +220,64 @@ func Test_swapInOrderSuccessorRb(t *testing.T) {
 		asert.Equal(8, n.k)
 	})
 }
+
+func Test_borrowDownwardRb(t *testing.T) {
+	asert := assert.New(t)
+
+	/*
+	      5b - p
+	    /   \
+	   3b   8b
+	   /\   /\
+	  a b  c d              */
+	aRbTree := func() *rbnode {
+		n := &rbnode{k: 5, c: red}
+		l := &rbnode{k: 3}
+		r := &rbnode{k: 8}
+		connectLeft(n, l)
+		connectRight(n, r)
+		a, b, c, d := &rbnode{v: "a"}, &rbnode{v: "b"}, &rbnode{v: "c"}, &rbnode{v: "d"}
+		connectLeft(l, a)
+		connectRight(l, b)
+		connectLeft(r, c)
+		connectRight(r, d)
+		p := &rbnode{v: "p"}
+		connectLeft(p, n)
+		return n
+	}
+
+	/*
+	     5b           xb
+	    /  \         /
+	   xb  8b    5r-8b
+	   /  / \   / \   \
+	  a  c  d  a  c   d              */
+	t.Run("black L/ black parent", func(t *testing.T) {
+
+	})
+
+	t.Run("black R/ black parent", func(t *testing.T) {
+
+	})
+
+	/*
+	    [5r] - p           p
+	    /  \              /
+	  (xb)  8b    (5r)-[8b]
+	   /  / \     / \    \
+	  a  c  d     a c    d                   */
+	t.Run("black L/ red parent", func(t *testing.T) {
+		n := aRbTree().left
+		borrowDownwardRb(n)
+		asert.Equal(5, n.k)
+		asert.Equal(red, n.c)
+		asert.Equal("a", n.left.v)
+		asert.Equal("c", n.right.v)
+		p := n.parent
+		asert.Equal("d", p.right.v)
+		asert.Equal(black, p.c)
+		asert.Equal(n, p.left)
+		asert.Equal("p", p.parent.v)
+		asert.Equal(p, p.parent.left)
+	})
+}
