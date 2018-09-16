@@ -148,6 +148,10 @@ func disconnectRb(p, c *rbnode) {
 	}
 }
 
+func dropRefRb(n *rbnode) {
+	n.left, n.right, n.parent = nil, nil, nil
+}
+
 func checkToFlipColorOrRotate(n *rbnode) *rbnode {
 	if n.left.isBlack() && n.right.isBlack() {
 		//do nothing
@@ -196,7 +200,7 @@ func borrowDownwardRb(n *rbnode) {
 			if p.c == black {
 				n.k, n.v = p.k, p.v
 				borrowDownwardRb(p)
-			} else {
+			} else { //parent is red
 				if p.left == n { //black L/ red parent
 					n.k, n.v = p.k, p.v
 					n.c = red
@@ -206,9 +210,12 @@ func borrowDownwardRb(n *rbnode) {
 					connectRight(n, r.left)
 					connectRight(p, r.right)
 					connectLeft(p, n)
-					r.parent = nil
+					dropRefRb(r)
 				} else { //black R/ red parent
-
+					l := p.left
+					p.c, l.c = black, red
+					connectRight(p, n.left)
+					dropRefRb(n)
 				}
 			}
 		} else {

@@ -264,8 +264,8 @@ func Test_borrowDownwardRb(t *testing.T) {
 	    [5r] - p           p
 	    /  \              /
 	  (xb)  8b    (5r)-[8b]
-	   /  / \     / \    \
-	  a  c  d     a c    d                   */
+	   /   / \     / \    \
+	  a   c  d     a c    d                   */
 	t.Run("black L/ red parent", func(t *testing.T) {
 		n := aRbTree().left
 		borrowDownwardRb(n)
@@ -279,5 +279,26 @@ func Test_borrowDownwardRb(t *testing.T) {
 		asert.Equal(n, p.left)
 		asert.Equal("p", p.parent.v)
 		asert.Equal(p, p.parent.left)
+	})
+
+	/*
+	     [5r] - p           p
+	    /   \              /
+	   3b   xb     3r -[5b]
+	   /\  /      / \    \
+	  a b c       a b    c                   */
+	t.Run("black R/ red parent", func(t *testing.T) {
+		p := aRbTree()
+		borrowDownwardRb(p.right)
+		asert.Equal(5, p.k)
+		asert.Equal(black, p.c)
+		l := p.left
+		asert.Equal(p, l.parent)
+		asert.Equal(3, l.k)
+		asert.Equal(red, l.c)
+		asert.Equal("a", l.left.v)
+		asert.Equal("b", l.right.v)
+		asert.Equal("c", p.right.v)
+		asert.Equal("p", p.parent.v)
 	})
 }
