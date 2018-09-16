@@ -43,12 +43,16 @@ func (n *rbnode) remove(k int) (*rbnode, interface{}) {
 	var old interface{}
 	if n != nil {
 		if k == n.k {
+			old = n.v
 			s := swapInOrderSuccessorRb(n)
-			if s.c == black {
-				n = borrowDownwardRb(s)
-			} else { //red minimum
-				old = s.v
-				s.parent.left, s.parent = nil, nil //disconnect
+			if s == n && n.parent == nil { //n is single root
+				n = nil
+			} else {
+				if s.c == black {
+					borrowDownwardRb(s)
+				} else { //red minimum
+					s.parent.left, s.parent = nil, nil //disconnect
+				}
 			}
 		} else {
 			var nn *rbnode
@@ -67,7 +71,9 @@ func (n *rbnode) remove(k int) (*rbnode, interface{}) {
 
 /* ----------------- utils ----------------- */
 
-/*     1b         2b
+/*      p          p
+        |          |
+       1b         2b
       /  \        / \
      a  2r      1r   d
        /  \    /  \
@@ -79,6 +85,7 @@ func rotateLeft(n *rbnode) *rbnode {
 	}
 	r := n.right
 	connectRight(n, r.left)
+	replaceChild(n, r)
 	connectLeft(r, n)
 	n.c, r.c = r.c, n.c
 	return r
@@ -96,6 +103,7 @@ func rotateRight(n *rbnode) *rbnode {
 	}
 	l := n.left
 	connectLeft(n, l.right)
+	replaceChild(n, l)
 	connectRight(l, n)
 	n.c, l.c = l.c, n.c
 	return l
@@ -118,6 +126,28 @@ func connectRight(p, c *rbnode) {
 	}
 }
 
+// replace c1 with c2 in words of parent relationship
+func replaceChild(c1, c2 *rbnode) {
+	if p := c1.parent; p != nil {
+		if p.left == c1 {
+			connectLeft(p, c2)
+		} else {
+			connectRight(p, c2)
+		}
+	}
+}
+
+func disconnectRb(p, c *rbnode) {
+	if p.left == c {
+		p.left = nil
+	} else if p.right == c {
+		p.right = nil
+	}
+	if c != nil {
+		c.parent = nil
+	}
+}
+
 func checkToFlipColorOrRotate(n *rbnode) *rbnode {
 	if n.left.isBlack() && n.right.isBlack() {
 		//do nothing
@@ -135,7 +165,6 @@ func checkToFlipColorOrRotate(n *rbnode) *rbnode {
 	return n
 }
 
-//todo:test
 func swapInOrderSuccessorRb(n *rbnode) *rbnode {
 	if n.right == nil {
 		return n
@@ -154,11 +183,20 @@ func floorRbTree(n *rbnode) *rbnode {
 	}
 }
 
-func borrowDownwardRb(n *rbnode) *rbnode {
+func borrowDownwardRb(n *rbnode) {
 	p := n.parent
 	if p == nil {
 
-	}
+	} else {
+		if n.c == black {
+			if p.c == red {
+				disconnectRb(p, n)
+				rotateLeft(p)
+			} else {
 
-	return n
+			}
+		} else {
+
+		}
+	}
 }

@@ -92,7 +92,9 @@ func Test_insert(t *testing.T) {
 
 func Test_rotateLeft(t *testing.T) {
 	asert := assert.New(t)
+	p := &rbnode{k: 3}
 	n := &rbnode{k: 1}
+	connectLeft(p, n)
 	r := &rbnode{k: 2, c: red}
 	a, b, c := &rbnode{v: "a"}, &rbnode{v: "b"}, &rbnode{v: "c"}
 	n.right = r
@@ -106,6 +108,8 @@ func Test_rotateLeft(t *testing.T) {
 	asert.Equal(c, n.right)
 	asert.Equal(black, n.c)
 	asert.Equal(red, n.left.c)
+	asert.Equal(3, n.parent.k)
+	asert.Equal(n, p.left)
 
 	n = &rbnode{k: 1, c: red}
 	r = &rbnode{k: 2}
@@ -117,7 +121,9 @@ func Test_rotateLeft(t *testing.T) {
 
 func Test_rotateRight(t *testing.T) {
 	asert := assert.New(t)
+	p := &rbnode{k: 0}
 	n := &rbnode{k: 2}
+	connectRight(p, n)
 	l := &rbnode{k: 1, c: red}
 	a, b, c := &rbnode{v: "a"}, &rbnode{v: "b"}, &rbnode{v: "c"}
 	n.left = l
@@ -131,6 +137,8 @@ func Test_rotateRight(t *testing.T) {
 	asert.Equal(c, n.right.right)
 	asert.Equal(black, n.c)
 	asert.Equal(red, n.right.c)
+	asert.Equal(0, n.parent.k)
+	asert.Equal(n, p.right)
 
 	n = &rbnode{k: 2, c: red}
 	l = &rbnode{k: 1}
