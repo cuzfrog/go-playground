@@ -240,13 +240,13 @@ func removeFromLeaf(n *node23, k int) (old interface{}) {
 			return
 		}
 		old = n.e.v
-		borrowDownward(n)
+		borrowDownward23(n)
 	}
 	return
 }
 
 // fill hole h
-func borrowDownward(h *node23) {
+func borrowDownward23(h *node23) {
 	p := h.parent
 	if p == nil { //now h is previous root
 		replaceNode23(h, h.left)
@@ -334,7 +334,7 @@ func borrowDownward(h *node23) {
 				connect(h, s.right, RIGHT)
 				h.is3 = true
 				disconnect(p, s, RIGHT)
-				borrowDownward(p)
+				borrowDownward23(p)
 			}
 		} else {
 			s := p.left
@@ -350,7 +350,7 @@ func borrowDownward(h *node23) {
 				connect(s, h.left, RIGHT)
 				s.is3 = true
 				disconnect(p, h, RIGHT)
-				borrowDownward(p)
+				borrowDownward23(p)
 			}
 		}
 	}

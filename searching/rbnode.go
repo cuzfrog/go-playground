@@ -193,7 +193,8 @@ func borrowDownwardRb(n *rbnode) {
 				disconnectRb(p, n)
 				rotateLeft(p)
 			} else {
-
+				n.k, n.v = p.k, p.v
+				borrowDownwardRb(p)
 			}
 		} else {
 

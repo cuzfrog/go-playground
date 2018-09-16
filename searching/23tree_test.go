@@ -186,7 +186,7 @@ func Test_borrowDownward(t *testing.T) {
 		downTo2(p.left)
 		downTo2(p.mid)
 		downTo2(p.right)
-		borrowDownward(p.left)
+		borrowDownward23(p.left)
 
 		asert.False(p.is3)
 		asert.Equal(3, p.e.k)
@@ -216,7 +216,7 @@ func Test_borrowDownward(t *testing.T) {
 		downTo2(p.left)
 		downTo2(p.mid)
 		downTo2(p.right)
-		borrowDownward(p.mid)
+		borrowDownward23(p.mid)
 
 		asert.False(p.is3)
 		asert.Equal(5, p.e.k)
@@ -244,7 +244,7 @@ func Test_borrowDownward(t *testing.T) {
 		downTo2(p.left)
 		downTo2(p.mid)
 		downTo2(p.right)
-		borrowDownward(p.right)
+		borrowDownward23(p.right)
 
 		asert.False(p.is3)
 		asert.Equal(3, p.e.k)
@@ -272,7 +272,7 @@ func Test_borrowDownward(t *testing.T) {
 	t.Run("node3 parent / node3 neighbor sibling L", func(t *testing.T) {
 		p := aTestTree()
 		downTo2(p.left)
-		borrowDownward(p.left)
+		borrowDownward23(p.left)
 
 		asert.True(p.is3)
 		asert.Equal(3, p.e.k)
@@ -299,7 +299,7 @@ func Test_borrowDownward(t *testing.T) {
 	t.Run("node3 parent / node3 neighbor sibling M", func(t *testing.T) {
 		p := aTestTree()
 		downTo2(p.mid)
-		borrowDownward(p.mid)
+		borrowDownward23(p.mid)
 
 		asert.True(p.is3)
 		asert.Equal(1, p.e.k)
@@ -323,7 +323,7 @@ func Test_borrowDownward(t *testing.T) {
 	t.Run("node3 parent / node3 neighbor sibling R", func(t *testing.T) {
 		p := aTestTree()
 		downTo2(p.right)
-		borrowDownward(p.right)
+		borrowDownward23(p.right)
 
 		asert.True(p.is3)
 		asert.Equal(2, p.e.k)
@@ -348,7 +348,7 @@ func Test_borrowDownward(t *testing.T) {
 		p := aTestTree()
 		downTo2(p.left)
 		downTo2(p.mid)
-		borrowDownward(p.left)
+		borrowDownward23(p.left)
 
 		asert.True(p.is3)
 		asert.Equal(3, p.e.k)
@@ -376,7 +376,7 @@ func Test_borrowDownward(t *testing.T) {
 		p := aTestTree()
 		downTo2(p.right)
 		downTo2(p.mid)
-		borrowDownward(p.right)
+		borrowDownward23(p.right)
 
 		asert.True(p.is3)
 		asert.Equal(1, p.e.k)
@@ -404,7 +404,7 @@ func Test_borrowDownward(t *testing.T) {
 		p := aTestTree()
 		downTo2(p)
 		downTo2(p.left)
-		borrowDownward(p.left)
+		borrowDownward23(p.left)
 
 		asert.False(p.is3)
 		asert.Equal(7, p.e.k)
@@ -428,7 +428,7 @@ func Test_borrowDownward(t *testing.T) {
 		p := aTestTree()
 		downTo2(p)
 		downTo2(p.right)
-		borrowDownward(p.right)
+		borrowDownward23(p.right)
 
 		asert.False(p.is3)
 		asert.Equal(1, p.e.k)
@@ -453,7 +453,7 @@ func Test_borrowDownward(t *testing.T) {
 		downTo2(p)
 		downTo2(p.left)
 		downTo2(p.right)
-		borrowDownward(p.left)
+		borrowDownward23(p.left)
 
 		asert.True(p.is3)
 		asert.Equal(2, p.e.k)
@@ -475,7 +475,7 @@ func Test_borrowDownward(t *testing.T) {
 		downTo2(p)
 		downTo2(p.left)
 		downTo2(p.right)
-		borrowDownward(p.right)
+		borrowDownward23(p.right)
 
 		asert.True(p.is3)
 		asert.Equal(0, p.e.k)
