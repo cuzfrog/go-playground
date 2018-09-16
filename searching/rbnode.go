@@ -87,20 +87,3 @@ func checkToFlipColorOrRotate(n *rbnode) *rbnode {
 	}
 	return n
 }
-
-func insertToLeftRed(n *rbnode, k int, v interface{}) (*rbnode, interface{}) {
-	var old interface{}
-	l := n.left
-	if k == l.k {
-		old = l.v
-		l.v = v
-	} else if k < n.left.k {
-		l.left = &rbnode{k: k, v: v, c: red}
-		n = rotateRight(n)
-	} else {
-		l.right = &rbnode{k: k, v: v, c: red}
-		n.left = rotateLeft(l)
-		n = rotateRight(n)
-	}
-	return n, old
-}
