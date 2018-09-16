@@ -30,3 +30,19 @@ func rotateLeft(n *rbnode) *rbnode {
 	n.c, r.c = red, black
 	return r
 }
+
+/*        2b      1b
+         / \     /  \
+       1r   d   a   2r
+       / \         / \
+      a   c       c  d
+ */
+func rotateRight(n *rbnode) *rbnode {
+	if n.left == nil{
+		return n
+	}
+	l := n.left
+	n.left, l.right = l.right, n
+	n.c, l.c = red, black
+	return l
+}
