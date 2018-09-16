@@ -204,7 +204,7 @@ func liftNode2ToRoot(n, nr *node23, eu *entry) {
 // parameters:
 //  n - current n that contains the hole
 //  pos - the hole's position LEFT or RIGHT, only meaningful for a node3
-func swapInOrderSuccessor(n *node23, pos position) (s *node23) {
+func swapInOrderSuccessor23(n *node23, pos position) (s *node23) {
 	if n.isLeaf() {
 		panic("contract violated")
 	}

@@ -496,7 +496,7 @@ func Test_swapInOrderSuccessor(t *testing.T) {
 		connect(n, r, RIGHT)
 		rl := newNode2(3, "rl")
 		connect(r, rl, LEFT)
-		s := swapInOrderSuccessor(n, 0)
+		s := swapInOrderSuccessor23(n, 0)
 
 		asert.Equal(3, n.e.k)
 		asert.Equal("rl", n.e.v)
@@ -520,14 +520,14 @@ func Test_swapInOrderSuccessor(t *testing.T) {
 
 	t.Run("node3 L", func(t *testing.T) {
 		n := node3Tree()
-		s := swapInOrderSuccessor(n, LEFT)
+		s := swapInOrderSuccessor23(n, LEFT)
 		asert.Equal(3, n.e.k)
 		asert.Equal("ml", n.e.v)
 		asert.Equal(s, n.mid.left)
 	})
 	t.Run("node3 R", func(t *testing.T) {
 		n := node3Tree()
-		s := swapInOrderSuccessor(n, RIGHT)
+		s := swapInOrderSuccessor23(n, RIGHT)
 		asert.Equal(2, n.e.k)
 		asert.Equal(6, n.er.k)
 		asert.Equal("rl", n.er.v)

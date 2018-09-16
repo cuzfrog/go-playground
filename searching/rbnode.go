@@ -35,8 +35,18 @@ func (n *rbnode) insert(k int, v interface{}) (*rbnode, interface{}) {
 
 func (n *rbnode) remove(k int) (*rbnode, interface{}) {
 	var old interface{}
-
-
+	if n != nil {
+		if k == n.k {
+			s := swapInOrderSuccessorRb(n)
+			if s.c == red {
+				
+			}
+		} else if k < n.k {
+			n.left, old = n.left.remove(k)
+		} else { //k > n.k
+			n.right, old = n.right.remove(k)
+		}
+	}
 
 	return n, old
 }
@@ -94,4 +104,23 @@ func checkToFlipColorOrRotate(n *rbnode) *rbnode {
 		n.c = red
 	}
 	return n
+}
+
+//todo:test
+func swapInOrderSuccessorRb(n *rbnode) *rbnode {
+	if n.right == nil {
+		return n
+	}
+	f := floorRbTree(n.right)
+	n.k, f.k = f.k, n.k
+	n.v, f.v = f.v, n.v
+	return f
+}
+
+func floorRbTree(n *rbnode) *rbnode {
+	if n.left == nil {
+		return n
+	} else {
+		return floorRbTree(n.left)
+	}
 }
