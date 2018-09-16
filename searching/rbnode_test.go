@@ -139,3 +139,23 @@ func Test_rotateRight(t *testing.T) {
 	asert.Equal(red, n.c)
 	asert.Equal(black, n.right.c)
 }
+
+func Test_swapInOrderSuccessorRb(t *testing.T) {
+	asert := assert.New(t)
+	n := &rbnode{k: 5}
+	s := swapInOrderSuccessorRb(n)
+	asert.Equal(n, s)
+
+	l := &rbnode{k: 3}
+	r := &rbnode{k: 8, v: "8"}
+	n.left, n.right = l, r
+	s = swapInOrderSuccessorRb(n)
+	asert.Equal(8, n.k)
+	asert.Equal(5, s.k)
+	asert.Equal("8", n.v)
+
+	rl := &rbnode{k: 7}
+	r.left = rl
+	s = swapInOrderSuccessorRb(n)
+	asert.Equal(7, n.k)
+}
