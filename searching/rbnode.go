@@ -27,8 +27,10 @@ func (n *rbnode) insert(k int, v interface{}) (*rbnode, interface{}) {
 		old, n.v = n.v, v
 	} else if k < n.k {
 		n.left, old = n.left.insert(k, v)
+		n.left.parent = n
 	} else { //k > n.k
 		n.right, old = n.right.insert(k, v)
+		n.right.parent = n
 	}
 	n = checkToFlipColorOrRotate(n)
 	return n, old
@@ -43,12 +45,14 @@ func (n *rbnode) remove(k int) (*rbnode, interface{}) {
 				n = borrowDownwardRb(s)
 			} else { //red minimum
 				old = s.v
-				s.parent.left = nil
+				s.parent.left, s.parent = nil, nil
 			}
 		} else if k < n.k {
 			n.left, old = n.left.remove(k)
+			n.left.parent = n
 		} else { //k > n.k
 			n.right, old = n.right.remove(k)
+			n.right.parent = n
 		}
 	}
 
@@ -68,7 +72,8 @@ func rotateLeft(n *rbnode) *rbnode {
 		return n
 	}
 	r := n.right
-	n.right, r.left = r.left, n
+	connectRight(n, r.left)
+	connectLeft(r, n)
 	n.c, r.c = r.c, n.c
 	return r
 }
@@ -91,6 +96,19 @@ func rotateRight(n *rbnode) *rbnode {
 
 func (n *rbnode) isBlack() bool {
 	return n == nil || n.c == black
+}
+
+func connectLeft(p, c *rbnode) {
+	p.left = c
+	if c != nil {
+		c.parent = p
+	}
+}
+func connectRight(p, c *rbnode) {
+	p.right = c
+	if c != nil {
+		c.parent = p
+	}
 }
 
 func checkToFlipColorOrRotate(n *rbnode) *rbnode {
@@ -130,6 +148,10 @@ func floorRbTree(n *rbnode) *rbnode {
 }
 
 func borrowDownwardRb(n *rbnode) *rbnode {
-	panic("implement me")
+	p := n.parent
+	if p == nil {
+
+	}
+
 	return n
 }

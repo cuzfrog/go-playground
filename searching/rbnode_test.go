@@ -140,6 +140,39 @@ func Test_rotateRight(t *testing.T) {
 	asert.Equal(black, n.right.c)
 }
 
+func Test_connectRbnode(t *testing.T) {
+	asert := assert.New(t)
+	aTestRbTree := func() *rbnode {
+		n := &rbnode{k: 5}
+		l := &rbnode{k: 3}
+		r := &rbnode{k: 8}
+		n.left, n.right = l, r
+		l.parent, r.parent = n, n
+		return n
+	}
+	t.Run("left", func(t *testing.T) {
+		n := aTestRbTree()
+		connectLeft(n, nil)
+		asert.Nil(n.left)
+
+		l := &rbnode{v: "l"}
+		connectLeft(n, l)
+		asert.Equal("l", n.left.v)
+		asert.Equal(5, l.parent.k)
+	})
+
+	t.Run("right", func(t *testing.T) {
+		n := aTestRbTree()
+		connectRight(n, nil)
+		asert.Nil(n.right)
+
+		r := &rbnode{v: "r"}
+		connectRight(n, r)
+		asert.Equal("r", n.right.v)
+		asert.Equal(5, r.parent.k)
+	})
+}
+
 func Test_swapInOrderSuccessorRb(t *testing.T) {
 	asert := assert.New(t)
 	n := &rbnode{k: 5}
