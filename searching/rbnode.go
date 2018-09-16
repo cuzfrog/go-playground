@@ -25,12 +25,15 @@ func (n *rbnode) insert(k int, v interface{}) (*rbnode, interface{}) {
 		n = &rbnode{k: k, v: v, c: red}
 	} else if k == n.k {
 		old, n.v = n.v, v
-	} else if k < n.k {
-		n.left, old = n.left.insert(k, v)
-		n.left.parent = n
-	} else { //k > n.k
-		n.right, old = n.right.insert(k, v)
-		n.right.parent = n
+	} else {
+		var nn *rbnode
+		if k < n.k {
+			nn, old = n.left.insert(k, v)
+			connectLeft(n, nn)
+		} else { //k > n.k
+			nn, old = n.right.insert(k, v)
+			connectRight(n, nn)
+		}
 	}
 	n = checkToFlipColorOrRotate(n)
 	return n, old
@@ -45,14 +48,17 @@ func (n *rbnode) remove(k int) (*rbnode, interface{}) {
 				n = borrowDownwardRb(s)
 			} else { //red minimum
 				old = s.v
-				s.parent.left, s.parent = nil, nil
+				s.parent.left, s.parent = nil, nil //disconnect
 			}
-		} else if k < n.k {
-			n.left, old = n.left.remove(k)
-			n.left.parent = n
-		} else { //k > n.k
-			n.right, old = n.right.remove(k)
-			n.right.parent = n
+		} else {
+			var nn *rbnode
+			if k < n.k {
+				nn, old = n.left.remove(k)
+				connectLeft(n, nn)
+			} else { //k > n.k
+				nn, old = n.right.remove(k)
+				connectRight(n, nn)
+			}
 		}
 	}
 
@@ -89,7 +95,8 @@ func rotateRight(n *rbnode) *rbnode {
 		return n
 	}
 	l := n.left
-	n.left, l.right = l.right, n
+	connectLeft(n, l.right)
+	connectRight(l, n)
 	n.c, l.c = l.c, n.c
 	return l
 }
