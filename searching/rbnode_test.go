@@ -279,8 +279,27 @@ func Test_borrowDownwardRb(t *testing.T) {
 		asertDistance(p, a, c, d)
 	})
 
+	/*
+		 [5b]          [xb]
+		/   \           /
+	   3b  (xb)   3r-(5b)       3r-[5b]
+	   /\  /     / \   \       / \    \
+	  a b c     a  b   c      a  b    c   */
 	t.Run("black R/ black parent", func(t *testing.T) {
+		p := aRbTree()
+		p.c = black
+		n := p.right
+		disconnectRb(pu, p)
 
+		borrowDownwardRb(n)
+		asert.Equal(5, p.k)
+		asert.Equal(3, p.left.k)
+		asert.Equal(red, p.left.c)
+		asert.Equal(black, p.c)
+		asert.Equal("a", p.left.left.v)
+		asert.Equal("b", p.left.right.v)
+		asert.Equal("c", p.right.v)
+		asertDistance(p, a, b, c)
 	})
 
 	/*
