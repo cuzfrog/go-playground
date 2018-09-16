@@ -33,6 +33,14 @@ func (n *rbnode) insert(k int, v interface{}) (*rbnode, interface{}) {
 	return n, old
 }
 
+func (n *rbnode) remove(k int) (*rbnode, interface{}) {
+	var old interface{}
+
+
+
+	return n, old
+}
+
 /* ----------------- utils ----------------- */
 
 /*     1b         2b

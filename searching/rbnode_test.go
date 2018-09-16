@@ -104,6 +104,15 @@ func Test_rotateLeft(t *testing.T) {
 	asert.Equal(a, n.left.left)
 	asert.Equal(b, n.left.right)
 	asert.Equal(c, n.right)
+	asert.Equal(black, n.c)
+	asert.Equal(red, n.left.c)
+
+	n = &rbnode{k: 1, c: red}
+	r = &rbnode{k: 2}
+	n.right = r
+	n = rotateLeft(n)
+	asert.Equal(red, n.c)
+	asert.Equal(black, n.left.c)
 }
 
 func Test_rotateRight(t *testing.T) {
@@ -120,4 +129,13 @@ func Test_rotateRight(t *testing.T) {
 	asert.Equal(a, n.left)
 	asert.Equal(b, n.right.left)
 	asert.Equal(c, n.right.right)
+	asert.Equal(black, n.c)
+	asert.Equal(red, n.right.c)
+
+	n = &rbnode{k: 2, c: red}
+	l = &rbnode{k: 1}
+	n.left = l
+	n = rotateRight(n)
+	asert.Equal(red, n.c)
+	asert.Equal(black, n.right.c)
 }
