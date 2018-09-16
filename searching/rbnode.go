@@ -1,11 +1,12 @@
 package searching
 
 type rbnode struct {
-	k     int
-	v     interface{}
-	c     color
-	left  *rbnode
-	right *rbnode
+	k      int
+	v      interface{}
+	c      color
+	left   *rbnode
+	right  *rbnode
+	parent *rbnode
 }
 
 type color bool
@@ -38,8 +39,11 @@ func (n *rbnode) remove(k int) (*rbnode, interface{}) {
 	if n != nil {
 		if k == n.k {
 			s := swapInOrderSuccessorRb(n)
-			if s.c == red {
-				
+			if s.c == black {
+				n = borrowDownwardRb(s)
+			} else { //red minimum
+				old = s.v
+				s.parent.left = nil
 			}
 		} else if k < n.k {
 			n.left, old = n.left.remove(k)
@@ -123,4 +127,9 @@ func floorRbTree(n *rbnode) *rbnode {
 	} else {
 		return floorRbTree(n.left)
 	}
+}
+
+func borrowDownwardRb(n *rbnode) *rbnode {
+	panic("implement me")
+	return n
 }
