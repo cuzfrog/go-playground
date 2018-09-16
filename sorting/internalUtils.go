@@ -19,6 +19,19 @@ func GenElems(n int) []int {
 	return a
 }
 
+// GenNonDupElems generates a new slice with n elements with no duplicate
+func GenNonDupElems(n int) []int {
+	a := make([]int, n, n)
+	for i := 0; i < n; i++ {
+		a[i] = i*5 - rand.Intn(4)
+	}
+	for i := range a {
+		j := rand.Intn(n)
+		a[i], a[j] = a[j], a[i]
+	}
+	return a
+}
+
 type compare func(int, int) bool
 
 // swimf heapifies a heap with a newly added elem.
