@@ -44,7 +44,7 @@ func (n *rbnode) remove(k int) (*rbnode, interface{}) {
 	if n != nil {
 		if k == n.k {
 			old = n.v
-			s := swapInOrderSuccessorRb(n)
+			s := swapSuccessorRb(n)
 			if s == n && n.parent == nil { //n is single root
 				n = nil
 			} else {
@@ -165,14 +165,18 @@ func checkToFlipColorOrRotate(n *rbnode) *rbnode {
 	return n
 }
 
-func swapInOrderSuccessorRb(n *rbnode) *rbnode {
-	if n.right == nil {
+func swapSuccessorRb(n *rbnode) (f *rbnode) {
+	if n.left == nil { //if leaf
 		return n
 	}
-	f := floorRbTree(n.right)
+	if n.left.c == red && n.left.left == nil {
+		f = n.left
+	} else {
+		f = floorRbTree(n.right)
+	}
 	n.k, f.k = f.k, n.k
 	n.v, f.v = f.v, n.v
-	return f
+	return
 }
 
 func floorRbTree(n *rbnode) *rbnode {

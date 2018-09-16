@@ -183,20 +183,40 @@ func Test_connectRbnode(t *testing.T) {
 
 func Test_swapInOrderSuccessorRb(t *testing.T) {
 	asert := assert.New(t)
-	n := &rbnode{k: 5}
-	s := swapInOrderSuccessorRb(n)
-	asert.Equal(n, s)
+	t.Run("all black", func(t *testing.T) {
+		n := &rbnode{k: 5}
+		s := swapSuccessorRb(n)
+		asert.Equal(n, s)
 
-	l := &rbnode{k: 3}
-	r := &rbnode{k: 8, v: "8"}
-	n.left, n.right = l, r
-	s = swapInOrderSuccessorRb(n)
-	asert.Equal(8, n.k)
-	asert.Equal(5, s.k)
-	asert.Equal("8", n.v)
+		l := &rbnode{k: 3}
+		r := &rbnode{k: 8, v: "8"}
+		n.left, n.right = l, r
+		s = swapSuccessorRb(n)
+		asert.Equal(8, n.k)
+		asert.Equal(5, s.k)
+		asert.Equal("8", n.v)
 
-	rl := &rbnode{k: 7}
-	r.left = rl
-	s = swapInOrderSuccessorRb(n)
-	asert.Equal(7, n.k)
+		rl := &rbnode{k: 7}
+		r.left = rl
+		s = swapSuccessorRb(n)
+		asert.Equal(7, n.k)
+	})
+
+	t.Run("left red", func(t *testing.T) {
+		n := &rbnode{k: 5}
+		l := &rbnode{k: 3, c: red}
+		r := &rbnode{k: 8}
+		connectLeft(n, l)
+		connectRight(n, r)
+		s := swapSuccessorRb(n)
+		asert.Equal(5, s.k)
+		asert.Equal(3, n.k)
+
+		ll := &rbnode{k: 1}
+		lr := &rbnode{k: 4}
+		connectLeft(l, ll)
+		connectRight(l, lr)
+		s = swapSuccessorRb(n)
+		asert.Equal(8, n.k)
+	})
 }
