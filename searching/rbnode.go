@@ -191,35 +191,45 @@ func floorRbTree(n *rbnode) *rbnode {
 	}
 }
 
-func borrowDownwardRb(n *rbnode) {
-	p := n.parent
+// h - hole
+func borrowDownwardRb(h *rbnode) {
+	p := h.parent
 	if p == nil {
 
 	} else {
-		if n.c == black {
+		if h.c == black {
 			if p.c == black {
-				n.k, n.v = p.k, p.v
+				h.k, h.v = p.k, p.v
 				borrowDownwardRb(p)
 			} else { //parent is red
-				if p.left == n { //black L/ red parent
-					n.k, n.v = p.k, p.v
-					n.c = red
+				if p.left == h { //black L/ red parent
+					h.k, h.v = p.k, p.v
+					h.c = red
 					r := p.right
 					p.k, p.v = r.k, r.v
 					p.c = black
-					connectRight(n, r.left)
+					connectRight(h, r.left)
 					connectRight(p, r.right)
-					connectLeft(p, n)
+					connectLeft(p, h)
 					dropRefRb(r)
 				} else { //black R/ red parent
 					l := p.left
 					p.c, l.c = black, red
-					connectRight(p, n.left)
-					dropRefRb(n)
+					connectRight(p, h.left)
+					dropRefRb(h)
 				}
 			}
-		} else {
-
+		} else { //hole is red
+			if p.c == black {
+				if p.left == h {
+					connectLeft(p, h.left)
+					dropRefRb(h)
+				} else {
+					panic("red link should be maintained at left branch")
+				}
+			} else {
+				panic("double red links should've been rotated")
+			}
 		}
 	}
 }

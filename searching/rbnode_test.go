@@ -289,7 +289,9 @@ func Test_borrowDownwardRb(t *testing.T) {
 	  a b c       a b    c                   */
 	t.Run("black R/ red parent", func(t *testing.T) {
 		p := aRbTree()
-		borrowDownwardRb(p.right)
+		n := p.right
+
+		borrowDownwardRb(n)
 		asert.Equal(5, p.k)
 		asert.Equal(black, p.c)
 		l := p.left
@@ -300,5 +302,37 @@ func Test_borrowDownwardRb(t *testing.T) {
 		asert.Equal("b", l.right.v)
 		asert.Equal("c", p.right.v)
 		asert.Equal("p", p.parent.v)
+		asert.Nil(n.parent)
+		asert.Nil(n.left)
+		asert.Nil(n.right)
+	})
+
+	/*
+	    [5b]          [5b]
+	    /  \         /   \
+	  (xr)  8b      a    8b
+	   /   / \           / \
+	  a   c  d           c d    */
+	t.Run("red L/ black parent", func(t *testing.T) {
+		p := aRbTree()
+		n := p.left
+		p.c, n.c = black, red
+
+		borrowDownwardRb(n)
+		asert.Equal("a", p.left.v)
+	})
+
+	/*
+	    [5b]
+	    /  \
+	   3b  xr
+	   /\  /
+	  a b c                 */
+	t.Run("red R/ black parent", func(t *testing.T) {
+		// no such case
+	})
+
+	t.Run("red / red parent", func(t *testing.T) {
+		// no such case
 	})
 }
