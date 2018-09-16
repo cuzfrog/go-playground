@@ -194,13 +194,25 @@ func floorRbTree(n *rbnode) *rbnode {
 // h - hole
 func borrowDownwardRb(h *rbnode) {
 	p := h.parent
-	if p == nil {
-
+	if p == nil { //replace reference
+		n := h.left
+		connectLeft(h, n.left)
+		connectRight(h, n.right)
+		h.k, h.v = n.k, n.v
 	} else {
 		if h.c == black {
 			if p.c == black {
-				h.k, h.v = p.k, p.v
-				borrowDownwardRb(p)
+				if p.left == h {
+					h.k, h.v = p.k, p.v
+					h.c = red
+					r := p.right
+					connectRight(h, r.left)
+					connectLeft(r, h)
+					connectLeft(p, r)
+					borrowDownwardRb(p)
+				} else {
+
+				}
 			} else { //parent is red
 				if p.left == h { //black L/ red parent
 					h.k, h.v = p.k, p.v
