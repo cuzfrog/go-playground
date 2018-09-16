@@ -223,7 +223,20 @@ func Test_swapInOrderSuccessorRb(t *testing.T) {
 
 func Test_borrowDownwardRb(t *testing.T) {
 	asert := assert.New(t)
-
+	asertDistance := func(r *rbnode, ns ...*rbnode) {
+		ln := len(ns)
+		ds := make([]int, ln)
+		for i, n := range ns {
+			d := distanceRb(r, n, 0)
+			ds[i] = d
+		}
+		d0 := ds[0]
+		for i := 1; i < ln; i++ {
+			asert.Equal(d0, ds[i])
+		}
+	}
+	a, b, c, d := &rbnode{v: "a"}, &rbnode{v: "b"}, &rbnode{v: "c"}, &rbnode{v: "d"}
+	pu := &rbnode{v: "p"}
 	/*
 	      5b - p
 	    /   \
@@ -236,18 +249,16 @@ func Test_borrowDownwardRb(t *testing.T) {
 		r := &rbnode{k: 8}
 		connectLeft(n, l)
 		connectRight(n, r)
-		a, b, c, d := &rbnode{v: "a"}, &rbnode{v: "b"}, &rbnode{v: "c"}, &rbnode{v: "d"}
 		connectLeft(l, a)
 		connectRight(l, b)
 		connectLeft(r, c)
 		connectRight(r, d)
-		p := &rbnode{v: "p"}
-		connectLeft(p, n)
+		connectLeft(pu, n)
 		return n
 	}
 
-	/*
-	     5b           xb
+	/*    /
+	     5b
 	    /  \         /
 	   xb  8b    5r-8b
 	   /  / \   / \   \
@@ -279,6 +290,7 @@ func Test_borrowDownwardRb(t *testing.T) {
 		asert.Equal(n, p.left)
 		asert.Equal("p", p.parent.v)
 		asert.Equal(p, p.parent.left)
+		asertDistance(p.parent, a, c, d)
 	})
 
 	/*
@@ -305,6 +317,7 @@ func Test_borrowDownwardRb(t *testing.T) {
 		asert.Nil(n.parent)
 		asert.Nil(n.left)
 		asert.Nil(n.right)
+		asertDistance(p.parent, a, b, c)
 	})
 
 	/*

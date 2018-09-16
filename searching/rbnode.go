@@ -233,3 +233,14 @@ func borrowDownwardRb(h *rbnode) {
 		}
 	}
 }
+
+func distanceRb(r, n *rbnode, d int) int {
+	if n.c == black {
+		d++
+	}
+	if n.parent == r {
+		return d
+	} else {
+		return distanceRb(r, n.parent, d)
+	}
+}
