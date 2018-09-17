@@ -195,15 +195,15 @@ func floorRbTree(n *rbnode) *rbnode {
 // param:
 //  h - hole
 //  r - subtree root, maintained as root all time
-func borrowDownwardRb(h, r *rbnode) {
-	if h == r { //replace reference
+func borrowDownwardRb(h, root *rbnode) {
+	p := h.parent
+	if h == root || p == nil { //replace reference
 		if s := h.left; s != nil {
 			connectLeft(h, s.left)
 			connectRight(h, s.right)
 			h.k, h.v = s.k, s.v
 		}
 	} else {
-		p := h.parent
 		if h.c == black {
 			if p.c == black { //black parent
 				h.k, h.v = p.k, p.v
@@ -221,7 +221,7 @@ func borrowDownwardRb(h, r *rbnode) {
 						connectRight(h, h.left)
 						connectLeft(h, l)
 						connectLeft(p, h)
-						borrowDownwardRb(p, r)
+						borrowDownwardRb(p, root)
 					} else { //red L
 						if l.left.c == black { // red L(black child)
 							s := l.right
