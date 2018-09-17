@@ -107,10 +107,21 @@ func Test_rbnode_functional(t *testing.T) {
 	   / \     /           / \    \
 	  1b 5b   11b         1b 5b  11b
 	         /                   /
-	       10r                  10r
-	 */
+	       10r                  10r          */
 
-	 
+	n.remove(6)
+	/*
+	   2r - 10b      2r - 10b
+	  / \    \      / \    \
+	 1b 5b  11b    1b 5b   11b
+	         /
+	       xr                                                */
+	n.remove(10)
+	/*
+	     2r - xb       1r - 2b
+	    / \    \       / \   \
+	   1b 5b  11b
+	                                               */
 }
 
 func Test_rotateLeft(t *testing.T) {
@@ -309,7 +320,7 @@ func Test_borrowDownwardRb(t *testing.T) {
 	   3b  (xb)   3r-(5b)       3r-[5b]
 	   /\  /     / \   \       / \    \
 	  a b c     a  b   c      a  b    c   */
-	t.Run("black R/ black parent", func(t *testing.T) {
+	t.Run("black R/ black parent / black L", func(t *testing.T) {
 		p := aRbTree()
 		p.c = black
 		n := p.right
@@ -324,6 +335,36 @@ func Test_borrowDownwardRb(t *testing.T) {
 		asert.Equal("b", p.left.right.v)
 		asert.Equal("c", p.right.v)
 		asertDistance(p, a, b, c)
+	})
+
+	/*
+		 [5b]       [bb]          [bb]
+		/   \       /  \          /   \
+	   3r  (xb)   3r  (5b)    ar-3b   5b
+	   /\  /     / \   |          \   / \
+	  ab b c    ab  x  c          b1 b2  c    */
+	t.Run("black R/ black parent / red L(black children)", func(t *testing.T) {
+		p := aRbTree()
+		p.c = black
+		p.left.c = red
+		n := p.right
+		disconnectRb(pu, p)
+		b1, b2 := &rbnode{v: "b1"}, &rbnode{v: "b2"}
+		connectLeft(b, b1)
+		connectLeft(b, b2)
+
+		borrowDownwardRb(n, p)
+		asert.Equal(black, n.c)
+		asert.Equal("b", n.v)
+		asert.Equal(5, n.right.k)
+		asert.Equal(black, b.right.c)
+		asert.Equal(b2, n.right.left)
+		asert.Equal(c, n.right.right)
+		asert.Equal(3, n.left.k)
+		asert.Equal(black, n.left.c)
+		asert.Equal(a, n.left.left)
+		asert.Equal(red, n.left.left.c)
+		asert.Equal(b1, n.left.right)
 	})
 
 	/*

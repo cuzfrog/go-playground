@@ -204,7 +204,7 @@ func borrowDownwardRb(h, r *rbnode) {
 	} else {
 		p := h.parent
 		if h.c == black {
-			if p.c == black {
+			if p.c == black { //black parent
 				h.k, h.v = p.k, p.v
 				if p.left == h {
 					h.c = red
@@ -212,15 +212,29 @@ func borrowDownwardRb(h, r *rbnode) {
 					connectRight(h, r.left)
 					connectLeft(r, h)
 					connectLeft(p, r)
-				} else {
+				} else { //black R/ black parent
 					l := p.left
-					l.c = red
-					connectRight(h, h.left)
-					connectLeft(h, l)
-					connectLeft(p, h)
+					if l.c == black {
+						l.c = red
+						connectRight(h, h.left)
+						connectLeft(h, l)
+						connectLeft(p, h)
+					} else { //red L
+						if l.left.c == black { // red L(black child)
+							s := l.right
+							p.k, p.v = s.k, s.v
+							l.left.c, l.c = red, black
+							connectRight(l, s.left)
+							connectRight(h, h.left)
+							connectLeft(h, s.right)
+						} else { //red L(red left child)
+
+						}
+					}
+
 				}
 				borrowDownwardRb(p, r)
-			} else { //parent is red
+			} else { //red parent
 				if p.left == h { //black L/ red parent
 					h.k, h.v = p.k, p.v
 					h.c = red
