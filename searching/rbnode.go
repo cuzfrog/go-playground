@@ -39,8 +39,12 @@ func (n *rbnode) insert(k int, v interface{}) (*rbnode, interface{}) {
 	return n, old
 }
 
-func (n *rbnode) remove(k int) (*rbnode, interface{}) {
-	var old interface{}
+func (n *rbnode) remove(k int) (old interface{}) {
+	return recursiveRemoveRb(n, n, k)
+}
+
+// to retain r as root all the time
+func recursiveRemoveRb(n, r *rbnode, k int) (old interface{}) {
 	if n != nil {
 		if k == n.k {
 			old = n.v
@@ -49,24 +53,20 @@ func (n *rbnode) remove(k int) (*rbnode, interface{}) {
 				n = nil
 			} else {
 				if s.c == black {
-					borrowDownwardRb(s)
+					borrowDownwardRb(s, r)
 				} else { //red minimum
 					s.parent.left, s.parent = nil, nil //disconnect
 				}
 			}
 		} else {
-			var nn *rbnode
 			if k < n.k {
-				nn, old = n.left.remove(k)
-				connectLeft(n, nn)
+				old = recursiveRemoveRb(n.left, r, k)
 			} else { //k > n.k
-				nn, old = n.right.remove(k)
-				connectRight(n, nn)
+				old = recursiveRemoveRb(n.right, r, k)
 			}
 		}
 	}
-
-	return n, old
+	return
 }
 
 /* ----------------- utils ----------------- */
@@ -191,15 +191,18 @@ func floorRbTree(n *rbnode) *rbnode {
 	}
 }
 
-// h - hole
-func borrowDownwardRb(h *rbnode) {
-	p := h.parent
-	if p == nil { //replace reference
-		n := h.left
-		connectLeft(h, n.left)
-		connectRight(h, n.right)
-		h.k, h.v = n.k, n.v
+// param:
+//  h - hole
+//  r - subtree root, maintained as root all time
+func borrowDownwardRb(h, r *rbnode) {
+	if h == r { //replace reference
+		if s := h.left; s != nil {
+			connectLeft(h, s.left)
+			connectRight(h, s.right)
+			h.k, h.v = s.k, s.v
+		}
 	} else {
+		p := h.parent
 		if h.c == black {
 			if p.c == black {
 				h.k, h.v = p.k, p.v
@@ -216,7 +219,7 @@ func borrowDownwardRb(h *rbnode) {
 					connectLeft(h, l)
 					connectLeft(p, h)
 				}
-				borrowDownwardRb(p)
+				borrowDownwardRb(p, r)
 			} else { //parent is red
 				if p.left == h { //black L/ red parent
 					h.k, h.v = p.k, p.v

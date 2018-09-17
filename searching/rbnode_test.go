@@ -5,7 +5,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_insert(t *testing.T) {
+func Test_rbnode_functional(t *testing.T) {
 	asert := assert.New(t)
 	n := &rbnode{k: 10, v: "10"}
 	nn, old := n.insert(5, "5")
@@ -79,7 +79,6 @@ func Test_insert(t *testing.T) {
 	asert.Equal(black, n.right.left.c)
 	asert.Equal(11, n.right.right.k)
 	asert.Equal(black, n.right.right.c)
-
 	/*    10r          6r
 	     /  \        /   \
 	    6r  11b     2b   10b
@@ -88,6 +87,30 @@ func Test_insert(t *testing.T) {
 	 / \
 	1b 5b
 	 */
+
+	old = n.remove(99)
+	asert.Nil(old)
+
+	old = n.remove(8)
+	asert.Equal("8", old)
+	asert.Equal(6, n.k)
+	asert.Equal(black, n.c)
+	asert.Equal(2, n.left.k)
+	asert.Equal(red, n.left.c)
+	asert.Equal(11, n.right.k)
+	asert.Equal(black, n.right.c)
+	asert.Equal(10, n.right.left.k)
+	asert.Equal(red, n.right.left.c)
+	/*       6r
+	       /   \
+	    2b      xb          2r - 6b
+	   / \     /           / \    \
+	  1b 5b   11b         1b 5b  11b
+	         /                   /
+	       10r                  10r
+	 */
+
+	 
 }
 
 func Test_rotateLeft(t *testing.T) {
@@ -269,8 +292,9 @@ func Test_borrowDownwardRb(t *testing.T) {
 		n := p.left
 		disconnectRb(pu, p)
 
-		borrowDownwardRb(n)
+		borrowDownwardRb(n, p)
 		asert.Equal(8, p.k)
+		asert.Equal(n, p.left)
 		asert.Equal(5, n.k)
 		asert.Equal(red, n.c)
 		asert.Equal("a", n.left.v)
@@ -291,7 +315,7 @@ func Test_borrowDownwardRb(t *testing.T) {
 		n := p.right
 		disconnectRb(pu, p)
 
-		borrowDownwardRb(n)
+		borrowDownwardRb(n, p)
 		asert.Equal(5, p.k)
 		asert.Equal(3, p.left.k)
 		asert.Equal(red, p.left.c)
@@ -309,13 +333,13 @@ func Test_borrowDownwardRb(t *testing.T) {
 	   /   / \     / \    \
 	  a   c  d     a c    d                   */
 	t.Run("black L/ red parent", func(t *testing.T) {
-		n := aRbTree().left
-		borrowDownwardRb(n)
+		p := aRbTree()
+		n := p.left
+		borrowDownwardRb(n, p)
 		asert.Equal(5, n.k)
 		asert.Equal(red, n.c)
 		asert.Equal("a", n.left.v)
 		asert.Equal("c", n.right.v)
-		p := n.parent
 		asert.Equal("d", p.right.v)
 		asert.Equal(black, p.c)
 		asert.Equal(n, p.left)
@@ -334,7 +358,7 @@ func Test_borrowDownwardRb(t *testing.T) {
 		p := aRbTree()
 		n := p.right
 
-		borrowDownwardRb(n)
+		borrowDownwardRb(n, p)
 		asert.Equal(5, p.k)
 		asert.Equal(black, p.c)
 		l := p.left
@@ -362,7 +386,7 @@ func Test_borrowDownwardRb(t *testing.T) {
 		n := p.left
 		p.c, n.c = black, red
 
-		borrowDownwardRb(n)
+		borrowDownwardRb(n, p)
 		asert.Equal("a", p.left.v)
 	})
 
