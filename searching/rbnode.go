@@ -45,25 +45,26 @@ func (n *rbnode) remove(k int) (old interface{}) {
 
 // to retain r as root all the time
 func recursiveRemoveRb(n, r *rbnode, k int) (old interface{}) {
-	if n != nil {
-		if k == n.k {
-			old = n.v
-			s := swapSuccessorRb(n)
-			if s == n && n.parent == nil { //n is single root
-				n = nil
-			} else {
-				if s.c == black {
-					borrowDownwardRb(s, r)
-				} else { //red minimum
-					s.parent.left, s.parent = nil, nil //disconnect
-				}
-			}
+	if n == nil {
+		return
+	}
+	if k == n.k {
+		old = n.v
+		s := swapSuccessorRb(n)
+		if s == n && n.parent == nil { //n is single root
+			n = nil
 		} else {
-			if k < n.k {
-				old = recursiveRemoveRb(n.left, r, k)
-			} else { //k > n.k
-				old = recursiveRemoveRb(n.right, r, k)
+			if s.c == black {
+				borrowDownwardRb(s, r)
+			} else { //red minimum
+				s.parent.left, s.parent = nil, nil //disconnect
 			}
+		}
+	} else {
+		if k < n.k {
+			old = recursiveRemoveRb(n.left, r, k)
+		} else { //k > n.k
+			old = recursiveRemoveRb(n.right, r, k)
 		}
 	}
 	return
@@ -212,6 +213,7 @@ func borrowDownwardRb(h, r *rbnode) {
 					connectRight(h, r.left)
 					connectLeft(r, h)
 					connectLeft(p, r)
+					borrowDownwardRb(p, r)
 				} else { //black R/ black parent
 					l := p.left
 					if l.c == black {
@@ -219,6 +221,7 @@ func borrowDownwardRb(h, r *rbnode) {
 						connectRight(h, h.left)
 						connectLeft(h, l)
 						connectLeft(p, h)
+						borrowDownwardRb(p, r)
 					} else { //red L
 						if l.left.c == black { // red L(black child)
 							s := l.right
@@ -228,12 +231,10 @@ func borrowDownwardRb(h, r *rbnode) {
 							connectRight(h, h.left)
 							connectLeft(h, s.right)
 						} else { //red L(red left child)
-
+							panic("double red links should've been rotated")
 						}
 					}
-
 				}
-				borrowDownwardRb(p, r)
 			} else { //red parent
 				if p.left == h { //black L/ red parent
 					h.k, h.v = p.k, p.v

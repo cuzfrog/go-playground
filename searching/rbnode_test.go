@@ -110,18 +110,29 @@ func Test_rbnode_functional(t *testing.T) {
 	       10r                  10r          */
 
 	n.remove(6)
+	asert.Equal(10, n.k)
 	/*
 	   2r - 10b      2r - 10b
 	  / \    \      / \    \
 	 1b 5b  11b    1b 5b   11b
 	         /
-	       xr                                                */
+	       xr                                 */
+
 	n.remove(10)
+	asert.Equal(5, n.k)
+	asert.Equal(black, n.c)
+	asert.Equal(11, n.right.k)
+	asert.Equal(black, n.right.c)
+	asert.Equal(2, n.left.k)
+	asert.Equal(black, n.left.c)
+	asert.Equal(1, n.left.left.k)
+	asert.Equal(red, n.left.left.c)
 	/*
-	     2r - xb       1r - 2b
-	    / \    \       / \   \
-	   1b 5b  11b
-	                                               */
+	     2r - xb         5b
+	    / \    \        / \
+	   1b 5b  11b   1r-2b 11b       */
+
+	   //n.remove()
 }
 
 func Test_rotateLeft(t *testing.T) {
@@ -341,8 +352,8 @@ func Test_borrowDownwardRb(t *testing.T) {
 		 [5b]       [bb]          [bb]
 		/   \       /  \          /   \
 	   3r  (xb)   3r  (5b)    ar-3b   5b
-	   /\  /     / \   |          \   / \
-	  ab b c    ab  x  c          b1 b2  c    */
+	   /\   |    / \   |          \   / \
+	  ab b  c   ab  x  c          b1 b2  c    */
 	t.Run("black R/ black parent / red L(black children)", func(t *testing.T) {
 		p := aRbTree()
 		p.c = black
@@ -365,6 +376,16 @@ func Test_borrowDownwardRb(t *testing.T) {
 		asert.Equal(a, n.left.left)
 		asert.Equal(red, n.left.left.c)
 		asert.Equal(b1, n.left.right)
+	})
+
+	/*
+		 [5b]
+		/   \
+	   3r  (xb)
+	   /\  /
+	  ar b c        */
+	t.Run("black R/ black parent / red L(red left child)", func(t *testing.T) {
+		// no such case
 	})
 
 	/*
