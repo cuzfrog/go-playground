@@ -88,10 +88,10 @@ func Test_rbnode_functional(t *testing.T) {
 	1b 5b
 	 */
 
-	old = n.remove(99)
+	_, old = n.remove(99)
 	asert.Nil(old)
 
-	old = n.remove(8)
+	n, old = n.remove(8)
 	asert.Equal("8", old)
 	asert.Equal(6, n.k)
 	asert.Equal(black, n.c)
@@ -132,7 +132,22 @@ func Test_rbnode_functional(t *testing.T) {
 	    / \    \        / \
 	   1b 5b  11b   1r-2b 11b       */
 
-	//n.remove()
+	n, _ = n.remove(11) //same cat with remove 5
+	asert.Equal(2, n.k)
+	asert.Equal(red, n.c)
+	asert.Equal(5, n.right.k)
+	asert.Equal(black, n.right.c)
+	asert.Equal(1, n.left.k)
+	asert.Equal(black, n.left.c)
+	asert.Nil(n.left.left)
+	asert.Nil(n.left.right)
+	asert.Nil(n.right.left)
+	asert.Nil(n.right.right)
+	/*
+	         5b        5b    2b     2r
+	        / \        /    / \    / \
+	   1r-2b  xb   1r-2r   1r 5r  1b 5b      */
+
 }
 
 func Test_rotateLeft(t *testing.T) {

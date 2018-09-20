@@ -39,17 +39,18 @@ func (n *rbnode) insert(k int, v interface{}) (*rbnode, interface{}) {
 	return n, old
 }
 
-func (n *rbnode) remove(k int) (old interface{}) {
+func (n *rbnode) remove(k int) (*rbnode, interface{}) {
 	return recursiveRemoveRb(n, n, k)
 }
 
 // to retain r as root all the time
-func recursiveRemoveRb(n, r *rbnode, k int) (old interface{}) {
+func recursiveRemoveRb(n, r *rbnode, k int) (*rbnode, interface{}) {
+	var old interface{}
 	if n == nil {
-		return
+		return nil, nil
 	}
 	if k == n.k {
-		old = n.v
+		old, n.v = n.v, nil
 		s := swapSuccessorRb(n)
 		if s == n && n.parent == nil { //n is single root
 			n = nil
@@ -62,12 +63,13 @@ func recursiveRemoveRb(n, r *rbnode, k int) (old interface{}) {
 		}
 	} else {
 		if k < n.k {
-			old = recursiveRemoveRb(n.left, r, k)
+			_, old = recursiveRemoveRb(n.left, r, k)
 		} else { //k > n.k
-			old = recursiveRemoveRb(n.right, r, k)
+			_, old = recursiveRemoveRb(n.right, r, k)
 		}
 	}
-	return
+	nn := checkToFlipColorOrRotate(n)
+	return nn, old
 }
 
 /* ----------------- utils ----------------- */
@@ -114,13 +116,23 @@ func (n *rbnode) isBlack() bool {
 	return n == nil || n.c == black
 }
 
+func (n *rbnode) isLeaf() bool {
+	return n.left == nil
+}
+
 func connectLeft(p, c *rbnode) {
+	if p.left != nil && p.left.parent == p {
+		p.left.parent = nil
+	}
 	p.left = c
 	if c != nil {
 		c.parent = p
 	}
 }
 func connectRight(p, c *rbnode) {
+	if p.right != nil && p.right.parent == p {
+		p.right.parent = nil
+	}
 	p.right = c
 	if c != nil {
 		c.parent = p
@@ -136,6 +148,7 @@ func replaceChild(c1, c2 *rbnode) {
 			connectRight(p, c2)
 		}
 	}
+	c1.parent = nil
 }
 
 func disconnectRb(p, c *rbnode) {
@@ -150,6 +163,13 @@ func disconnectRb(p, c *rbnode) {
 }
 
 func dropRefRb(n *rbnode) {
+	if n.left != nil && n.left.parent == n {
+		n.left.parent = nil
+	}
+	if n.right != nil && n.right.parent == n {
+		n.right.parent = nil
+	}
+	replaceChild(n, nil)
 	n.left, n.right, n.parent = nil, nil, nil
 }
 
@@ -196,20 +216,25 @@ func floorRbTree(n *rbnode) *rbnode {
 //  h - hole
 //  r - subtree root, maintained as root all time
 func borrowDownwardRb(h, root *rbnode) {
+	if h.v != nil {
+		panic("h must be hole")
+	}
 	p := h.parent
 	if h == root || p == nil { //replace reference
 		if s := h.left; s != nil {
 			connectLeft(h, s.left)
 			connectRight(h, s.right)
-			h.k, h.v = s.k, s.v
+			h.k, h.v, h.c = s.k, s.v, s.c
+			dropRefRb(s)
 		}
 	} else {
 		if h.c == black {
 			if p.c == black { //black parent
-				h.k, h.v = p.k, p.v
+				h.k, h.v, p.k, p.v = p.k, p.v, h.k, h.v
 				if p.left == h {
 					h.c = red
 					r := p.right
+					p.right = nil
 					connectRight(h, r.left)
 					connectLeft(r, h)
 					connectLeft(p, r)
@@ -221,6 +246,7 @@ func borrowDownwardRb(h, root *rbnode) {
 						connectRight(h, h.left)
 						connectLeft(h, l)
 						connectLeft(p, h)
+						p.right = nil
 						borrowDownwardRb(p, root)
 					} else { //red L
 						if l.left.c == black { // red L(black child)
