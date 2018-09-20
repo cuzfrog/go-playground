@@ -18,6 +18,19 @@ const (
 
 /* ----------------- functions ----------------- */
 
+func (n *rbnode) get(k int) (v interface{}) {
+	if n != nil {
+		if k == n.k {
+			v = n.v
+		} else if k < n.k {
+			v = n.left.get(k)
+		} else {
+			v = n.right.get(k)
+		}
+	}
+	return
+}
+
 // return top node and old value
 func (n *rbnode) insert(k int, v interface{}) (*rbnode, interface{}) {
 	var old interface{}
