@@ -174,6 +174,9 @@ func dropRefRb(n *rbnode) {
 }
 
 func checkToFlipColorOrRotate(n *rbnode) *rbnode {
+	if n == nil {
+		return nil
+	}
 	if n.left.isBlack() && n.right.isBlack() {
 		//do nothing
 	} else if n.right.isBlack() && n.left.c == red {
