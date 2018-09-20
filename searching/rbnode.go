@@ -1,5 +1,7 @@
 package searching
 
+import "fmt"
+
 type rbnode struct {
 	k      int
 	v      interface{}
@@ -208,6 +210,13 @@ func checkToFlipColorOrRotate(n *rbnode) *rbnode {
 
 func swapSuccessorRb(n *rbnode) (f *rbnode) {
 	if n.left == nil { //if leaf
+		if n.right != nil{
+			//for n.parent != nil{
+			//	n = n.parent
+			//}
+			fmt.Println(n)
+			panic("rbnode cannot have single right child")
+		}
 		return n
 	}
 	if n.left.c == red && n.left.left == nil {

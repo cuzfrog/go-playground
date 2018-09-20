@@ -17,7 +17,7 @@ func test(t *testing.T, ctor func() dictionary) {
 	asert.Equal(0, d.size())
 	asert.False(d.contains(1))
 
-	keys := sorting.Dedup(sorting.GenElems(100))
+	keys := sorting.GenNonDupElems(1000)
 	size := len(keys)
 	vals := make([]string, size)
 	for i := range vals {
