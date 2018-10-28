@@ -6,7 +6,7 @@ import (
 )
 
 type hashTable struct {
-	table []linkedNode
+	table []*linkedNode
 	cnt   int
 }
 
@@ -33,9 +33,9 @@ func (t *hashTable) put(k int, v interface{}) (old interface{}, err error) {
 		increaseCapacity(t)
 	}
 	h := utils.Hash(k, cap(t.table))
-	n := &t.table[h]
+	n := t.table[h]
 	if n == nil {
-		t.table[h] = linkedNode{k, v, nil}
+		t.table[h] = &linkedNode{k, v, nil}
 	} else {
 		for n != nil {
 			if n.k == k {
@@ -49,7 +49,7 @@ func (t *hashTable) put(k int, v interface{}) (old interface{}, err error) {
 			n = n.next
 		}
 	}
-	if old != nil {
+	if old == nil {
 		t.cnt++
 	}
 	return old, err
@@ -69,7 +69,7 @@ func (t *hashTable) size() int {
 
 func locateNode(t *hashTable, k int) *linkedNode {
 	h := utils.Hash(k, cap(t.table))
-	return &t.table[h]
+	return t.table[h]
 }
 
 func increaseCapacity(t *hashTable) {
