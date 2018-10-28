@@ -1,6 +1,9 @@
 package utils
 
-import "math/rand"
+import (
+	"math/rand"
+	"strconv"
+)
 
 func IntMin(l, r int) (m int) {
 	if l < r {
@@ -35,7 +38,20 @@ const lettersLength = int64(len(letterBytes))
 func RandAlphabet(n int) string {
 	b := make([]byte, n)
 	for i := range b {
-		b[i] = letterBytes[rand.Int63() % lettersLength]
+		b[i] = letterBytes[rand.Int63()%lettersLength]
 	}
 	return string(b)
+}
+
+const absShiftBits = strconv.IntSize - 1
+
+func Abs(n int) int {
+	y := n >> absShiftBits
+	return (n ^ y) - y
+}
+
+func Hash(h int, m int) int {
+	h = 31*h + 17
+	h = 31 * h
+	return Abs(h) % m
 }

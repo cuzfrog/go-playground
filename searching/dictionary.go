@@ -6,11 +6,9 @@ type dictionary interface {
 	remove(k int) interface{}
 	contains(k int) bool
 	size() int
-	iterator() chan entry
 }
 
 type entry struct {
-	k int
-	v interface{}
+	k    int
+	v    interface{}
 }
-
