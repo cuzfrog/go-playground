@@ -8,7 +8,7 @@ import (
 
 func Test_dictionary_implementations(t *testing.T) {
 	t.Run("23tree", func(t *testing.T) { test(t, new23TreeDic) })
-	t.Run("rbtree", func(t *testing.T) { test(t, newRbtreeDic) })
+	//t.Run("rbtree", func(t *testing.T) { test(t, newRbtreeDic) })
 }
 
 func test(t *testing.T, ctor func() dictionary) {
@@ -64,7 +64,7 @@ func Benchmark_23treeDic(b *testing.B)  {
 	b.Run("10000", func(b *testing.B) {benchmark(b, 100, ctor)})
 }
 
-func Benchmark_rbtreeDic(b *testing.B)  {
+func _Benchmark_rbtreeDic(b *testing.B)  {
 	ctor := newRbtreeDic
 	b.Run("100", func(b *testing.B) {benchmark(b, 100, ctor)})
 	b.Run("1000", func(b *testing.B) {benchmark(b, 100, ctor)})
