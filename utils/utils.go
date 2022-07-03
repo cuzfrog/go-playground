@@ -1,11 +1,11 @@
 package utils
 
 import (
+	"golang.org/x/exp/constraints"
 	"math/rand"
-	"strconv"
 )
 
-func IntMin(l, r int) (m int) {
+func Min[T constraints.Ordered](l, r T) (m T) {
 	if l < r {
 		m = l
 	} else {
@@ -14,7 +14,7 @@ func IntMin(l, r int) (m int) {
 	return
 }
 
-func IntMax(l, r int) (m int) {
+func Max[T constraints.Ordered](l, r T) (m T) {
 	if l > r {
 		m = l
 	} else {
@@ -23,7 +23,7 @@ func IntMax(l, r int) (m int) {
 	return
 }
 
-func Suffle(a []int) {
+func Suffle[T any](a []T) {
 	n := len(a)
 	var j int
 	for i := range a {
@@ -43,11 +43,11 @@ func RandAlphabet(n int) string {
 	return string(b)
 }
 
-const absShiftBits = strconv.IntSize - 1
-
-func Abs(n int) int {
-	y := n >> absShiftBits
-	return (n ^ y) - y
+func Abs[T constraints.Signed](n T) T {
+	if n >= 0 {
+		return n
+	}
+	return -n
 }
 
 func Hash(h int, m int) int {
