@@ -9,3 +9,11 @@ func foldLeft(col interface{}, id interface{}, fn func(prevId interface{}, next 
 	}
 	return id
 }
+
+func foldLeftGeneric[T any, R any](col []T, id R, fn func(prev R, next T) R) R {
+	acc := id
+	for i := 0; i < len(col); i++ {
+		acc = fn(acc, col[i])
+	}
+	return acc
+}
