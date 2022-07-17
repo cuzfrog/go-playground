@@ -19,3 +19,7 @@ func newNode(v int, p *node, branch bool) *node {
 	}
 	return n
 }
+
+func (n *node) isLeaf() bool {
+	return n.a == nil && n.b == nil
+}

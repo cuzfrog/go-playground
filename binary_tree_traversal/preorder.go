@@ -20,3 +20,29 @@ func recursivePreorderTraverse(n *node, l *utils.List[int]) {
 		recursivePreorderTraverse(b, l)
 	}
 }
+
+func preorderTraverse(n *node, size int) *utils.List[int] {
+	s := utils.NewStack[*node](size)
+	l := utils.NewList[int](size)
+
+	for true {
+		l.Add(n.v)
+
+		if n.b != nil {
+			s.Push(n.b)
+		}
+		for n.a != nil {
+			n = n.a
+			l.Add(n.v)
+			if n.b != nil {
+				s.Push(n.b)
+			}
+		}
+		if s.Size() > 0 {
+			n = s.Pop()
+		} else {
+			break
+		}
+	}
+	return l
+}
