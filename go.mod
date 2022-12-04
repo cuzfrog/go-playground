@@ -3,8 +3,9 @@ module github.com/cuzfrog/go-playground
 go 1.18
 
 require (
+	github.com/cuzfrog/tgods v1.3.0
 	github.com/stretchr/testify v1.8.0
-	golang.org/x/exp v0.0.0-20220613132600-b0d781184e0d
+	golang.org/x/exp v0.0.0-20220706164943-b4a6d9510983
 	golang.org/x/tour v0.1.0
 )
 
