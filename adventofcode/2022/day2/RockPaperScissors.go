@@ -65,3 +65,39 @@ func parseStrategy(input string) strategy {
 	}
 	panic(fmt.Sprintf(`invalid input: '%s'`, input))
 }
+
+func parseRounds2(inputPath string) []round {
+	lines := utils.LoadFileLines(inputPath)
+	rounds := make([]round, len(lines)-1)
+	for i, line := range lines {
+		if line != "" {
+			cols := strings.Split(line, " ")
+			rounds[i] = round{parseStrategy(cols[0]), parseStrategy2(cols[0], cols[1])}
+		}
+	}
+	return rounds
+}
+
+func parseStrategy2(opponent string, me string) strategy {
+	opst := parseStrategy(opponent)
+	if me == "X" {
+		if opst == rock {
+			return scissors
+		} else if opst == paper {
+			return rock
+		} else { //scissors
+			return paper
+		}
+	} else if me == "Y" {
+		return opst
+	} else if me == "Z" {
+		if opst == rock {
+			return paper
+		} else if opst == paper {
+			return scissors
+		} else { //scissors
+			return rock
+		}
+	}
+	panic(fmt.Sprintf(`invalid input for my strategy: '%s'`, me))
+}
