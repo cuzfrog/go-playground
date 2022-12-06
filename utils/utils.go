@@ -64,3 +64,7 @@ func StrToInt(s string) int {
 	}
 	return i
 }
+
+func IsUpperCaseLetter(c uint8) bool {
+	return c >= 65 && c <= 90
+}
