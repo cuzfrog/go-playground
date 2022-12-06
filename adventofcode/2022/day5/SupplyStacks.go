@@ -38,6 +38,22 @@ func (ss stacks) performMove(mv move) {
 	}
 }
 
+func (ss stacks) performMove9001(mv move) {
+	ts := collections.NewArrayStack[uint8](mv.cnt)
+	for i := 0; i < mv.cnt; i++ {
+		item, ok := ss[mv.src-1].Pop()
+		if !ok {
+			panic("no item left in stack")
+		}
+		ts.Push(item)
+	}
+
+	it := ts.Iterator()
+	for it.Next() {
+		ss[mv.tgt-1].Push(it.Value())
+	}
+}
+
 var moveRegex = regexp.MustCompile("move (\\d+) from (\\d+) to (\\d+)")
 
 func parseMoves(path string) []move {

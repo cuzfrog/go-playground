@@ -46,5 +46,18 @@ func TestSolution(t *testing.T) {
 	for _, mv := range ms {
 		ss.performMove(mv)
 	}
-	println(ss.peerTop())
+	res := ss.peerTop()
+	println(res)
+	assert.Equal(t, "MQSHJMWNH", res)
+}
+
+func TestSolution9001(t *testing.T) {
+	ss := parseStacks("./input-stacks")
+	ms := parseMoves("./input-moves")
+	for _, mv := range ms {
+		ss.performMove9001(mv)
+	}
+	res := ss.peerTop()
+	println(res)
+	assert.Equal(t, "LLWJRBHVZ", res)
 }
