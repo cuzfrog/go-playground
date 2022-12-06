@@ -6,7 +6,7 @@ import (
 	"github.com/cuzfrog/tgods/collections"
 	"github.com/cuzfrog/tgods/transform"
 	"github.com/cuzfrog/tgods/types"
-	utils2 "github.com/cuzfrog/tgods/utils"
+	cutils "github.com/cuzfrog/tgods/utils"
 )
 
 func sumPriority(items types.List[uint8]) int {
@@ -28,7 +28,7 @@ func findAllShared(path string) types.List[uint8] {
 		println(itemsStr)
 	}
 	flatAll := collections.NewArrayListOf[uint8]()
-	transform.FlatMapTo[types.Set[uint8], uint8](all, flatAll, func(s types.Set[uint8]) []uint8 { return utils2.SliceFrom[uint8](s) })
+	transform.FlatMapTo[types.Set[uint8], uint8](all, flatAll, func(s types.Set[uint8]) []uint8 { return cutils.SliceFrom[uint8](s) })
 	return flatAll
 }
 
@@ -38,15 +38,19 @@ func findShared(sack string) types.Set[uint8] {
 		panic("sack contains odd number of items")
 	}
 
+	hl := l >> 1
 	chars := collections.NewHashSetOfNum[uint8]()
-	for i := 0; i < l>>1; i++ {
-		for j := l >> 1; j < l; j++ {
-			if sack[i] == sack[j] {
-				chars.Add(sack[i]) // TODO deduplication
-			}
+	for i := 0; i < hl; i++ {
+		chars.Add(sack[i])
+	}
+	sharedChars := collections.NewHashSetOfNum[uint8]()
+	for i := hl; i < l; i++ {
+		c := sack[i]
+		if chars.Contains(c) {
+			sharedChars.Add(c)
 		}
 	}
-	return chars
+	return sharedChars
 }
 
 func toPriority(c uint8) int {
