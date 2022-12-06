@@ -3,6 +3,7 @@ package utils
 import (
 	"golang.org/x/exp/constraints"
 	"math/rand"
+	"strconv"
 )
 
 func Min[T constraints.Ordered](l, r T) (m T) {
@@ -54,4 +55,12 @@ func Hash(h int, m int) int {
 	h = 31*h + 17
 	h = 31 * h
 	return Abs(h) % m
+}
+
+func StrToInt(s string) int {
+	i, err := strconv.Atoi(s)
+	if err != nil {
+		panic(err)
+	}
+	return i
 }
