@@ -53,6 +53,29 @@ func findShared(sack string) types.Set[uint8] {
 	return sharedChars
 }
 
+func findAllBadges(path string) types.List[uint8] {
+	lines := utils.LoadFileLines(path)
+	l := len(lines) - 1
+	all := collections.NewArrayListOf[uint8]()
+	cur := 0
+	for cur < l {
+		groupChars := collections.NewHashMapOfNumKey[uint8, int]()
+		for i := 0; i < 3; i++ {
+			sack := lines[cur]
+			for j := 0; j < len(sack); j++ {
+				cutils.Compute[uint8, int](groupChars, sack[j], func(flags int, found bool) int { return flags | 1<<i })
+			}
+			cur++
+		}
+		groupChars.Each(func(i int, entry types.Entry[uint8, int]) {
+			if entry.Value() == 7 {
+				all.Add(entry.Key())
+			}
+		})
+	}
+	return all
+}
+
 func toPriority(c uint8) int {
 	if c >= 'a' && c <= 'z' {
 		return int(c - 'a' + 1)
