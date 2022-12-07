@@ -22,6 +22,29 @@ func fileEqual(a, b *file) bool {
 	return funcs.ValueEqual(a.path, b.path)
 }
 
+func traverseFilesystem(root *file, filterFn func(f *file) bool) types.List[*file] {
+	files := collections.NewArrayListOfEq(0, fileEqual)
+	if filterFn(root) {
+		files.Add(root)
+	}
+	cur := root
+	queue := collections.NewArrayListQueueOfEq(0, fileEqual)
+	for queue.Size() > 0 || (cur != nil && cur.files != nil) {
+		it := cur.files.Iterator()
+		for it.Next() {
+			f := it.Value()
+			if f.isDir {
+				queue.Enqueue(f)
+			}
+			if filterFn(f) {
+				files.Add(f)
+			}
+		}
+		cur, _ = queue.Dequeue()
+	}
+	return files
+}
+
 func buildFilesystem(path string) *file {
 	lines := utils.LoadFileLines(path)
 	l := len(lines) - 1
