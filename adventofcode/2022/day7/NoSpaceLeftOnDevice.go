@@ -22,7 +22,7 @@ func fileEqual(a, b *file) bool {
 	return funcs.ValueEqual(a.path, b.path)
 }
 
-func traverseFilesystem(root *file, filterFn func(f *file) bool) types.List[*file] {
+func traverseFilesystem(root *file, filterFn func(f *file) bool) types.ArrayList[*file] {
 	files := collections.NewArrayListOfEq(0, fileEqual)
 	if filterFn(root) {
 		files.Add(root)
