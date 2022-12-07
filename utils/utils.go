@@ -4,6 +4,7 @@ import (
 	"golang.org/x/exp/constraints"
 	"math/rand"
 	"strconv"
+	"strings"
 )
 
 func Min[T constraints.Ordered](l, r T) (m T) {
@@ -67,4 +68,9 @@ func StrToInt(s string) int {
 
 func IsUpperCaseLetter(c uint8) bool {
 	return c >= 65 && c <= 90
+}
+
+func SplitString2(s, sep string) (string, string) {
+	x := strings.Split(s, sep)
+	return x[0], x[1]
 }
