@@ -28,7 +28,57 @@ func (c coord) String() string {
 	return fmt.Sprintf("%d.%d", c.x, c.y)
 }
 
-func scan(f forest) int {
+func (f *forest) scenicScore(r, c int) int {
+	h := f.trees[r][c]
+
+	downScore := 0
+	for i := r + 1; i < f.rowCnt; i++ {
+		nh := f.trees[i][c]
+		if h > nh {
+			downScore++
+		} else if h <= nh {
+			downScore++
+			break
+		}
+	}
+
+	upScore := 0
+	for i := r - 1; i >= 0; i-- {
+		nh := f.trees[i][c]
+		if h > nh {
+			upScore++
+		} else if h <= nh {
+			upScore++
+			break
+		}
+	}
+
+	rightScore := 0
+	for j := c + 1; j < f.colCnt; j++ {
+		nh := f.trees[r][j]
+		if h > nh {
+			rightScore++
+		} else if h <= nh {
+			rightScore++
+			break
+		}
+	}
+
+	leftScore := 0
+	for j := c - 1; j >= 0; j-- {
+		nh := f.trees[r][j]
+		if h > nh {
+			leftScore++
+		} else if h <= nh {
+			leftScore++
+			break
+		}
+	}
+
+	return downScore * upScore * rightScore * leftScore
+}
+
+func scanVisible(f forest) int {
 	visible := collections.NewHashSetC[coord]()
 
 	bar := int8(-1)
