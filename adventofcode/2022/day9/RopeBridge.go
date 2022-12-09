@@ -1,6 +1,7 @@
 package day9
 
 import (
+	"fmt"
 	"github.com/cuzfrog/go-playground/adventofcode/2022/shared"
 	"github.com/cuzfrog/go-playground/utils"
 	"github.com/cuzfrog/tgods/collections"
@@ -47,6 +48,26 @@ func performSteps(steps []step) (*knot, *knot) {
 	return head, tail
 }
 
+func performSteps2(steps []step) *knot {
+	knots := collections.NewArrayListOfEq[*knot](10, nil)
+	for i := 0; i < 10; i++ {
+		knots.Add(newKnot())
+	}
+	head, _ := knots.Head()
+	for _, s := range steps {
+		for i := 0; i < s.cnt; i++ {
+			head.move(s.di)
+			for i := 1; i < knots.Size(); i++ {
+				k, _ := knots.Get(i)
+				kPrev, _ := knots.Get(i - 1)
+				k.follow(kPrev)
+			}
+		}
+	}
+	tail, _ := knots.Tail()
+	return tail
+}
+
 func (k *knot) move(di Direction) {
 	if di == Up {
 		k.cur.Y++
@@ -73,11 +94,11 @@ func (k *knot) follow(h *knot) {
 	if distance2 == 4 {
 		k.cur.X += xDif / 2
 		k.cur.Y += yDif / 2
-	} else if distance2 == 5 {
+	} else if distance2 == 5 || distance2 == 8 {
 		k.cur.X += xDif / utils.Abs(xDif)
 		k.cur.Y += yDif / utils.Abs(yDif)
 	} else {
-		panic("impossible distance power2")
+		panic(fmt.Sprintf("impossible distance power2, followee(%d,%d), follower(%d,%d)", h.cur.X, h.cur.Y, k.cur.X, k.cur.Y))
 	}
 	k.route.Add(k.cur)
 }

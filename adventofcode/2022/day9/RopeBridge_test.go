@@ -160,8 +160,20 @@ func TestInput(t *testing.T) {
 	assert.Equal(t, 13, tail.countNoDuplicatePosition())
 }
 
+func TestInput2(t *testing.T) {
+	steps := parseSteps("./test-input2")
+	tail := performSteps2(steps)
+	assert.Equal(t, 36, tail.countNoDuplicatePosition())
+}
+
 func TestSolution1(t *testing.T) {
 	steps := parseSteps("./input")
 	_, tail := performSteps(steps)
+	println(tail.countNoDuplicatePosition())
+}
+
+func TestSolution2(t *testing.T) {
+	steps := parseSteps("./input")
+	tail := performSteps2(steps)
 	println(tail.countNoDuplicatePosition())
 }
