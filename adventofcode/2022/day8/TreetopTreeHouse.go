@@ -1,7 +1,7 @@
 package day8
 
 import (
-	"fmt"
+	"github.com/cuzfrog/go-playground/adventofcode/2022/shared"
 	"github.com/cuzfrog/go-playground/utils"
 	"github.com/cuzfrog/tgods/collections"
 	"github.com/cuzfrog/tgods/types"
@@ -11,21 +11,6 @@ type forest struct {
 	trees  [][]int8
 	rowCnt int
 	colCnt int
-}
-
-type coord struct {
-	x int
-	y int
-}
-
-func (c coord) Hash() uint {
-	return uint(c.x*17 + c.y)
-}
-func (c coord) Equal(o coord) bool {
-	return c.x == o.x && c.y == o.y
-}
-func (c coord) String() string {
-	return fmt.Sprintf("%d.%d", c.x, c.y)
 }
 
 func (f *forest) scenicScore(r, c int) int {
@@ -79,7 +64,7 @@ func (f *forest) scenicScore(r, c int) int {
 }
 
 func scanVisible(f forest) int {
-	visible := collections.NewHashSetC[coord]()
+	visible := collections.NewHashSetC[shared.Coord]()
 
 	bar := int8(-1)
 	for i := 0; i < f.rowCnt; i++ {
@@ -87,7 +72,7 @@ func scanVisible(f forest) int {
 		for j := 0; j < f.colCnt; j++ {
 			h := f.trees[i][j]
 			if h > bar {
-				visible.Add(coord{i, j})
+				visible.Add(shared.Coord{i, j})
 				bar = h
 			}
 		}
@@ -96,7 +81,7 @@ func scanVisible(f forest) int {
 		for j := f.colCnt - 1; j >= 0; j-- {
 			h := f.trees[i][j]
 			if h > bar {
-				visible.Add(coord{i, j})
+				visible.Add(shared.Coord{i, j})
 				bar = h
 			}
 		}
@@ -106,7 +91,7 @@ func scanVisible(f forest) int {
 		for i := 0; i < f.rowCnt; i++ {
 			h := f.trees[i][j]
 			if h > bar {
-				visible.Add(coord{i, j})
+				visible.Add(shared.Coord{i, j})
 				bar = h
 			}
 		}
@@ -115,7 +100,7 @@ func scanVisible(f forest) int {
 		for i := f.rowCnt - 1; i >= 0; i-- {
 			h := f.trees[i][j]
 			if h > bar {
-				visible.Add(coord{i, j})
+				visible.Add(shared.Coord{i, j})
 				bar = h
 			}
 		}
@@ -124,10 +109,10 @@ func scanVisible(f forest) int {
 	return visible.Size()
 }
 
-func printVisible(f forest, visible types.Set[coord]) {
+func printVisible(f forest, visible types.Set[shared.Coord]) {
 	for i := 0; i < f.rowCnt; i++ {
 		for j := 0; j < f.colCnt; j++ {
-			if visible.Contains(coord{i, j}) {
+			if visible.Contains(shared.Coord{i, j}) {
 				print(f.trees[i][j])
 			} else {
 				print(" ")
