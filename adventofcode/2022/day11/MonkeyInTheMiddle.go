@@ -3,6 +3,8 @@ package day11
 import (
 	"github.com/cuzfrog/go-playground/utils"
 	"github.com/cuzfrog/tgods/collections"
+	"github.com/cuzfrog/tgods/funcs"
+	"github.com/cuzfrog/tgods/transform"
 	"github.com/cuzfrog/tgods/types"
 	utils2 "github.com/cuzfrog/tgods/utils"
 	"strings"
@@ -14,6 +16,36 @@ type monkey struct {
 	testDividant int
 	tgtT         int //monkey index
 	tgtF         int //monkey index
+	insCnt       int
+}
+
+func sumMonkeyBusinessNum(monkeys []*monkey) int {
+	if len(monkeys) < 2 {
+		panic("")
+	}
+	insCnts := collections.NewArrayListOfSize[int](len(monkeys))
+	transform.MapSliceTo[*monkey, int](monkeys, insCnts, func(m *monkey) int { return m.insCnt })
+	insCnts.Sort(funcs.ValueGreater[int])
+	c1, _ := insCnts.Get(0)
+	c2, _ := insCnts.Get(1)
+	return c1 * c2
+}
+
+func playRounds(monkeys []*monkey, rcnt int) {
+	for i := 0; i < rcnt; i++ {
+		for _, m := range monkeys {
+			for m.items.Size() > 0 {
+				item, _ := m.items.Dequeue()
+				m.insCnt++
+				item = m.ops(item) / 3
+				if item%m.testDividant == 0 {
+					monkeys[m.tgtT].items.Enqueue(item)
+				} else {
+					monkeys[m.tgtF].items.Enqueue(item)
+				}
+			}
+		}
+	}
 }
 
 func parseMonkeys(path string) []*monkey {

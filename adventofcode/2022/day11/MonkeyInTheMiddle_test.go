@@ -1,9 +1,32 @@
 package day11
 
 import (
+	"github.com/cuzfrog/tgods/utils"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
+
+func TestSolution1(t *testing.T) {
+	ms := parseMonkeys("./input")
+	playRounds(ms, 20)
+	mbNum := sumMonkeyBusinessNum(ms)
+	println(mbNum)
+}
+
+func TestPlayRounds(t *testing.T) {
+	ms := parseMonkeys("./test-input")
+	playRounds(ms, 20)
+	assert.Equal(t, []int{10, 12, 14, 26, 34}, utils.SliceFrom[int](ms[0].items))
+	assert.Equal(t, []int{245, 93, 53, 199, 115}, utils.SliceFrom[int](ms[1].items))
+
+	assert.Equal(t, 101, ms[0].insCnt)
+	assert.Equal(t, 95, ms[1].insCnt)
+	assert.Equal(t, 7, ms[2].insCnt)
+	assert.Equal(t, 105, ms[3].insCnt)
+
+	mbNum := sumMonkeyBusinessNum(ms)
+	assert.Equal(t, 10605, mbNum)
+}
 
 func TestParseMonkeys(t *testing.T) {
 	ms := parseMonkeys("./test-input")
