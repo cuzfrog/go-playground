@@ -10,9 +10,18 @@ import (
 	"strings"
 )
 
+type opsType string
+
+const (
+	add      opsType = "+"
+	multiply opsType = "*"
+	squire   opsType = "^2"
+)
+
 type monkey struct {
 	items        types.Queue[int]
 	ops          func(old int) int
+	opsT         opsType
 	testDividant int
 	tgtT         int //monkey index
 	tgtF         int //monkey index
@@ -31,13 +40,17 @@ func sumMonkeyBusinessNum(monkeys []*monkey) int {
 	return c1 * c2
 }
 
-func playRounds(monkeys []*monkey, rcnt int) {
+func manageWorryLevelByDividing3(m *monkey, item int) int {
+	return m.ops(item) / 3
+}
+
+func playRounds(monkeys []*monkey, rcnt int, manageFn func(*monkey, int) int) {
 	for i := 0; i < rcnt; i++ {
 		for _, m := range monkeys {
 			for m.items.Size() > 0 {
 				item, _ := m.items.Dequeue()
 				m.insCnt++
-				item = m.ops(item) / 3
+				item = manageFn(m, item)
 				if item%m.testDividant == 0 {
 					monkeys[m.tgtT].items.Enqueue(item)
 				} else {
@@ -48,7 +61,7 @@ func playRounds(monkeys []*monkey, rcnt int) {
 	}
 }
 
-func parseMonkeys(path string) []*monkey {
+func parseMonkeys(path string) ([]*monkey, int) {
 	lines := utils.LoadFileLines(path)
 	l := len(lines) - 1
 	monkeys := collections.NewArrayListOfSize[*monkey](10)
@@ -94,5 +107,7 @@ func parseMonkeys(path string) []*monkey {
 			panic("unknown input line")
 		}
 	}
-	return utils2.SliceFrom[*monkey](monkeys)
+	ms := utils2.SliceFrom[*monkey](monkeys)
+	base := transform.ReduceSlice[*monkey, int](ms, 1, func(b int, next *monkey) int { return b * next.testDividant })
+	return ms, base
 }

@@ -7,15 +7,57 @@ import (
 )
 
 func TestSolution1(t *testing.T) {
-	ms := parseMonkeys("./input")
-	playRounds(ms, 20)
+	ms, _ := parseMonkeys("./input")
+	playRounds(ms, 20, manageWorryLevelByDividing3)
 	mbNum := sumMonkeyBusinessNum(ms)
 	println(mbNum)
+	assert.Equal(t, 54036, mbNum)
+}
+
+func TestSulution2(t *testing.T) {
+	ms, base := parseMonkeys("./input")
+	playRounds(ms, 10000, func(m *monkey, item int) int {
+		r := m.ops(item)
+		return r % base
+	})
+	mb := sumMonkeyBusinessNum(ms)
+	println(mb)
+}
+
+func TestPlayRounds10000(t *testing.T) {
+	ms, base := parseMonkeys("./test-input")
+	playRounds(ms, 10000, func(m *monkey, item int) int {
+		r := m.ops(item)
+		return r % base
+	})
+	mb := sumMonkeyBusinessNum(ms)
+	assert.Equal(t, 2713310158, mb)
+}
+
+func TestPlayRounds2_20(t *testing.T) {
+	ms, _ := parseMonkeys("./test-input")
+	playRounds(ms, 20, func(m *monkey, item int) int { return m.ops(item) })
+	assert.Equal(t, 99, ms[0].insCnt)
+	assert.Equal(t, 97, ms[1].insCnt)
+	assert.Equal(t, 8, ms[2].insCnt)
+	assert.Equal(t, 103, ms[3].insCnt)
+}
+
+func TestPlayRounds2_1000(t *testing.T) {
+	ms, base := parseMonkeys("./test-input")
+	playRounds(ms, 1000, func(m *monkey, item int) int {
+		r := m.ops(item)
+		return r % base
+	})
+	assert.Equal(t, 5204, ms[0].insCnt)
+	assert.Equal(t, 4792, ms[1].insCnt)
+	assert.Equal(t, 199, ms[2].insCnt)
+	assert.Equal(t, 5192, ms[3].insCnt)
 }
 
 func TestPlayRounds(t *testing.T) {
-	ms := parseMonkeys("./test-input")
-	playRounds(ms, 20)
+	ms, _ := parseMonkeys("./test-input")
+	playRounds(ms, 20, manageWorryLevelByDividing3)
 	assert.Equal(t, []int{10, 12, 14, 26, 34}, utils.SliceFrom[int](ms[0].items))
 	assert.Equal(t, []int{245, 93, 53, 199, 115}, utils.SliceFrom[int](ms[1].items))
 
@@ -29,7 +71,7 @@ func TestPlayRounds(t *testing.T) {
 }
 
 func TestParseMonkeys(t *testing.T) {
-	ms := parseMonkeys("./test-input")
+	ms, _ := parseMonkeys("./test-input")
 	m0 := ms[0]
 	assert.True(t, m0.items.Contains(79))
 	assert.True(t, m0.items.Contains(98))
