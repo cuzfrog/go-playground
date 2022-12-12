@@ -2,15 +2,17 @@ package day12
 
 import (
 	"github.com/cuzfrog/go-playground/adventofcode/2022/shared"
+	"github.com/cuzfrog/tgods/collections"
+	"github.com/cuzfrog/tgods/funcs"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestLoadMap(t *testing.T) {
-	m := loadMap("./test-input")
+	m, start := loadMap("./test-input")
 	assert.Equal(t, 5, m.rowCnt)
 	assert.Equal(t, 8, m.colCnt)
-	assert.Equal(t, shared.Coord{0, 0}, m.start)
+	assert.Equal(t, shared.Coord{0, 0}, start)
 	assert.Equal(t, shared.Coord{5, 2}, m.end)
 
 	assert.Equal(t, int8('s'), m.height(shared.Coord{3, 2}))
@@ -18,7 +20,7 @@ func TestLoadMap(t *testing.T) {
 }
 
 func TestMoveUp(t *testing.T) {
-	m := loadMap("./test-input")
+	m, _ := loadMap("./test-input")
 	n, ok := moveUp(m, shared.Coord{2, 2})
 	assert.True(t, ok)
 	assert.Equal(t, shared.Coord{2, 1}, n)
@@ -28,7 +30,7 @@ func TestMoveUp(t *testing.T) {
 }
 
 func TestMoveRight(t *testing.T) {
-	m := loadMap("./test-input")
+	m, _ := loadMap("./test-input")
 	n, ok := moveRight(m, shared.Coord{0, 1})
 	assert.True(t, ok)
 	assert.Equal(t, shared.Coord{1, 1}, n)
@@ -38,7 +40,7 @@ func TestMoveRight(t *testing.T) {
 }
 
 func TestMoveDown(t *testing.T) {
-	m := loadMap("./test-input")
+	m, _ := loadMap("./test-input")
 	n, ok := moveDown(m, shared.Coord{1, 0})
 	assert.True(t, ok)
 	assert.Equal(t, shared.Coord{1, 1}, n)
@@ -48,7 +50,7 @@ func TestMoveDown(t *testing.T) {
 }
 
 func TestMoveLeft(t *testing.T) {
-	m := loadMap("./test-input")
+	m, _ := loadMap("./test-input")
 	n, ok := moveLeft(m, shared.Coord{4, 0})
 	assert.True(t, ok)
 	assert.Equal(t, shared.Coord{3, 0}, n)
@@ -58,15 +60,29 @@ func TestMoveLeft(t *testing.T) {
 }
 
 func TestInput1(t *testing.T) {
-	m := loadMap("./test-input")
-	cnt, endStep := moveCnt(m)
+	m, start := loadMap("./test-input")
+	cnt, endStep, _ := moveCnt(m, start)
 	println(endStep.Route())
 	assert.Equal(t, 31, cnt)
 }
 
 func TestSolution1(t *testing.T) {
-	m := loadMap("./input")
-	cnt, _ := moveCnt(m)
+	m, start := loadMap("./input")
+	cnt, _, _ := moveCnt(m, start)
 	println(cnt)
 	assert.Equal(t, 517, cnt)
+}
+
+func TestSolution2(t *testing.T) {
+	m, _ := loadMap("./input")
+	starts := m.allStarts()
+	cnts := collections.NewArrayListOfSize[int](len(starts))
+	for _, start := range starts {
+		cnt, _, ok := moveCnt(m, start)
+		if ok {
+			cnts.Add(cnt)
+		}
+	}
+	cnts.Sort(funcs.ValueLess[int])
+	println(cnts.Head())
 }

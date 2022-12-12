@@ -39,22 +39,22 @@ func (s *step) Route() string {
 
 type theMap struct {
 	heights [][]int8
-	start   shared.Coord
 	end     shared.Coord
 	rowCnt  int
 	colCnt  int
 }
 
-func moveCnt(m *theMap) (int, *step) {
+func moveCnt(m *theMap, start shared.Coord) (int, *step, bool) {
 	visited := collections.NewHashSetC[shared.Coord]()
-	visited.Add(m.start)
-	curSteps := collections.NewArrayListOf(&step{m.height(m.start), m.start, nil})
+	visited.Add(start)
+	curSteps := collections.NewArrayListOf(&step{m.height(start), start, nil})
 	cnt := 0
 	for !visited.Contains(m.end) {
 		nextSteps := collections.NewArrayListOf[*step]()
 		transform.FlatMapTo[*step, *step](curSteps, nextSteps, func(cur *step) []*step { return nextMoves(m, cur, visited) })
 		if nextSteps.Size() == 0 {
-			panic(fmt.Sprintf("no way to go, curs: %v", *utils2.StringFrom[*step](curSteps)))
+			println(fmt.Sprintf("no way to go, curs: %v", *utils2.StringFrom[*step](curSteps)))
+			return -1, nil, false
 		}
 		curSteps = nextSteps
 		cnt++
@@ -66,7 +66,7 @@ func moveCnt(m *theMap) (int, *step) {
 			endStep = it.Value()
 		}
 	}
-	return cnt, endStep
+	return cnt, endStep, true
 }
 
 func nextMoves(m *theMap, cur *step, visited types.Set[shared.Coord]) []*step {
@@ -91,12 +91,13 @@ func nextMoves(m *theMap, cur *step, visited types.Set[shared.Coord]) []*step {
 	return utils2.SliceFrom[*step](mvs)
 }
 
-func loadMap(path string) *theMap {
+func loadMap(path string) (*theMap, shared.Coord) {
 	lines := utils.LoadFileLines(path)
 	l := len(lines) - 1
 	colCnt := len(lines[0])
-	m := theMap{make([][]int8, l), shared.Coord{}, shared.Coord{}, l, colCnt}
+	m := theMap{make([][]int8, l), shared.Coord{}, l, colCnt}
 	maxc := int8('a')
+	var start shared.Coord
 	for i := 0; i < l; i++ {
 		line := lines[i]
 		m.heights[i] = make([]int8, colCnt)
@@ -107,17 +108,29 @@ func loadMap(path string) *theMap {
 			}
 			m.heights[i][j] = c
 			if line[j] == 'S' {
-				m.start.X = j
-				m.start.Y = i
+				start.X = j
+				start.Y = i
 			} else if line[j] == 'E' {
 				m.end.X = j
 				m.end.Y = i
 			}
 		}
 	}
-	m.heights[m.start.Y][m.start.X] = 'a'
+	m.heights[start.Y][start.X] = 'a'
 	m.heights[m.end.Y][m.end.X] = maxc
-	return &m
+	return &m, start
+}
+
+func (m *theMap) allStarts() []shared.Coord {
+	starts := collections.NewArrayListOf[shared.Coord]()
+	for i := 0; i < m.rowCnt; i++ {
+		for j := 0; j < m.colCnt; j++ {
+			if m.heights[i][j] == 'a' {
+				starts.Add(shared.Coord{X: j, Y: i})
+			}
+		}
+	}
+	return utils2.SliceFrom[shared.Coord](starts)
 }
 
 func (m *theMap) height(coord shared.Coord) int8 {
