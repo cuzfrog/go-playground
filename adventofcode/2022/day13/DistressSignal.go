@@ -129,3 +129,11 @@ func splitElems(line []byte, sp span) []span {
 	copy(res, buf)
 	return res
 }
+
+func signalLess(a, b *signal) bool {
+	return findOrder(pair{a, b}) < 0
+}
+
+func pairToSignals(p pair) []*signal {
+	return []*signal{p.left, p.right}
+}

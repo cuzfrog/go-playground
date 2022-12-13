@@ -32,10 +32,11 @@ func TestSplitElems(t *testing.T) {
 }
 
 func newPair(l, r string) pair {
-	return pair{
-		parseSignal([]byte(l), span{0, len(l)}),
-		parseSignal([]byte(r), span{0, len(r)}),
-	}
+	return pair{newSignal(l), newSignal(r)}
+}
+
+func newSignal(s string) *signal {
+	return parseSignal([]byte(s), span{0, len(s)})
 }
 
 func TestIsCorrect(t *testing.T) {
@@ -72,4 +73,39 @@ func TestInput1(t *testing.T) {
 	}
 	sum := transform.Reduce[int, int](rightIndices, 0, func(a, i int) int { return a + i })
 	println(sum)
+}
+
+var d1 = newSignal("[[2]]")
+var d2 = newSignal("[[6]]")
+
+func TestInput2(t *testing.T) {
+	ps := parseSignals("./test-input")
+	signals := collections.NewArrayListOfSize[*signal](len(ps) + 2)
+	transform.FlatMapSliceTo[pair, *signal](ps, signals, pairToSignals)
+	signals.Add(d1)
+	signals.Add(d2)
+	signals.Sort(signalLess)
+
+	ss := utils.SliceFrom[*signal](signals)
+	assert.Equal(t, d1, ss[9])
+	assert.Equal(t, d2, ss[13])
+}
+
+func TestSolution2(t *testing.T) {
+	ps := parseSignals("./input")
+	signals := collections.NewArrayListOfSize[*signal](len(ps) + 2)
+	transform.FlatMapSliceTo[pair, *signal](ps, signals, pairToSignals)
+
+	signals.Add(d1)
+	signals.Add(d2)
+	signals.Sort(signalLess)
+
+	key := 1
+	signals.Each(func(i int, s *signal) {
+		if s == d1 || s == d2 {
+			key *= (i + 1)
+		}
+	})
+	println(key)
+	assert.Equal(t, 20952, key)
 }
