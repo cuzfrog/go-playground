@@ -1,10 +1,19 @@
 package shared
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/cuzfrog/go-playground/utils"
+)
 
 type Coord struct {
 	X int
 	Y int
+}
+
+type Rectangle struct {
+	Ori    Coord
+	Width  int
+	Height int
 }
 
 func (c Coord) Hash() uint {
@@ -15,4 +24,8 @@ func (c Coord) Equal(o Coord) bool {
 }
 func (c Coord) String() string {
 	return fmt.Sprintf("%d.%d", c.X, c.Y)
+}
+func ParseCoord(s string) Coord {
+	v1, v2 := utils.SplitString2(s, ",")
+	return Coord{utils.StrToInt(v1), utils.StrToInt(v2)}
 }

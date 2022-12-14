@@ -16,11 +16,51 @@ func Min[T constraints.Ordered](l, r T) (m T) {
 	return
 }
 
+func MinOf[T constraints.Ordered](nums ...T) T {
+	min := nums[0]
+	l := len(nums)
+	for i := 1; i < l; i++ {
+		n := nums[i]
+		if n < min {
+			min = n
+		}
+	}
+	return min
+}
+
 func Max[T constraints.Ordered](l, r T) (m T) {
 	if l > r {
 		m = l
 	} else {
 		m = r
+	}
+	return
+}
+
+func MaxOf[T constraints.Ordered](nums ...T) T {
+	max := nums[0]
+	l := len(nums)
+	for i := 1; i < l; i++ {
+		n := nums[i]
+		if n > max {
+			max = n
+		}
+	}
+	return max
+}
+
+func MinMaxOf[T constraints.Ordered](nums ...T) (min T, max T) {
+	min = nums[0]
+	max = min
+	l := len(nums)
+	for i := 1; i < l; i++ {
+		n := nums[i]
+		if n > max {
+			max = n
+		}
+		if n < min {
+			min = n
+		}
 	}
 	return
 }
