@@ -45,6 +45,11 @@ func TestBuildCaveSlice(t *testing.T) {
 	assert.Equal(t, shared.ParseCoord("6,0"), cs.src)
 }
 
+func TestBuildCaveSlice2(t *testing.T) {
+	cs := buildCaveSlice2(parseLines("./test-input"))
+	println(fmt.Sprintf("%v", cs))
+}
+
 func TestPourSand(t *testing.T) {
 	cs := buildCaveSlice(parseLines("./test-input"))
 	cs.pourSand()
@@ -109,4 +114,31 @@ func TestSolution1(t *testing.T) {
 		cs.pourSand()
 	}
 	println(cs.sandCnt)
+	assert.Equal(t, 838, cs.sandCnt)
+}
+
+func TestInput2(t *testing.T) {
+	cs := buildCaveSlice2(parseLines("./test-input"))
+
+	cnt := cs.sandCnt
+	cs.pourSand()
+	for cnt != cs.sandCnt {
+		cnt = cs.sandCnt
+		cs.pourSand()
+	}
+	println(cs.sandCnt)
+	assert.Equal(t, 93, cs.sandCnt)
+}
+
+func TestSolution2(t *testing.T) {
+	cs := buildCaveSlice2(parseLines("./input"))
+
+	cnt := cs.sandCnt
+	cs.pourSand()
+	for cnt != cs.sandCnt {
+		cnt = cs.sandCnt
+		cs.pourSand()
+	}
+	println(cs.sandCnt)
+	assert.Equal(t, 27539, cs.sandCnt)
 }

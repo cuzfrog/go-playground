@@ -31,6 +31,9 @@ type line struct {
 
 func (cs *caveSlice) pourSand() {
 	pos := cs.src
+	if cs.get(pos.X, pos.Y) > 0 {
+		return // flowing stopped
+	}
 	rest := false
 	for !rest {
 		left, mid, right := testDown(cs, pos)
@@ -116,6 +119,41 @@ func buildCaveSlice(lines []line, rec shared.Rectangle) *caveSlice {
 		height: height,
 		width:  rec.Width,
 		src:    shared.Coord{X: 500 - rec.Ori.X},
+	}
+}
+
+func buildCaveSlice2(lines []line, rec shared.Rectangle) *caveSlice {
+	height := rec.Height + rec.Ori.Y + 2
+	s := make([][]byte, height)
+	width := height*2 + 3
+	for i := 0; i < height; i++ {
+		s[i] = make([]byte, width)
+	}
+	x0 := 500 - width/2
+
+	for _, l := range lines {
+		if l.isVertical {
+			j := l.v1.X - x0
+			y1, y2 := utils.MinMaxOf(l.v1.Y, l.v2.Y)
+			for i := y1; i <= y2; i++ {
+				s[i][j] = rock
+			}
+		} else {
+			x1, x2 := utils.MinMaxOf(l.v1.X, l.v2.X)
+			for i := x1; i <= x2; i++ {
+				s[l.v2.Y][i-x0] = rock
+			}
+		}
+	}
+
+	for i := 0; i < width; i++ {
+		s[height-1][i] = rock
+	}
+	return &caveSlice{
+		s:      s,
+		height: height,
+		width:  width,
+		src:    shared.Coord{X: 500 - x0},
 	}
 }
 
