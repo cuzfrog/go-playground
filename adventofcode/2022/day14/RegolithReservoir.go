@@ -16,16 +16,78 @@ const (
 )
 
 type caveSlice struct {
-	s      [][]byte
-	height int
-	width  int
-	src    shared.Coord
+	s       [][]byte
+	height  int
+	width   int
+	src     shared.Coord
+	sandCnt int
 }
 
 type line struct {
 	v1         shared.Coord
 	v2         shared.Coord
 	isVertical bool
+}
+
+func (cs *caveSlice) pourSand() {
+	pos := cs.src
+	rest := false
+	for !rest {
+		left, mid, right := testDown(cs, pos)
+		if mid {
+			if pos.Y >= cs.height-1 {
+				return
+			}
+			pos.Y++
+			continue
+		} else {
+			if left {
+				if pos.X <= 0 {
+					return
+				}
+				pos.X--
+				pos.Y++
+				continue
+			}
+			if right {
+				if pos.X >= cs.width-1 {
+					return
+				}
+				pos.X++
+				pos.Y++
+				continue
+			}
+			rest = true
+			cs.s[pos.Y][pos.X] = sand
+		}
+	}
+	cs.sandCnt++
+}
+
+func testDown(cs *caveSlice, pos shared.Coord) (left bool, mid bool, right bool) {
+	if pos.Y >= cs.height-1 {
+		mid = true
+		return
+	}
+	y := pos.Y + 1
+	if cs.s[y][pos.X] == air {
+		mid = true
+	}
+	if pos.X <= 0 || cs.s[y][pos.X-1] == air {
+		left = true
+	}
+	if pos.X >= cs.width-1 || cs.s[y][pos.X+1] == air {
+		right = true
+	}
+	return
+}
+
+func (cs *caveSlice) get(x, y int) byte {
+	return cs.s[y][x]
+}
+
+func (cs *caveSlice) put(x, y int, v byte) {
+	cs.s[y][x] = v
 }
 
 func buildCaveSlice(lines []line, rec shared.Rectangle) *caveSlice {

@@ -44,3 +44,69 @@ func TestBuildCaveSlice(t *testing.T) {
 	assert.Equal(t, air, cs.s[5][6])
 	assert.Equal(t, shared.ParseCoord("6,0"), cs.src)
 }
+
+func TestPourSand(t *testing.T) {
+	cs := buildCaveSlice(parseLines("./test-input"))
+	cs.pourSand()
+	assert.Equal(t, sand, cs.get(6, 8))
+	assert.Equal(t, 1, cs.sandCnt)
+
+	cs.pourSand()
+	assert.Equal(t, sand, cs.get(5, 8))
+
+	cs.pourSand()
+	assert.Equal(t, sand, cs.get(7, 8))
+
+	cs.pourSand()
+	assert.Equal(t, sand, cs.get(6, 7))
+
+	cs.pourSand()
+	assert.Equal(t, sand, cs.get(4, 8))
+
+	for i := 0; i < 17; i++ {
+		cs.pourSand()
+	}
+	assert.Equal(t, 22, cs.sandCnt)
+	pic := `..........
+..........
+......o...
+.....ooo..
+....#ooo##
+....#ooo#.
+..###ooo#.
+....oooo#.
+...ooooo#.
+#########.
+`
+	assert.Equal(t, pic, fmt.Sprintf("%v", cs))
+
+	cs.pourSand()
+	cs.pourSand()
+	pic = `..........
+..........
+......o...
+.....ooo..
+....#ooo##
+...o#ooo#.
+..###ooo#.
+....oooo#.
+.o.ooooo#.
+#########.
+`
+	assert.Equal(t, pic, fmt.Sprintf("%v", cs))
+	assert.Equal(t, 24, cs.sandCnt)
+	cs.pourSand()
+	assert.Equal(t, 24, cs.sandCnt)
+}
+
+func TestSolution1(t *testing.T) {
+	cs := buildCaveSlice(parseLines("./input"))
+
+	cnt := cs.sandCnt
+	cs.pourSand()
+	for cnt != cs.sandCnt {
+		cnt = cs.sandCnt
+		cs.pourSand()
+	}
+	println(cs.sandCnt)
+}
