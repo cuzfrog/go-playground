@@ -7,35 +7,37 @@ import (
 )
 
 func Test_parsePairs(t *testing.T) {
-	ch, pairs := parseChart("./test-input")
+	rec, pairs := parseChart("./test-input")
 	assert.Equal(t, 14, len(pairs))
-	assert.Equal(t, shared.Coord{2, 18}, pairs[0].se)
-	assert.Equal(t, shared.Coord{-2, 15}, pairs[0].be)
-	assert.Equal(t, shared.Coord{14, 3}, pairs[12].se)
-	assert.Equal(t, shared.Coord{15, 3}, pairs[12].be)
+	assert.Equal(t, shared.NewCoord(2, 18), pairs[0].se)
+	assert.Equal(t, shared.NewCoord(-2, 15), pairs[0].be)
+	assert.Equal(t, shared.NewCoord(14, 3), pairs[12].se)
+	assert.Equal(t, shared.NewCoord(15, 3), pairs[12].be)
 
-	assert.Equal(t, sensor, ch.Get(2, 0))
-	assert.Equal(t, beacon, ch.Get(-2, 15))
-	assert.Equal(t, beacon, ch.Get(25, 17))
-	assert.Equal(t, unknown, ch.Get(25, 22))
-	assert.Equal(t, beacon, ch.Get(21, 22))
+	assert.Equal(t, shared.NewCoord(-8, -10), rec.Ori)
 }
 
-func TestMarkNoBeacon(t *testing.T) {
-	ch, pairs := parseChart("./test-input")
-	p := pairs[6]
-	assert.Equal(t, shared.Coord{X: 8, Y: 7}, p.se)
-	p.markNoBeacon(ch)
-	pic := ch.StringF(sprintFn)
-	println(pic)
+func TestCheckBeacon(t *testing.T) {
+	_, pairs := parseChart("./test-input")
+	assert.Equal(t, unknown, testBeacon(-2, 9, pairs))
+	assert.Equal(t, noBeacon, testBeacon(0, 7, pairs))
+	assert.Equal(t, noBeacon, testBeacon(-1, 7, pairs))
+	assert.Equal(t, unknown, testBeacon(-2, 7, pairs))
+	assert.Equal(t, sensor, testBeacon(8, 7, pairs))
+	assert.Equal(t, unknown, testBeacon(-3, 10, pairs))
+	assert.Equal(t, noBeacon, testBeacon(-2, 10, pairs))
+	assert.Equal(t, beacon, testBeacon(2, 10, pairs))
 }
 
-func TestScanUpdateChart(t *testing.T) {
-	ch, pairs := parseChart("./test-input")
-	scanUpdateChart(ch, pairs)
+func TestCountNoBeacon(t *testing.T) {
+	rec, pairs := parseChart("./test-input")
+	cnt := countNoBeaconOnRow(10, rec, pairs)
+	assert.Equal(t, 26, cnt)
+}
 
-	row10 := ch.GetRow(10)
-	row10Str := row10.StringF(sprintFn)
-	println(row10Str)
-	assert.Equal(t, "..####B######################..", row10Str)
+func TestSolution1(t *testing.T) {
+	rec, pairs := parseChart("./input")
+	cnt := countNoBeaconOnRow(2000000, rec, pairs)
+	println(cnt)
+	assert.Equal(t, 5176944, cnt)
 }

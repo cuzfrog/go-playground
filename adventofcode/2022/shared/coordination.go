@@ -29,3 +29,6 @@ func ParseCoord(s string) Coord {
 	v1, v2 := utils.SplitString2(s, ",")
 	return Coord{utils.StrToInt(v1), utils.StrToInt(v2)}
 }
+func NewCoord(x, y int) Coord {
+	return Coord{x, y}
+}

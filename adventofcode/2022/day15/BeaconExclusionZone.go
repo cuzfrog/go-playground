@@ -32,26 +32,44 @@ func sprintFn(v byte) string {
 }
 
 type pair struct {
-	se shared.Coord
-	be shared.Coord
+	se  shared.Coord
+	be  shared.Coord
+	dis int
 }
 
-func scanUpdateChart(ch *shared.Chart[byte], pairs []pair) {
-	for _, p := range pairs {
-		p.markNoBeacon(ch)
-	}
-}
-
-func (p pair) markNoBeacon(ch *shared.Chart[byte]) {
-	dis := manhattanDistance(p.se, p.be)
-	ch.Each(func(x, y int, v byte) {
-		if manhattanDistance(shared.Coord{X: x, Y: y}, p.se) <= dis && v == unknown {
-			ch.Put(x, y, noBeacon)
+func countNoBeaconOnRow(y int, rec shared.Rectangle, pairs []pair) int {
+	x0 := rec.Ori.X
+	x1 := x0 + rec.Width
+	cnt := 0
+	for i := x0; i < x1; i++ {
+		res := testBeacon(i, y, pairs)
+		if res == noBeacon {
+			cnt++
 		}
-	})
+	}
+	return cnt
 }
 
-func parseChart(path string) (*shared.Chart[byte], []pair) {
+func testBeacon(x, y int, pairs []pair) byte {
+	co := shared.Coord{X: x, Y: y}
+	res := unknown
+	for _, p := range pairs {
+		if manhattanDistance(co, p.se) <= p.dis {
+			if co == p.be {
+				return beacon
+			} else if co == p.se {
+				return sensor
+			} else {
+				return noBeacon
+			}
+		} else {
+			continue
+		}
+	}
+	return res
+}
+
+func parseChart(path string) (shared.Rectangle, []pair) {
 	regex := regexp.MustCompile("Sensor at x=(-?\\d+), y=(-?\\d+): closest beacon is at x=(-?\\d+), y=(-?\\d+)")
 	lines := utils.LoadFileLines(path)
 	l := len(lines) - 1
@@ -62,25 +80,18 @@ func parseChart(path string) (*shared.Chart[byte], []pair) {
 		match := regex.FindStringSubmatch(lines[i])
 		se := shared.Coord{X: utils.StrToInt(match[1]), Y: utils.StrToInt(match[2])}
 		be := shared.Coord{X: utils.StrToInt(match[3]), Y: utils.StrToInt(match[4])}
-		pairs[i] = pair{se, be}
+		dis := manhattanDistance(se, be)
+		pairs[i] = pair{se, be, dis}
 
-		minX = utils.MinOf(minX, se.X, be.X)
-		maxX = utils.MaxOf(maxX, se.X, be.X)
-		minY = utils.MinOf(minY, se.Y, be.Y)
-		maxY = utils.MaxOf(maxY, se.Y, be.Y)
+		minX = utils.MinOf(minX, se.X-dis, be.X)
+		maxX = utils.MaxOf(maxX, se.X+dis, be.X)
+		minY = utils.MinOf(minY, se.Y-dis, be.Y)
+		maxY = utils.MaxOf(maxY, se.Y+dis, be.Y)
 	}
 
 	width := maxX - minX + 1
 	height := maxY - minY + 1
-	ch := shared.NewChart[byte](minX, minY, width, height)
-
-	for i := 0; i < l; i++ {
-		p := pairs[i]
-		ch.Put(p.se.X, p.se.Y, sensor)
-		ch.Put(p.be.X, p.be.Y, beacon)
-	}
-
-	return ch, pairs
+	return shared.Rectangle{Ori: shared.Coord{X: minX, Y: minY}, Width: width, Height: height}, pairs
 }
 
 func manhattanDistance(c1, c2 shared.Coord) int {
