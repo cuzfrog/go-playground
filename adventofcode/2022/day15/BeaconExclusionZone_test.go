@@ -17,6 +17,25 @@ func Test_parsePairs(t *testing.T) {
 	assert.Equal(t, sensor, ch.Get(2, 0))
 	assert.Equal(t, beacon, ch.Get(-2, 15))
 	assert.Equal(t, beacon, ch.Get(25, 17))
-	assert.Equal(t, empty, ch.Get(25, 22))
+	assert.Equal(t, unknown, ch.Get(25, 22))
 	assert.Equal(t, beacon, ch.Get(21, 22))
+}
+
+func TestMarkNoBeacon(t *testing.T) {
+	ch, pairs := parseChart("./test-input")
+	p := pairs[6]
+	assert.Equal(t, shared.Coord{X: 8, Y: 7}, p.se)
+	p.markNoBeacon(ch)
+	pic := ch.StringF(sprintFn)
+	println(pic)
+}
+
+func TestScanUpdateChart(t *testing.T) {
+	ch, pairs := parseChart("./test-input")
+	scanUpdateChart(ch, pairs)
+
+	row10 := ch.GetRow(10)
+	row10Str := row10.StringF(sprintFn)
+	println(row10Str)
+	assert.Equal(t, "..####B######################..", row10Str)
 }
