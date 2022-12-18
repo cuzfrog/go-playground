@@ -10,12 +10,6 @@ type Coord struct {
 	Y int
 }
 
-type Rectangle struct {
-	Ori    Coord
-	Width  int
-	Height int
-}
-
 func (c Coord) Hash() uint {
 	return uint(c.X*17 + c.Y)
 }

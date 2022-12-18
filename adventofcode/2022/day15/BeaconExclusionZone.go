@@ -50,23 +50,52 @@ func countNoBeaconOnRow(y int, rec shared.Rectangle, pairs []pair) int {
 	return cnt
 }
 
+func searchUnknown(x0, y0, x1, y1 int, pairs []pair) shared.Coord {
+	y := x0
+	for y <= y1 {
+		x := x0
+		for x <= x1 {
+			b, d, se := testBeaconAndDis(x, y, pairs)
+			if b == unknown { // d < 0
+				return shared.NewCoord(x, y)
+			}
+			if x < se.X {
+				x = x + (se.X-x)*2 + 1
+			} else if x >= se.X {
+				x = x + d + 1
+			}
+		}
+		//println(y)
+		y++
+	}
+	panic("no possible")
+}
+
 func testBeacon(x, y int, pairs []pair) byte {
+	b, _, _ := testBeaconAndDis(x, y, pairs)
+	return b
+}
+
+// return v, disDiff, sensorPos
+func testBeaconAndDis(x, y int, pairs []pair) (byte, int, shared.Coord) {
 	co := shared.Coord{X: x, Y: y}
 	res := unknown
+	d := math.MaxInt
 	for _, p := range pairs {
-		if manhattanDistance(co, p.se) <= p.dis {
+		d = p.dis - manhattanDistance(co, p.se)
+		if d >= 0 {
 			if co == p.be {
-				return beacon
+				return beacon, d, p.se
 			} else if co == p.se {
-				return sensor
+				return sensor, d, p.se
 			} else {
-				return noBeacon
+				return noBeacon, d, p.se
 			}
 		} else {
 			continue
 		}
 	}
-	return res
+	return res, d, shared.Coord{}
 }
 
 func parseChart(path string) (shared.Rectangle, []pair) {

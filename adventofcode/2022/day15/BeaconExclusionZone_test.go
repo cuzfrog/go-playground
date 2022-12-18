@@ -27,6 +27,7 @@ func TestCheckBeacon(t *testing.T) {
 	assert.Equal(t, unknown, testBeacon(-3, 10, pairs))
 	assert.Equal(t, noBeacon, testBeacon(-2, 10, pairs))
 	assert.Equal(t, beacon, testBeacon(2, 10, pairs))
+	assert.Equal(t, unknown, testBeacon(14, 11, pairs))
 }
 
 func TestCountNoBeacon(t *testing.T) {
@@ -35,9 +36,29 @@ func TestCountNoBeacon(t *testing.T) {
 	assert.Equal(t, 26, cnt)
 }
 
+func TestSearchUnknown(t *testing.T) {
+	_, pairs := parseChart("./test-input")
+	//pos := searchUnknown(0, 11, 14, 11, pairs)
+
+	pos := searchUnknown(0, 0, 20, 20, pairs)
+	assert.Equal(t, shared.NewCoord(14, 11), pos)
+	freq := pos.X*4000000 + pos.Y
+	assert.Equal(t, 56000011, freq)
+}
+
 func TestSolution1(t *testing.T) {
 	rec, pairs := parseChart("./input")
 	cnt := countNoBeaconOnRow(2000000, rec, pairs)
 	println(cnt)
 	assert.Equal(t, 5176944, cnt)
+}
+
+func TestSolution2(t *testing.T) {
+	rec, pairs := parseChart("./input")
+	println(rec.String())
+
+	pos := searchUnknown(0, 0, 4000000, 4000000, pairs)
+	freq := pos.X*4000000 + pos.Y
+	println(freq)
+	assert.Equal(t, 13350458933732, freq)
 }
